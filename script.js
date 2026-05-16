@@ -1,4 +1,3 @@
-// Iniciamos la cámara más lejos (Zoom 4) y centrada entre Argentina y Brasil
 var map = L.map('map').setView([-25.0, -55.0], 4);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -37,8 +36,6 @@ marcadorBrasilia.bindPopup("<a href='" + linkJuegoBrasilia + "' target='_blank'>
 function actualizarTamanoIcono() {
     var zoomActual = map.getZoom();
     var nuevoTamano = Math.max(30, zoomActual * 6); 
-    
-    // Agrupamos todos en una lista para hacer el código más corto y ordenado
     var listaMarcadores = [
         { obj: marcadorMar, url: linkImagenMar },
         { obj: marcadorCampo, url: linkImagenCampo },
@@ -80,18 +77,17 @@ fetch('provincias.geojson')
     .catch(function(error) { console.error("Error cargando provincias:", error); });
 
 
-// ----------------- LEER ARCHIVO Y DIBUJAR BRASÍLIA (BRASIL) -----------------
-fetch('https://raw.githubusercontent.com/tbrugz/geodata-br/refs/heads/master/geojson/geojs-100-mun.json')
+// ----------------- LEER ARCHIVO Y DIBUJAR TODO BRASIL -----------------
+fetch('https://raw.githubusercontent.com/tbrugz/geodata-br/refs/heads/master/geojson/geojs-100-uf.json')
     .then(function(respuesta) { return respuesta.json(); })
     .then(function(datosBrasil) {
+        
         L.geoJSON(datosBrasil, {
-            filter: function(feature) {
-                var nombre = feature.properties.name || feature.properties.NM_MUN || feature.properties.description;
-                return nombre === 'Brasília' || nombre === 'Distrito Federal';
-            },
+            
             style: function(feature) {
-                return { color: '#006400', weight: 3, fillColor: '#32CD32', fillOpacity: 0.25 };
+                return { color: '#006400', weight: 2, fillColor: '#32CD32', fillOpacity: 0.25 };
             }
         }).addTo(map);
+        
     })
     .catch(function(error) { console.error("Error cargando geojson de Brasil:", error); });
