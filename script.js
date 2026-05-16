@@ -202,7 +202,10 @@ const ESTILOS_GEO = {
     'War_Front_Finland':   { borde: '#1a1a1a', fill: '#333333', op: 0.58 },
     'Ejercito_Uruguayo':   { borde: '#0038a8', fill: '#7bafd4', op: 0.45 },
     'Ejercito_Colombia':   { borde: '#ccaa00', fill: '#ffea00', op: 0.45 },
-    'FK_Zone':             { borde: '#ff2200', fill: '#ff4422', op: 0.50 }
+    'FK_Zone':             { borde: '#ff2200', fill: '#ff4422', op: 0.50 },
+    // AGREGAR ESTOS DOS:
+    'Ejercito_Chile':      { borde: '#cc2222', fill: '#ff4444', op: 0.40 },
+    'Congreso_Chile':      { borde: '#0033aa', fill: '#3366ff', op: 0.30 }
 };
 
 function geoStyle(id) {
@@ -229,7 +232,10 @@ function configurarMarcadores() {
         { coords: [60.1699,     24.9384  ], label: 'Helsinki',            ejId: 'War_Front_Finland',   region: 'Helsinki, Finlandia',  img: 'https://tr.rbxcdn.com/180DAY-d1401c2af40cc8338406405cf7734c51/256/256/Image/Webp/noFilter' },
         { coords: [-34.9011,   -56.1645  ], label: 'Montevideo',          ejId: 'Ejercito_Uruguayo',   region: 'Montevideo, Uruguay',  img: 'https://tr.rbxcdn.com/180DAY-678a18d475f292e91b46914384aff56e/256/256/Image/Webp/noFilter' },
         { coords: [4.24,       -74.64    ], label: 'Fuerte Militar Tolemaida', ejId: 'Ejercito_Colombia', region: 'Tolemaida, Colombia', img: 'https://tr.rbxcdn.com/180DAY-0219f2fba401ee55c3a0db8ccc44d272/256/256/Image/Webp/noFilter' },
-        { coords: [-51.7963,   -59.5236  ], label: 'Islas Malvinas (Zona de Lucha)', ejId: 'FK_Zone',  region: 'Islas Malvinas',       img: 'https://tr.rbxcdn.com/180DAY-ff9a30bdc11fd1a21e07cdf3837b6757/352/352/Image/Png/noFilter' }
+        { coords: [-51.7963,   -59.5236  ], label: 'Islas Malvinas (Zona de Lucha)', ejId: 'FK_Zone',  region: 'Islas Malvinas',       img: 'https://tr.rbxcdn.com/180DAY-ff9a30bdc11fd1a21e07cdf3837b6757/352/352/Image/Png/noFilter' },
+        // AGREGAR ESTOS DOS AL FINAL DEL ARRAY:
+        { coords: [-34.1701,   -70.7406  ], label: 'El Libertador',       ejId: 'Ejercito_Chile',      region: 'O\'Higgins, Chile',    img: 'https://tr.rbxcdn.com/180DAY-6d15efeaa6c140b24fb4486eb7eaea9e/150/150/Image/Webp/noFilter' },
+        { coords: [-33.0475,   -71.6133  ], label: 'Congreso Nacional',   ejId: 'Congreso_Chile',      region: 'Valparaíso, Chile',    img: 'https://tr.rbxcdn.com/180DAY-063b85b1f16c771a04d66a39917f351c/150/150/Image/Webp/noFilter' }
     ];
     datos.forEach(m => {
         const marcador = L.marker(m.coords).addTo(map);
@@ -358,7 +364,10 @@ const LINKS_JUEGO = {
     'War_Front_Finland':   'https://www.roblox.com/games/102445517344578/War-on-the-Front-Finland-RP',
     'Ejercito_Uruguayo':   'https://www.roblox.com/games/18893023733/Ejercito-Uruguayo',
     'Ejercito_Colombia':   'https://www.roblox.com/games/8575062452/ENC-Fuerte-Militar-Tolemaida',
-    'FK_Zone':             'https://www.roblox.com/games/11531150499/Soledad-Island-Malvinas-2030'
+    'FK_Zone':             'https://www.roblox.com/games/11531150499/Soledad-Island-Malvinas-2030',
+    // AGREGAR ESTOS DOS:
+    'Ejercito_Chile':      'https://www.roblox.com/games/99857138661549/Academia-Militar-de-Chile-El-Libertador',
+    'Congreso_Chile':      'https://www.roblox.com/games/71789289496320/Congreso-Nacional'
 };
 
 async function mostrarPanelTerritorio(ejercitoId, tituloRegion) {
