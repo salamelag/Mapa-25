@@ -4,12 +4,15 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-// Cargamos el archivo de forma local
-fetch('./no se.txt')
-    .then(res => res.json())
+// Usamos %20 para manejar correctamente el espacio en el nombre del archivo
+fetch('./no%20se.txt')
+    .then(res => {
+        if (!res.ok) throw new Error('No se encontró el archivo no se.txt en el repositorio');
+        return res.json();
+    })
     .then(data => {
-        // Filtramos para extraer únicamente Córdoba del listado de provincias
-        var cordoba = data.features.find(f => f.properties.nombre.toLowerCase().includes('cór'));
+        // Filtramos por ID ("14" es Córdoba en la base del IGN), evitando fallos por acentos
+        var cordoba = data.features.find(f => f.properties.id === '14');
         
         if (cordoba) {
             L.geoJSON(cordoba, {
@@ -22,4 +25,4 @@ fetch('./no se.txt')
             }).addTo(map);
         }
     })
-    .catch(err => console.error("Error al cargar el archivo local:", err));
+    .catch(err => console.error("Error:", err));
