@@ -337,7 +337,7 @@ function cargarGeografia() {
         });
 
     // Falkland Islands (Islas Malvinas)
-    fetch('https://raw.githubusercontent.com/glynnbird/countriesgeojson/master/falkland_islands.geojson')
+    fetch('https://github.com/georgique/world-geojson/blob/develop/areas/united_kingdom/falkland_islands.json')
         .then(r => r.json()).then(data => {
             L.geoJSON(data, {
                 style: () => geoStyle('FK_Zone'),
