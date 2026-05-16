@@ -44,19 +44,36 @@ var cordobaGeoJSON = {
     }
 };
 
-var miIconoPersonalizado = L.icon({
-    // URL directa a la imagen de internet
-    iconUrl: 'https://tr.rbxcdn.com/180DAY-8c528bd4c92002faf069c7f4f966f9f9/256/256/Image/Webp/noFilter',   
-    iconSize: [40, 40],      
-    iconAnchor: [20, 20],    
-    popupAnchor: [0, -20]    
+var coordsMarChiquita = [-30.600242, -62.870913];
+var linkImagen = 'https://tr.rbxcdn.com/180DAY-8c528bd4c92002faf069c7f4f966f9f9/256/256/Image/Webp/noFilter';
+var linkJuego = 'https://www.roblox.com/games/119851378620864/25-REMASTER';
+
+var marcadorFoto = L.marker(coordsMarChiquita).addTo(map);
+
+marcadorFoto.bindTooltip("Link del juego: " + linkJuego, {
+    direction: 'top',
+    offset: [0, -10]
 });
 
-var coordsMarChiquita = [-30.600242, -62.870913];
+marcadorFoto.bindPopup("<a href='" + linkJuego + "' target='_blank'><b>¡Haz clic aquí para jugar 25 REMASTER!</b></a>");
 
-var marcadorFoto = L.marker(coordsMarChiquita, {icon: miIconoPersonalizado}).addTo(map);
+function actualizarTamanoIcono() {
+    var zoomActual = map.getZoom();
+    var nuevoTamano = Math.max(30, zoomActual * 6);
+    
+    var iconoDinamico = L.icon({
+        iconUrl: linkImagen,   
+        iconSize: [nuevoTamano, nuevoTamano],      
+        iconAnchor: [nuevoTamano / 2, nuevoTamano / 2], 
+        className: 'icono-con-borde'
+    });
+    
+    marcadorFoto.setIcon(iconoDinamico);
+}
 
-marcadorFoto.bindPopup("<b>Laguna Mar Chiquita</b><br>Punto de interés.");
+map.on('zoomend', actualizarTamanoIcono);
+
+actualizarTamanoIcono();
 
 L.geoJSON(cordobaGeoJSON, {
     style: {
