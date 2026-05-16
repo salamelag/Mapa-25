@@ -242,8 +242,8 @@ function actualizarIconos() {
 }
 
 // Provincias que tienen presencia reforzada (EB do Mirage controla solo Rio; estas son Ejercito Brasileiro fuerte)
-const EB_FUERTE  = ['São Paulo', 'Sao Paulo', 'Minas Gerais', 'Espírito Santo', 'Espirito Santo'];
-const EB_MIRAGE  = ['Rio de Janeiro'];
+const EB_FUERTE  = []; // ya no se usa como capa separada
+const EB_MIRAGE  = ['Rio de Janeiro', 'São Paulo', 'Sao Paulo', 'Minas Gerais', 'Espírito Santo', 'Espirito Santo'];
 
 function addClickHover(layer, ejId, region, opBase, opHover) {
     layer.on('click', (e) => { L.DomEvent.stopPropagation(e); mostrarPanelTerritorio(ejId, region); });
