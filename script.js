@@ -335,7 +335,8 @@ const LINKS_JUEGO = {
     'Argentine_Army':      'https://www.roblox.com/games/86744432712071/Argentine-Army',
     'Exercito_Brasileiro': 'https://www.roblox.com/games/2069320852/Ex-rcito-Brasileiro-EB',
     'EB_Mirage':           'https://www.roblox.com/games/73767462197411/EB-do-Mirage-Ex-rcito-Brasileiro',
-    'War_Front_Finland':   'https://www.roblox.com/games/102445517344578/War-on-the-Front-Finland-RP'
+    'War_Front_Finland':   'https://www.roblox.com/games/102445517344578/War-on-the-Front-Finland-RP',
+    'Ejercito_Uruguayo':   'https://www.roblox.com/games/18893023733/Ejercito-Uruguayo'
 };
 
 async function mostrarPanelTerritorio(ejercitoId, tituloRegion) {
