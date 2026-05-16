@@ -16,20 +16,41 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else {
         document.getElementById('panel-visitante').classList.remove('oculto');
     }
+    iniciarPresencia();
     iniciarMapa();
 });
 
-// --- CARGAR DATOS BASE DE EJÉRCITOS Y RELACIONES ---
+// --- PRESENCIA EN TIEMPO REAL ---
+function iniciarPresencia() {
+    const canal = clienteSupabase.channel('mapa-presencia-v2', {
+        config: { presence: { key: Math.random().toString(36).slice(2) } }
+    });
+    canal.on('presence', { event: 'sync' }, () => {
+        const total = Object.keys(canal.presenceState()).length;
+        const el = document.getElementById('num-visitantes');
+        if (el) el.innerText = total;
+    });
+    canal.subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') await canal.track({ t: Date.now() });
+    });
+}
+
+// --- DATOS ---
 async function cargarDatosEjercitos() {
     const { data: ejercitos } = await clienteSupabase.from('ejercitos').select('*');
-    if (ejercitos) {
-        ejercitos.forEach(e => { todosLosEjercitos[e.id] = e; });
-    }
+    if (ejercitos) ejercitos.forEach(e => { todosLosEjercitos[e.id] = e; });
     const { data: relaciones } = await clienteSupabase.from('relaciones').select('*');
     if (relaciones) todasLasRelaciones = relaciones;
 }
 
-// --- LÓGICA DE LOGIN ---
+async function obtenerComandanteRoblox(ejercitoId) {
+    const { data } = await clienteSupabase
+        .from('peticiones').select('usuario_roblox')
+        .eq('ejercito', ejercitoId).eq('estado', 'Aprobado').limit(1);
+    return (data && data.length > 0) ? data[0].usuario_roblox : null;
+}
+
+// --- LOGIN ---
 document.getElementById('btn-abrir-login').onclick = () => document.getElementById('modal-login').classList.remove('oculto');
 document.getElementById('btn-cerrar-login').onclick = () => document.getElementById('modal-login').classList.add('oculto');
 
@@ -39,8 +60,8 @@ document.getElementById('btn-registro').onclick = async () => {
     const msj = document.getElementById('msj-login');
     msj.innerText = "Registrando..."; msj.style.color = "yellow";
     const { error } = await clienteSupabase.auth.signUp({ email, password: pass });
-    if (error) { msj.innerText = error.message; msj.style.color = "red"; }
-    else { msj.innerText = "¡Cuenta creada! Ya puedes Entrar."; msj.style.color = "#32CD32"; }
+    if (error) { msj.innerText = error.message; msj.style.color = "#cc3333"; }
+    else { msj.innerText = "Cuenta creada. Ya podes entrar."; msj.style.color = "#32CD32"; }
 };
 
 document.getElementById('btn-login').onclick = async () => {
@@ -49,7 +70,7 @@ document.getElementById('btn-login').onclick = async () => {
     const msj = document.getElementById('msj-login');
     msj.innerText = "Conectando..."; msj.style.color = "yellow";
     const { error } = await clienteSupabase.auth.signInWithPassword({ email, password: pass });
-    if (error) { msj.innerText = "Credenciales incorrectas."; msj.style.color = "red"; }
+    if (error) { msj.innerText = "Credenciales incorrectas."; msj.style.color = "#cc3333"; }
     else { location.reload(); }
 };
 
@@ -57,7 +78,7 @@ const cerrarSesion = async () => { await clienteSupabase.auth.signOut(); locatio
 document.getElementById('btn-cerrar-sesion').onclick = cerrarSesion;
 document.getElementById('btn-cerrar-sesion-cmd').onclick = cerrarSesion;
 
-// --- RECLAMAR EJÉRCITO ---
+// --- RECLAMAR ---
 document.getElementById('btn-abrir-reclamar').onclick = () => document.getElementById('modal-reclamar').classList.remove('oculto');
 document.getElementById('btn-cerrar-reclamar').onclick = () => document.getElementById('modal-reclamar').classList.add('oculto');
 
@@ -65,69 +86,59 @@ document.getElementById('btn-enviar').onclick = async () => {
     const robloxName = document.getElementById('input-roblox').value;
     const ejercitoSelect = document.getElementById('input-ejercito').value;
     const msj = document.getElementById('mensaje-estado');
-    if (!robloxName || !ejercitoSelect) { msj.innerText = "Llena todos los campos."; msj.style.color = "red"; return; }
-    msj.innerText = "Enviando Petición..."; msj.style.color = "yellow";
+    if (!robloxName || !ejercitoSelect) { msj.innerText = "Completa todos los campos."; msj.style.color = "#cc3333"; return; }
+    msj.innerText = "Enviando peticion..."; msj.style.color = "yellow";
     const { error } = await clienteSupabase.from('peticiones').insert([
         { usuario_roblox: robloxName, ejercito: ejercitoSelect, email_usuario: usuarioActual.email, estado: 'Pendiente' }
     ]);
-    if (error) { msj.innerText = "Error de servidor."; msj.style.color = "red"; }
+    if (error) { msj.innerText = "Error de servidor."; msj.style.color = "#cc3333"; }
     else {
-        msj.innerText = "¡Enviado! Espera aprobación del Alto Mando."; msj.style.color = "#32CD32";
+        msj.innerText = "Enviado. Esperando aprobacion del Alto Mando."; msj.style.color = "#32CD32";
         setTimeout(() => document.getElementById('modal-reclamar').classList.add('oculto'), 3000);
     }
 };
 
-// --- HERRAMIENTAS DEL COMANDANTE ---
-document.getElementById('btn-panel-control').onclick = () => abrirPanelComandante();
-
-function abrirPanelComandante() {
+// --- HERRAMIENTAS COMANDANTE ---
+document.getElementById('btn-panel-control').onclick = () => {
     if (!ejercitoActual) return;
-    const ejercito = todosLosEjercitos[ejercitoActual];
-    const panel = document.getElementById('panel-herramientas');
-    document.getElementById('hud-ejercito-nombre').innerText = ejercito ? ejercito.nombre : ejercitoActual;
-    document.getElementById('hud-ejercito-lider').innerText = ejercito ? (ejercito.lider || usuarioActual.email) : usuarioActual.email;
-    document.getElementById('hud-ejercito-desc').value = ejercito ? (ejercito.descripcion || '') : '';
+    const e = todosLosEjercitos[ejercitoActual];
+    document.getElementById('hud-ejercito-nombre').innerText = e ? e.nombre : ejercitoActual;
+    document.getElementById('hud-ejercito-lider').innerText = e ? (e.lider || usuarioActual.email) : usuarioActual.email;
+    document.getElementById('hud-ejercito-desc').value = e?.descripcion || '';
     cargarRelacionesPanel();
-    panel.classList.remove('oculto');
-}
-
-document.getElementById('btn-cerrar-herramientas').onclick = () => {
-    document.getElementById('panel-herramientas').classList.add('oculto');
+    document.getElementById('panel-herramientas').classList.remove('oculto');
 };
 
+document.getElementById('btn-cerrar-herramientas').onclick = () => document.getElementById('panel-herramientas').classList.add('oculto');
+
 document.getElementById('btn-guardar-desc').onclick = async () => {
-    const nuevaDesc = document.getElementById('hud-ejercito-desc').value;
+    const desc = document.getElementById('hud-ejercito-desc').value;
     const msj = document.getElementById('msj-herramientas');
     msj.innerText = "Guardando..."; msj.style.color = "yellow";
-    const { error } = await clienteSupabase
-        .from('ejercitos')
-        .update({ descripcion: nuevaDesc, lider: usuarioActual.email, email_lider: usuarioActual.email })
+    const { error } = await clienteSupabase.from('ejercitos')
+        .update({ descripcion: desc, lider: todosLosEjercitos[ejercitoActual]?.lider || usuarioActual.email, email_lider: usuarioActual.email })
         .eq('id', ejercitoActual);
-    if (error) { msj.innerText = "Error al guardar."; msj.style.color = "red"; }
+    if (error) { msj.innerText = "Error al guardar."; msj.style.color = "#cc3333"; }
     else {
-        msj.innerText = "¡Guardado!"; msj.style.color = "#32CD32";
-        if (todosLosEjercitos[ejercitoActual]) todosLosEjercitos[ejercitoActual].descripcion = nuevaDesc;
+        if (todosLosEjercitos[ejercitoActual]) todosLosEjercitos[ejercitoActual].descripcion = desc;
+        msj.innerText = "Guardado."; msj.style.color = "#32CD32";
         setTimeout(() => msj.innerText = '', 2000);
     }
 };
 
 document.getElementById('btn-guardar-relacion').onclick = async () => {
-    const ejercitoB = document.getElementById('sel-ejercito-relacion').value;
+    const ejB = document.getElementById('sel-ejercito-relacion').value;
     const tipo = document.getElementById('sel-tipo-relacion').value;
     const msj = document.getElementById('msj-herramientas');
-    if (!ejercitoB) { msj.innerText = "Seleccioná un ejército."; msj.style.color = "red"; return; }
-    msj.innerText = "Actualizando relación..."; msj.style.color = "yellow";
-
-    // Eliminar relación anterior si existe
+    if (!ejB) { msj.innerText = "Selecciona un ejercito."; msj.style.color = "#cc3333"; return; }
+    msj.innerText = "Actualizando..."; msj.style.color = "yellow";
     await clienteSupabase.from('relaciones').delete()
-        .or(`and(ejercito_a.eq.${ejercitoActual},ejercito_b.eq.${ejercitoB}),and(ejercito_a.eq.${ejercitoB},ejercito_b.eq.${ejercitoActual})`);
-
-    const { error } = await clienteSupabase.from('relaciones').insert([
-        { ejercito_a: ejercitoActual, ejercito_b: ejercitoB, tipo }
-    ]);
-    if (error) { msj.innerText = "Error al guardar relación."; msj.style.color = "red"; }
+        .or(`and(ejercito_a.eq.${ejercitoActual},ejercito_b.eq.${ejB}),and(ejercito_a.eq.${ejB},ejercito_b.eq.${ejercitoActual})`);
+    const { error } = await clienteSupabase.from('relaciones').insert([{ ejercito_a: ejercitoActual, ejercito_b: ejB, tipo }]);
+    if (error) { msj.innerText = "Error al guardar."; msj.style.color = "#cc3333"; }
     else {
-        msj.innerText = `Relación con ${ejercitoB} → ${tipo}`; msj.style.color = "#32CD32";
+        msj.innerText = tipo + " con " + (todosLosEjercitos[ejB]?.nombre || ejB);
+        msj.style.color = "#32CD32";
         await cargarDatosEjercitos();
         cargarRelacionesPanel();
         setTimeout(() => msj.innerText = '', 3000);
@@ -136,246 +147,220 @@ document.getElementById('btn-guardar-relacion').onclick = async () => {
 
 function cargarRelacionesPanel() {
     const lista = document.getElementById('lista-relaciones-panel');
-    const misRelaciones = todasLasRelaciones.filter(r => r.ejercito_a === ejercitoActual || r.ejercito_b === ejercitoActual);
-    if (misRelaciones.length === 0) {
-        lista.innerHTML = '<span style="color:#555;font-size:11px;">Sin relaciones registradas</span>';
-        return;
-    }
-    lista.innerHTML = misRelaciones.map(r => {
+    const misRel = todasLasRelaciones.filter(r => r.ejercito_a === ejercitoActual || r.ejercito_b === ejercitoActual);
+    if (misRel.length === 0) { lista.innerHTML = '<span style="color:#333;font-size:11px;">Sin relaciones</span>'; return; }
+    lista.innerHTML = misRel.map(r => {
         const otro = r.ejercito_a === ejercitoActual ? r.ejercito_b : r.ejercito_a;
-        const nombre = todosLosEjercitos[otro] ? todosLosEjercitos[otro].nombre : otro;
-        const color = r.tipo === 'Aliado' ? '#32CD32' : r.tipo === 'Enemigo' ? '#ff4444' : '#aaa';
-        const icono = r.tipo === 'Aliado' ? '🤝' : r.tipo === 'Enemigo' ? '⚔️' : '🤝';
-        return `<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid #1a2a1a;">
-            <span style="font-size:11px;">${nombre}</span>
-            <span style="color:${color};font-size:11px;font-weight:bold;">${icono} ${r.tipo}</span>
+        const nombre = todosLosEjercitos[otro]?.nombre || otro;
+        const color = r.tipo === 'Aliado' ? '#32CD32' : r.tipo === 'Enemigo' ? '#cc3333' : '#555';
+        return `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #0f1a0f;">
+            <span style="font-size:11px;color:#ccc;">${nombre}</span>
+            <span style="color:${color};font-size:10px;letter-spacing:1px;">${r.tipo.toUpperCase()}</span>
         </div>`;
     }).join('');
 }
 
-// Llenar el select de ejércitos en el panel de herramientas (excluyendo el propio)
 function poblarSelectorRelaciones() {
     const sel = document.getElementById('sel-ejercito-relacion');
-    sel.innerHTML = '<option value="" disabled selected>-- Seleccioná ejército --</option>';
+    sel.innerHTML = '<option value="" disabled selected>-- Selecciona ejercito --</option>';
     Object.entries(todosLosEjercitos).forEach(([id, e]) => {
-        if (id !== ejercitoActual) {
-            sel.innerHTML += `<option value="${id}">${e.nombre}</option>`;
-        }
+        if (id !== ejercitoActual) sel.innerHTML += `<option value="${id}">${e.nombre}</option>`;
     });
 }
 
-// --- DECIDIR QUÉ HUD MOSTRAR ---
 async function verificarAprobacionHUD() {
     document.getElementById('panel-visitante').classList.add('oculto');
-    const { data } = await clienteSupabase
-        .from('peticiones').select('*')
-        .eq('email_usuario', usuarioActual.email)
-        .eq('estado', 'Aprobado');
-
+    const { data } = await clienteSupabase.from('peticiones').select('*')
+        .eq('email_usuario', usuarioActual.email).eq('estado', 'Aprobado');
     if (data && data.length > 0) {
         ejercitoActual = data[0].ejercito;
+        const e = todosLosEjercitos[ejercitoActual];
         document.getElementById('panel-comandante').classList.remove('oculto');
-        const ejercito = todosLosEjercitos[ejercitoActual];
-        document.getElementById('texto-comandante').innerText = ejercito ? ejercito.nombre : ejercitoActual;
+        document.getElementById('texto-comandante').innerText = e ? e.nombre : ejercitoActual;
+        // Sincronizar nombre Roblox como lider del ejército
+        await clienteSupabase.from('ejercitos')
+            .update({ lider: data[0].usuario_roblox, email_lider: usuarioActual.email })
+            .eq('id', ejercitoActual);
+        if (todosLosEjercitos[ejercitoActual]) todosLosEjercitos[ejercitoActual].lider = data[0].usuario_roblox;
         poblarSelectorRelaciones();
     } else {
         document.getElementById('panel-usuario').classList.remove('oculto');
-        document.getElementById('texto-usuario').innerText = "Usuario: " + usuarioActual.email;
+        document.getElementById('texto-usuario').innerText = usuarioActual.email;
     }
 }
 
-// ===================== MAPA =====================
+// ========================= MAPA =========================
 
 var map;
-var capasGeoJSON = {}; // Para poder referenciar capas por nombre de territorio
-var panelTerritorio = null;
+var listaMarcadores = [];
+
+// Paleta por ejército — un color por faccion
+const ESTILOS_GEO = {
+    '25_REMASTER':         { borde: '#1ab4ff', fill: '#90d8f5', op: 0.38 },
+    'Argentine_Army':      { borde: '#2244cc', fill: '#4466ee', op: 0.42 },
+    'Exercito_Brasileiro': { borde: '#1a7a1a', fill: '#2ecc2e', op: 0.28 },
+    'EB_Mirage':           { borde: '#007700', fill: '#00bb00', op: 0.62 },
+    'War_Front_Finland':   { borde: '#1a1a1a', fill: '#333333', op: 0.58 }
+};
+
+function geoStyle(id) {
+    const s = ESTILOS_GEO[id] || { borde: '#888', fill: '#aaa', op: 0.3 };
+    return { color: s.borde, weight: 2, fillColor: s.fill, fillOpacity: s.op };
+}
 
 function iniciarMapa() {
     map = L.map('map').setView([15.0, -30.0], 3);
-
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
     map.on('click', () => cerrarPanelTerritorio());
-
     configurarMarcadores();
     cargarGeografia();
 }
 
-// --- MARCADORES ---
-var listaMarcadores = [];
-
 function configurarMarcadores() {
-    const marcadoresData = [
-        { coords: [-30.600242, -62.870913], tooltip: "Laguna Mar Chiquita", link: 'https://www.roblox.com/games/119851378620864/25-REMASTER', nombre: "25 REMASTER", imgUrl: 'https://tr.rbxcdn.com/180DAY-8c528bd4c92002faf069c7f4f966f9f9/256/256/Image/Webp/noFilter', ejercitoId: '25_REMASTER' },
-        { coords: [-34.533805, -58.649166], tooltip: "Campo de Mayo", link: 'https://www.roblox.com/games/86744432712071/Argentine-Army', nombre: "Argentine Army", imgUrl: 'https://tr.rbxcdn.com/180DAY-cdfd2b3c913f59789ac50bda58fa8e97/256/256/Image/Webp/noFilter', ejercitoId: 'Argentine_Army' },
-        { coords: [-15.778361, -47.905083], tooltip: "Brasília", link: 'https://www.roblox.com/games/2069320852/Ex-rcito-Brasileiro-EB', nombre: "Exército Brasileiro", imgUrl: 'https://tr.rbxcdn.com/180DAY-40a3b8aacb25617525f5903f172f4db8/256/256/Image/Webp/noFilter', ejercitoId: 'Exercito_Brasileiro' },
-        { coords: [-22.9068, -43.1729], tooltip: "Rio de Janeiro", link: 'https://www.roblox.com/games/73767462197411/EB-do-Mirage-Ex-rcito-Brasileiro', nombre: "EB do Mirage", imgUrl: 'https://tr.rbxcdn.com/180DAY-05b3c4bc174a604f84a4cde981d7975c/256/256/Image/Webp/noFilter', ejercitoId: 'EB_Mirage' },
-        { coords: [60.1699, 24.9384], tooltip: "Helsinki (Finlandia)", link: 'https://www.roblox.com/games/102445517344578/War-on-the-Front-Finland-RP', nombre: "War on the Front", imgUrl: 'https://tr.rbxcdn.com/180DAY-d1401c2af40cc8338406405cf7734c51/256/256/Image/Webp/noFilter', ejercitoId: 'War_Front_Finland' }
+    const datos = [
+        { coords: [-30.600242, -62.870913], label: 'Laguna Mar Chiquita', ejId: '25_REMASTER',         region: 'Cordoba, Argentina',   img: 'https://tr.rbxcdn.com/180DAY-8c528bd4c92002faf069c7f4f966f9f9/256/256/Image/Webp/noFilter' },
+        { coords: [-34.533805, -58.649166], label: 'Campo de Mayo',       ejId: 'Argentine_Army',       region: 'Buenos Aires, Argentina', img: 'https://tr.rbxcdn.com/180DAY-cdfd2b3c913f59789ac50bda58fa8e97/256/256/Image/Webp/noFilter' },
+        { coords: [-15.778361, -47.905083], label: 'Brasilia',            ejId: 'Exercito_Brasileiro',  region: 'Brasilia, Brasil',     img: 'https://tr.rbxcdn.com/180DAY-40a3b8aacb25617525f5903f172f4db8/256/256/Image/Webp/noFilter' },
+        { coords: [-22.9068,   -43.1729  ], label: 'Rio de Janeiro',      ejId: 'EB_Mirage',            region: 'Rio de Janeiro, Brasil', img: 'https://tr.rbxcdn.com/180DAY-05b3c4bc174a604f84a4cde981d7975c/256/256/Image/Webp/noFilter' },
+        { coords: [60.1699,     24.9384  ], label: 'Helsinki',            ejId: 'War_Front_Finland',    region: 'Helsinki, Finlandia',  img: 'https://tr.rbxcdn.com/180DAY-d1401c2af40cc8338406405cf7734c51/256/256/Image/Webp/noFilter' }
     ];
-
-    marcadoresData.forEach(m => {
+    datos.forEach(m => {
         const marcador = L.marker(m.coords).addTo(map);
-        marcador.bindTooltip(m.tooltip, { direction: 'top', offset: [0, -10] });
-        marcador.on('click', (e) => {
-            L.DomEvent.stopPropagation(e);
-            mostrarPanelTerritorio(m.ejercitoId, m.nombre);
-        });
-        listaMarcadores.push({ obj: marcador, url: m.imgUrl, ejercitoId: m.ejercitoId });
+        marcador.bindTooltip(m.label, { direction: 'top', offset: [0, -10] });
+        marcador.on('click', (e) => { L.DomEvent.stopPropagation(e); mostrarPanelTerritorio(m.ejId, m.region); });
+        listaMarcadores.push({ obj: marcador, url: m.img });
     });
-
-    map.on('zoomend', actualizarTamanoIcono);
-    actualizarTamanoIcono();
+    map.on('zoomend', actualizarIconos);
+    actualizarIconos();
 }
 
-function actualizarTamanoIcono() {
-    var zoomActual = map.getZoom();
-    var nuevoTamano = Math.max(30, zoomActual * 6);
-    listaMarcadores.forEach(item => {
-        var icono = L.icon({
-            iconUrl: item.url,
-            iconSize: [nuevoTamano, nuevoTamano],
-            iconAnchor: [nuevoTamano / 2, nuevoTamano / 2],
-            className: 'icono-con-borde'
-        });
-        item.obj.setIcon(icono);
-    });
+function actualizarIconos() {
+    const s = Math.max(30, map.getZoom() * 6);
+    listaMarcadores.forEach(m => m.obj.setIcon(L.icon({ iconUrl: m.url, iconSize: [s, s], iconAnchor: [s/2, s/2], className: 'icono-con-borde' })));
+}
+
+// Provincias que tienen presencia reforzada (EB do Mirage controla solo Rio; estas son Ejercito Brasileiro fuerte)
+const EB_FUERTE  = ['São Paulo', 'Sao Paulo', 'Minas Gerais', 'Espírito Santo', 'Espirito Santo'];
+const EB_MIRAGE  = ['Rio de Janeiro'];
+
+function addClickHover(layer, ejId, region, opBase, opHover) {
+    layer.on('click', (e) => { L.DomEvent.stopPropagation(e); mostrarPanelTerritorio(ejId, region); });
+    layer.on('mouseover', () => layer.setStyle({ fillOpacity: opHover }));
+    layer.on('mouseout',  () => layer.setStyle({ fillOpacity: opBase  }));
 }
 
 function cargarGeografia() {
-    fetch('provincias.geojson')
-        .then(r => r.json())
-        .then(data => {
-            L.geoJSON(data, {
-                filter: f => f.properties.nombre === 'Córdoba' || f.properties.nombre === 'Buenos Aires',
-                style: f => f.properties.nombre === 'Córdoba'
-                    ? { color: '#00bfff', weight: 3, fillColor: '#b0e0e6', fillOpacity: 0.35 }
-                    : { color: '#00008B', weight: 3, fillColor: '#0000CD', fillOpacity: 0.35 },
-                onEachFeature: (feature, layer) => {
-                    const ejercitoId = feature.properties.nombre === 'Córdoba' ? '25_REMASTER' : 'Argentine_Army';
-                    const nombre = feature.properties.nombre === 'Córdoba' ? '25 REMASTER' : 'Argentine Army';
-                    layer.on('click', (e) => {
-                        L.DomEvent.stopPropagation(e);
-                        mostrarPanelTerritorio(ejercitoId, nombre + ' — ' + feature.properties.nombre);
-                    });
-                    layer.on('mouseover', () => layer.setStyle({ fillOpacity: 0.6 }));
-                    layer.on('mouseout', () => layer.setStyle({ fillOpacity: 0.35 }));
-                }
-            }).addTo(map);
-        });
+    // Argentina
+    fetch('provincias.geojson').then(r => r.json()).then(data => {
+        L.geoJSON(data, {
+            filter: f => ['Córdoba', 'Buenos Aires'].includes(f.properties.nombre),
+            style: f => {
+                const id = f.properties.nombre === 'Córdoba' ? '25_REMASTER' : 'Argentine_Army';
+                return geoStyle(id);
+            },
+            onEachFeature: (feature, layer) => {
+                const id = feature.properties.nombre === 'Córdoba' ? '25_REMASTER' : 'Argentine_Army';
+                const region = feature.properties.nombre === 'Córdoba' ? 'Cordoba, Argentina' : 'Buenos Aires, Argentina';
+                const s = ESTILOS_GEO[id];
+                addClickHover(layer, id, region, s.op, Math.min(s.op + 0.25, 0.9));
+            }
+        }).addTo(map);
+    });
 
+    // Brasil
     fetch('https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/brazil-states.geojson')
-        .then(r => r.json())
-        .then(data => {
+        .then(r => r.json()).then(data => {
+            // EB do Mirage — solo Rio de Janeiro (verde intenso)
             L.geoJSON(data, {
-                style: f => {
-                    const nombre = f.properties.name || "";
-                    const esSudeste = ['São Paulo', 'Sao Paulo', 'Rio de Janeiro', 'Minas Gerais', 'Espírito Santo', 'Espirito Santo'].includes(nombre);
-                    return esSudeste
-                        ? { color: '#004d00', weight: 3, fillColor: '#00FF00', fillOpacity: 0.55 }
-                        : { color: '#006400', weight: 2, fillColor: '#32CD32', fillOpacity: 0.25 };
-                },
+                filter: f => EB_MIRAGE.includes(f.properties.name || ''),
+                style: () => geoStyle('EB_Mirage'),
                 onEachFeature: (feature, layer) => {
-                    const nombre = feature.properties.name || "";
-                    const esMirage = ['Rio de Janeiro'].includes(nombre);
-                    const ejercitoId = esMirage ? 'EB_Mirage' : 'Exercito_Brasileiro';
-                    const ejercitoNombre = esMirage ? 'EB do Mirage' : 'Exército Brasileiro';
-                    layer.on('click', (e) => {
-                        L.DomEvent.stopPropagation(e);
-                        mostrarPanelTerritorio(ejercitoId, ejercitoNombre + ' — ' + nombre);
-                    });
-                    layer.on('mouseover', () => layer.setStyle({ fillOpacity: 0.75 }));
-                    layer.on('mouseout', () => {
-                        const esSudeste = ['São Paulo', 'Sao Paulo', 'Rio de Janeiro', 'Minas Gerais', 'Espírito Santo', 'Espirito Santo'].includes(nombre);
-                        layer.setStyle({ fillOpacity: esSudeste ? 0.55 : 0.25 });
-                    });
+                    addClickHover(layer, 'EB_Mirage', 'Rio de Janeiro, Brasil', ESTILOS_GEO['EB_Mirage'].op, 0.85);
+                }
+            }).addTo(map);
+
+            // Exército Brasileiro — São Paulo, Minas Gerais, Espírito Santo (verde medio-alto)
+            L.geoJSON(data, {
+                filter: f => EB_FUERTE.includes(f.properties.name || ''),
+                style: () => ({ color: '#1a7a1a', weight: 2, fillColor: '#2ecc2e', fillOpacity: 0.48 }),
+                onEachFeature: (feature, layer) => {
+                    const region = (feature.properties.name || '') + ', Brasil';
+                    addClickHover(layer, 'Exercito_Brasileiro', region, 0.48, 0.70);
+                }
+            }).addTo(map);
+
+            // Exército Brasileiro — resto del país (verde suave)
+            L.geoJSON(data, {
+                filter: f => !EB_MIRAGE.includes(f.properties.name || '') && !EB_FUERTE.includes(f.properties.name || ''),
+                style: () => ({ color: '#1a7a1a', weight: 1, fillColor: '#2ecc2e', fillOpacity: 0.18 }),
+                onEachFeature: (feature, layer) => {
+                    const region = (feature.properties.name || '') + ', Brasil';
+                    addClickHover(layer, 'Exercito_Brasileiro', region, 0.18, 0.38);
                 }
             }).addTo(map);
         });
 
+    // Finlandia
     fetch('https://raw.githubusercontent.com/glynnbird/countriesgeojson/master/finland.geojson')
-        .then(r => r.json())
-        .then(data => {
+        .then(r => r.json()).then(data => {
             L.geoJSON(data, {
-                style: () => ({ color: '#000000', weight: 2, fillColor: '#404040', fillOpacity: 0.55 }),
+                style: () => geoStyle('War_Front_Finland'),
                 onEachFeature: (feature, layer) => {
-                    layer.on('click', (e) => {
-                        L.DomEvent.stopPropagation(e);
-                        mostrarPanelTerritorio('War_Front_Finland', 'War on the Front — Finlandia');
-                    });
-                    layer.on('mouseover', () => layer.setStyle({ fillOpacity: 0.80 }));
-                    layer.on('mouseout', () => layer.setStyle({ fillOpacity: 0.55 }));
+                    addClickHover(layer, 'War_Front_Finland', 'Finlandia', ESTILOS_GEO['War_Front_Finland'].op, 0.80);
                 }
             }).addTo(map);
         });
 }
 
-// ===================== PANEL DE TERRITORIO (HOI4 STYLE) =====================
+// ==================== PANEL TERRITORIO ====================
+
+const LINKS_JUEGO = {
+    '25_REMASTER':         'https://www.roblox.com/games/119851378620864/25-REMASTER',
+    'Argentine_Army':      'https://www.roblox.com/games/86744432712071/Argentine-Army',
+    'Exercito_Brasileiro': 'https://www.roblox.com/games/2069320852/Ex-rcito-Brasileiro-EB',
+    'EB_Mirage':           'https://www.roblox.com/games/73767462197411/EB-do-Mirage-Ex-rcito-Brasileiro',
+    'War_Front_Finland':   'https://www.roblox.com/games/102445517344578/War-on-the-Front-Finland-RP'
+};
 
 async function mostrarPanelTerritorio(ejercitoId, tituloRegion) {
     const panel = document.getElementById('panel-territorio');
-    const ejercito = todosLosEjercitos[ejercitoId];
+    const e = todosLosEjercitos[ejercitoId];
 
-    // Título
     document.getElementById('territorio-nombre').innerText = tituloRegion;
-    document.getElementById('territorio-ejercito').innerText = ejercito ? ejercito.nombre : ejercitoId;
+    document.getElementById('territorio-ejercito').innerText = e?.nombre || ejercitoId;
+    document.getElementById('territorio-desc').innerText = e?.descripcion || 'Sin informacion disponible.';
 
-    // Descripción / lore
-    document.getElementById('territorio-desc').innerText = ejercito && ejercito.descripcion
-        ? ejercito.descripcion
-        : 'Sin información disponible.';
+    // Obtener comandante real desde peticiones (nombre Roblox)
+    document.getElementById('territorio-lider').innerText = '...';
+    const cmd = await obtenerComandanteRoblox(ejercitoId);
+    document.getElementById('territorio-lider').innerText = cmd || 'Sin registrar';
 
-    // Lider
-    document.getElementById('territorio-lider').innerText = ejercito && ejercito.lider
-        ? ejercito.lider
-        : 'Sin registrar';
-
-    // Relaciones diplomáticas
     renderizarRelaciones(ejercitoId);
-
-    // Link al juego
-    const links = {
-        '25_REMASTER': 'https://www.roblox.com/games/119851378620864/25-REMASTER',
-        'Argentine_Army': 'https://www.roblox.com/games/86744432712071/Argentine-Army',
-        'Exercito_Brasileiro': 'https://www.roblox.com/games/2069320852/Ex-rcito-Brasileiro-EB',
-        'EB_Mirage': 'https://www.roblox.com/games/73767462197411/EB-do-Mirage-Ex-rcito-Brasileiro',
-        'War_Front_Finland': 'https://www.roblox.com/games/102445517344578/War-on-the-Front-Finland-RP'
-    };
-    const btnJuego = document.getElementById('territorio-btn-juego');
-    btnJuego.href = links[ejercitoId] || '#';
+    document.getElementById('territorio-btn-juego').href = LINKS_JUEGO[ejercitoId] || '#';
 
     panel.classList.remove('oculto');
+    void panel.offsetWidth;
     panel.classList.add('entrando');
-    setTimeout(() => panel.classList.remove('entrando'), 300);
+    setTimeout(() => panel.classList.remove('entrando'), 280);
 }
 
 function renderizarRelaciones(ejercitoId) {
-    const contenedor = document.getElementById('territorio-relaciones');
-    const misRelaciones = todasLasRelaciones.filter(r => r.ejercito_a === ejercitoId || r.ejercito_b === ejercitoId);
-
-    if (misRelaciones.length === 0) {
-        contenedor.innerHTML = '<span class="rel-neutral">Sin relaciones registradas</span>';
-        return;
-    }
-
-    contenedor.innerHTML = misRelaciones.map(r => {
+    const cont = document.getElementById('territorio-relaciones');
+    const rel = todasLasRelaciones.filter(r => r.ejercito_a === ejercitoId || r.ejercito_b === ejercitoId);
+    if (rel.length === 0) { cont.innerHTML = '<span class="rel-vacio">Sin relaciones registradas</span>'; return; }
+    cont.innerHTML = rel.map(r => {
         const otroId = r.ejercito_a === ejercitoId ? r.ejercito_b : r.ejercito_a;
-        const otroEjercito = todosLosEjercitos[otroId];
-        const nombre = otroEjercito ? otroEjercito.nombre : otroId;
-        let clase = 'rel-neutral';
-        let icono = '🤝';
-        if (r.tipo === 'Aliado') { clase = 'rel-aliado'; icono = '🟢'; }
-        else if (r.tipo === 'Enemigo') { clase = 'rel-enemigo'; icono = '🔴'; }
-        else { icono = '⚪'; }
-        return `<div class="rel-item ${clase}">
-            <span>${icono} ${nombre}</span>
-            <span class="rel-tipo">${r.tipo}</span>
+        const nombre = todosLosEjercitos[otroId]?.nombre || otroId;
+        const color = r.tipo === 'Aliado' ? '#32CD32' : r.tipo === 'Enemigo' ? '#cc3333' : '#555';
+        const borde = color;
+        return `<div class="rel-item" style="border-left-color:${borde}">
+            <span>${nombre}</span>
+            <span style="color:${color}">${r.tipo.toUpperCase()}</span>
         </div>`;
     }).join('');
 }
 
-function cerrarPanelTerritorio() {
-    document.getElementById('panel-territorio').classList.add('oculto');
-}
-
+function cerrarPanelTerritorio() { document.getElementById('panel-territorio').classList.add('oculto'); }
 document.getElementById('btn-cerrar-territorio').onclick = cerrarPanelTerritorio;
