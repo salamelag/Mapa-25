@@ -41,7 +41,7 @@ fetch('provincias.geojson')
             style: function(feature) {
                 if (feature.properties.nombre === 'Córdoba') {
                     return { color: '#00bfff', weight: 3, fillColor: '#b0e0e6', fillOpacity: 0.25 };
-                } else if (feature.properties.nombre_completo === 'Provincia de Buenos Aires') {
+                } else if (feature.properties.nombre === 'Buenos Aires') {
                     return { color: '#00008B', weight: 3, fillColor: '#0000CD', fillOpacity: 0.40 };
                 } else {
                     return { color: '#333333', weight: 2, fillColor: '#cccccc', fillOpacity: 0.20 };
