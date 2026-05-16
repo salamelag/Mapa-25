@@ -278,7 +278,18 @@ function cargarGeografia() {
             }
         }).addTo(map);
     }).catch(e => console.log("Error cargando provincias:", e));
-
+    
+// Chile completo
+    fetch('https://raw.githubusercontent.com/georgique/world-geojson/develop/countries/chile.json')
+        .then(r => r.json()).then(data => {
+            L.geoJSON(data, {
+                style: () => geoStyle('Ejercito_Chile'),
+                onEachFeature: (feature, layer) => {
+                    addClickHover(layer, 'Ejercito_Chile', 'Chile', ESTILOS_GEO['Ejercito_Chile'].op, 0.80);
+                }
+            }).addTo(map);
+        }).catch(e => console.log("Error cargando GeoJSON de Chile:", e));
+    
     // Brasil
     fetch('https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/brazil-states.geojson')
         .then(r => r.json()).then(data => {
