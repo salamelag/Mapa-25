@@ -6,32 +6,66 @@
     <title>Mapa Militar Global | Ro-armys</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css" />
-    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <div id="map"></div>
 
-    <div id="panel-ui">
+    <!-- HUD 1: MODO VISITANTE (No logueado) -->
+    <div id="panel-visitante" class="panel-ui">
         <h3>Modo Visitante</h3>
         <p>Observando estado global</p>
-        <button id="btn-abrir-reclamar">Reclamar un Ejército</button>
+        <button id="btn-abrir-login">Iniciar Sesión / Registrarse</button>
     </div>
 
-    <!-- VENTANA FLOTANTE PARA RECLAMAR (Oculta por defecto) -->
-    <div id="modal-reclamar" class="oculto">
-        <h3>Reclamar Territorio/Ejército</h3>
-        <p>Envía tu petición al Alto Mando.</p>
-        
-        <label>Usuario de Roblox:</label>
+    <!-- HUD 2: MODO USUARIO (Logueado pero sin ejército aprobado) -->
+    <div id="panel-usuario" class="panel-ui oculto">
+        <h3 style="color: #00bfff;">Soldado Activo</h3>
+        <p id="texto-usuario">Logueado como: ...</p>
+        <button id="btn-abrir-reclamar" style="margin-bottom: 5px;">Reclamar un Ejército</button>
+        <button id="btn-cerrar-sesion" style="background: #dc3545;">Cerrar Sesión</button>
+    </div>
+
+    <!-- HUD 3: MODO ALTO MANDO (Aprobado) -->
+    <div id="panel-comandante" class="panel-ui oculto">
+        <h3 style="color: gold;">🎖️ ALTO MANDO</h3>
+        <p id="texto-comandante">Comandante de: ...</p>
+        <button id="btn-panel-control" style="background: gold; color: black; margin-bottom: 5px;">Herramientas Militares</button>
+        <button id="btn-cerrar-sesion-cmd" style="background: #dc3545;">Cerrar Sesión</button>
+    </div>
+
+    <!-- MODAL DE LOGIN / REGISTRO -->
+    <div id="modal-login" class="modal oculto">
+        <h3>Identificación Militar</h3>
+        <input type="email" id="input-email" placeholder="Correo (ej: usuario@roarmys.com)">
+        <input type="password" id="input-pass" placeholder="Contraseña">
+        <div style="margin-top: 15px;">
+            <button id="btn-login" style="background-color: #00bfff;">Entrar</button>
+            <button id="btn-registro" style="background-color: #28a745;">Registrarse</button>
+            <button id="btn-cerrar-login" style="background-color: #555;">Cancelar</button>
+        </div>
+        <p id="msj-login"></p>
+    </div>
+
+    <!-- MODAL PARA RECLAMAR (Con menú desplegable) -->
+    <div id="modal-reclamar" class="modal oculto">
+        <h3>Reclamar Ejército</h3>
+        <label>Nombre en Roblox:</label>
         <input type="text" id="input-roblox" placeholder="Ej: salamelag">
         
-        <label>Ejército a reclamar:</label>
-        <input type="text" id="input-ejercito" placeholder="Ej: FARA, EB, etc.">
+        <label>Selecciona la Facción:</label>
+        <select id="input-ejercito" class="desplegable">
+            <option value="" disabled selected>-- Elige un ejército --</option>
+            <option value="25_REMASTER">25 REMASTER (Córdoba)</option>
+            <option value="Argentine_Army">Argentine Army (Buenos Aires)</option>
+            <option value="Exercito_Brasileiro">Exército Brasileiro (Brasília)</option>
+            <option value="EB_Mirage">EB do Mirage (Rio de Janeiro)</option>
+            <option value="War_Front_Finland">War on the Front (Finlandia)</option>
+        </select>
         
         <div style="margin-top: 15px;">
-            <button id="btn-enviar" style="background-color: #28a745;">Enviar</button>
-            <button id="btn-cerrar" style="background-color: #dc3545;">Cancelar</button>
+            <button id="btn-enviar" style="background-color: #28a745;">Enviar Petición</button>
+            <button id="btn-cerrar-reclamar" style="background-color: #dc3545;">Cancelar</button>
         </div>
         <p id="mensaje-estado"></p>
     </div>
