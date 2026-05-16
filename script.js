@@ -45,8 +45,8 @@ var cordobaGeoJSON = {
 };
 
 var miIconoPersonalizado = L.icon({
-    // URL de prueba online para verificar que el código funciona
-    iconUrl: 'https://cdn-icons-png.flaticon.com/512/2554/2554900.png',   
+    // URL directa a la imagen de internet
+    iconUrl: 'https://tr.rbxcdn.com/180DAY-8c528bd4c92002faf069c7f4f966f9f9/256/256/Image/Webp/noFilter',   
     iconSize: [40, 40],      
     iconAnchor: [20, 20],    
     popupAnchor: [0, -20]    
