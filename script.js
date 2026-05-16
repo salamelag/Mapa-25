@@ -44,7 +44,20 @@ var cordobaGeoJSON = {
     }
 };
 
-// Renderizar la frontera en el mapa al instante
+var miIconoPersonalizado = L.icon({
+    iconUrl: '25.png',   // <--- CAMBIA ESTO por el nombre de tu archivo subido a GitHub
+    iconSize: [50, 50],      // Tamaño de la foto [ancho, alto] en píxeles
+    iconAnchor: [25, 25],    // EL PUNTO CLAVE: El centro matemático (50/2 y 50/2)
+                             // Así no se "buguea" ni se mueve al hacer zoom.
+    popupAnchor: [0, -25]    // Dónde sale el globo de texto respecto al ancla
+});
+
+var coordsMarChiquita = [-30.600242, -62.870913];
+
+var marcadorFoto = L.marker(coordsMarChiquita, {icon: miIconoPersonalizado}).addTo(map);
+
+marcadorFoto.bindPopup("<b>Laguna Mar Chiquita</b><br>Punto de interés.");
+
 L.geoJSON(cordobaGeoJSON, {
     style: {
         color: '#00bfff',     
