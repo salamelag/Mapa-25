@@ -1,131 +1,25 @@
-// Iniciamos el mapa un poco más centrado y alejado (Zoom 6) para ver ambas provincias
 var map = L.map('map').setView([-35.0, -64.0], 6);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-// ----------------- COORDENADAS DE LAS PROVINCIAS -----------------
-
-// Geometría de Córdoba
-var cordobaGeoJSON = {
-    "type": "Feature",
-    "properties": { "nombre": "Córdoba" },
-    "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-            [-63.894308, -29.628596], [-63.873856, -29.630787], [-63.841912, -29.580767], [-63.78377, -29.584167], 
-            [-63.796055, -29.614432], [-63.756152, -29.621554], [-63.748408, -29.653277], [-63.718995, -29.666217], 
-            [-63.627901, -29.655004], [-63.465352, -29.664484], [-63.480469, -29.725546], [-63.459696, -29.725525], 
-            [-63.459617, -29.756934], [-62.80634, -29.833773], [-62.829228, -29.841586], [-62.83855, -29.865876], 
-            [-62.820277, -29.903936], [-62.799551, -29.908757], [-62.785849, -29.940024], [-62.791336, -29.960589], 
-            [-62.753622, -29.966419], [-62.723878, -29.990808], [-62.662369, -29.999255], [-62.654993, -30.007345], 
-            [-62.674742, -30.035185], [-62.65544, -30.055292], [-62.556483, -30.062787], [-62.567665, -30.123067], 
-            [-62.596801, -30.165742], [-62.593618, -30.259583], [-62.534531, -30.31202], [-62.520077, -30.341898], 
-            [-62.173794, -30.345314], [-62.130653, -30.480433], [-61.842175, -30.744316], [-62.123495, -31.605408], 
-            [-62.241683, -31.699677], [-62.218089, -31.740571], [-62.22349, -31.883934], [-62.188893, -31.922314], 
-            [-62.167797, -31.98601], [-62.19678, -32.11477], [-62.178877, -32.159422], [-62.145346, -32.193479], 
-            [-62.037889, -32.262914], [-62.011635, -32.347328], [-61.914512, -32.494664], [-61.912075, -32.526474], 
-            [-61.930573, -32.544506], [-61.905052, -32.552546], [-61.902477, -32.568619], [-61.926381, -32.584034], 
-            [-61.920591, -32.594278], [-61.891829, -32.590534], [-61.889495, -32.610798], [-61.946168, -32.651026], 
-            [-61.946626, -32.678481], [-61.907415, -32.695747], [-61.857988, -32.694552], [-61.828402, -32.754511], 
-            [-61.795699, -32.773966], [-61.77769, -32.830402], [-61.792243, -32.877228], [-61.771552, -32.901465], 
-            [-61.791, -32.958407], [-61.787668, -33.006202], [-61.888748, -33.10599], [-61.923249, -33.119581], 
-            [-62.883909, -34.38655], [-63.385083, -34.385761], [-63.385734, -35.002218], [-65.106759, -35.01533], 
-            [-65.109226, -33.950569], [-65.142999, -33.194775], [-65.070801, -33.138277], [-65.044914, -33.062508], 
-            [-64.999704, -33.002665], [-65.022309, -32.97304], [-64.99278, -32.945166], [-64.963062, -32.863255], 
-            [-64.970674, -32.80505], [-64.944619, -32.767336], [-64.948189, -32.72284], [-64.909462, -32.685397], 
-            [-64.924394, -32.658714], [-64.909919, -32.642167], [-64.921468, -32.623618], [-64.883229, -32.572577], 
-            [-64.882874, -32.529721], [-64.919151, -32.483788], [-64.929844, -32.42325], [-64.922779, -32.330308], 
-            [-64.941407, -32.298344], [-64.97718, -32.321351], [-65.056849, -32.314], [-65.212045, -32.326736], 
-            [-65.219179, -32.279493], [-65.208331, -32.249176], [-65.232229, -32.209987], [-65.2249, -32.167799], 
-            [-65.245829, -32.089015], [-65.316291, -32.040173], [-65.628041, -31.898627], [-65.769822, -31.888606], 
-            [-65.77146, -31.044159], [-65.525245, -30.490816], [-65.422985, -30.119602], [-65.15827, -30.047267], 
-            [-64.937932, -29.847511], [-64.964052, -29.596091], [-64.275482, -29.498674], [-63.980802, -29.551029], 
-            [-63.957798, -29.623503], [-63.894308, -29.628596]
-        ]]
-    }
-};
-
-// Geometría de la nueva provincia (La Pampa)
-var provinciaOscuraGeoJSON = {
-    "type": "Feature",
-    "properties": { "nombre": "Nueva Provincia" },
-    "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-            [-63.385884, -35.010928], [-63.383269, -39.328492], [-63.457404, -39.328841], [-63.4856, -39.308258], 
-            [-63.512012, -39.31266], [-63.54122, -39.296658], [-63.538818, -39.279114], [-63.558031, -39.261446], 
-            [-63.59297, -39.245923], [-63.614377, -39.251829], [-63.61763, -39.235896], [-63.631714, -39.247803], 
-            [-63.633376, -39.227393], [-63.674257, -39.222263], [-63.671702, -39.203635], [-63.742994, -39.188847], 
-            [-63.744771, -39.163789], [-63.763672, -39.154667], [-63.75708, -39.129211], [-63.77716, -39.128431], 
-            [-63.788208, -39.109192], [-63.834953, -39.136307], [-63.841797, -39.109192], [-63.870296, -39.095953], 
-            [-63.879578, -39.100403], [-63.871704, -39.107788], [-63.897894, -39.10695], [-63.911499, -39.087097], 
-            [-63.9328, -39.093506], [-63.933463, -39.061592], [-63.998611, -39.035573], [-63.9916, -39.010914], 
-            [-64.023568, -39.017497], [-64.013704, -39.0009], [-64.062488, -39.010034], [-64.063973, -38.991719], 
-            [-64.279602, -38.914001], [-64.293951, -38.897647], [-64.32863, -38.905694], [-64.348595, -38.883451], 
-            [-64.396606, -38.886719], [-64.3974, -38.87323], [-64.413362, -38.883777], [-64.420657, -38.87183], 
-            [-64.431901, -38.879039], [-64.476379, -38.859985], [-64.515198, -38.868408], [-64.596375, -38.859192], 
-            [-64.670888, -38.833694], [-64.734746, -38.841134], [-64.807331, -38.816006], [-64.847176, -38.82662], 
-            [-64.87709, -38.814518], [-64.92427, -38.833163], [-65.113447, -38.799712], [-65.140025, -38.818388], 
-            [-65.167136, -38.802285], [-65.191592, -38.809819], [-65.191821, -38.83637], [-65.280518, -38.821411], 
-            [-65.374532, -38.855879], [-65.390813, -38.83074], [-65.502502, -38.798096], [-65.523193, -38.779175], 
-            [-65.569548, -38.784805], [-65.584941, -38.774527], [-65.624333, -38.787502], [-65.608468, -38.798384], 
-            [-65.617084, -38.808706], [-65.632177, -38.802429], [-65.631048, -38.818329], [-65.646378, -38.80945], 
-            [-65.652499, -38.827393], [-65.691121, -38.834783], [-65.701758, -38.816284], [-65.712585, -38.825012], 
-            [-65.778231, -38.811588], [-65.787263, -38.794617], [-65.80497, -38.806288], [-65.804673, -38.79392], 
-            [-65.820182, -38.788711], [-65.8244, -38.798849], [-65.841076, -38.786645], [-65.864307, -38.799796], 
-            [-65.865792, -38.788962], [-65.88243, -38.79045], [-65.877082, -38.777893], [-65.911189, -38.782916], 
-            [-65.912496, -38.764868], [-65.927589, -38.775195], [-65.925547, -38.764159], [-65.946663, -38.767938], 
-            [-65.951008, -38.747265], [-66.018977, -38.740859], [-66.030683, -38.751283], [-66.03199, -38.738905], 
-            [-66.064671, -38.751143], [-66.084636, -38.725268], [-66.119813, -38.743279], [-66.155049, -38.728852], 
-            [-66.17691, -38.745238], [-66.180238, -38.731277], [-66.207393, -38.731323], [-66.288263, -38.755661], 
-            [-66.308407, -38.742865], [-66.315062, -38.76129], [-66.323321, -38.747983], [-66.341834, -38.757734], 
-            [-66.357547, -38.744912], [-66.404419, -38.74408], [-66.407578, -38.730578], [-66.441804, -38.74561], 
-            [-66.498759, -38.717997], [-66.538615, -38.720853], [-66.554439, -38.697891], [-66.575212, -38.701394], 
-            [-66.607144, -38.679093], [-66.578186, -38.622803], [-66.600584, -38.598277], [-66.60988, -38.557979], 
-            [-66.633794, -38.556789], [-66.635879, -38.542065], [-66.712234, -38.531751], [-66.786072, -38.48053], 
-            [-66.85437, -38.475586], [-66.89209, -38.461975], [-66.896973, -38.443726], [-66.995789, -38.445679], 
-            [-67.009044, -38.423237], [-67.09184, -38.399625], [-67.119684, -38.356034], [-67.152992, -38.356795], 
-            [-67.153113, -38.291342], [-67.172385, -38.279225], [-67.170481, -38.260903], [-67.196594, -38.253784], 
-            [-67.187613, -38.214503], [-67.261108, -38.217102], [-67.344177, -38.25177], [-67.547913, -38.256287], 
-            [-67.656494, -38.201782], [-67.689026, -38.133423], [-67.718628, -38.130371], [-67.730103, -38.114807], 
-            [-67.73033, -38.075764], [-67.747562, -38.073979], [-67.750652, -38.056127], [-67.762512, -38.068726], 
-            [-67.781907, -38.051875], [-67.809299, -38.072358], [-67.835245, -38.055888], [-67.850753, -38.065472], 
-            [-67.849684, -38.051753], [-67.895853, -38.017257], [-67.888425, -38.000379], [-67.90328, -37.982086], 
-            [-67.846185, -37.917739], [-67.781655, -37.89547], [-67.736477, -37.858046], [-67.72079, -37.81059], 
-            [-67.760423, -37.743382], [-67.770346, -37.670528], [-67.785583, -37.652283], [-67.870587, -37.612883], 
-            [-67.917297, -37.618408], [-67.944163, -37.60322], [-68.10676, -37.596242], [-68.152544, -37.580318], 
-            [-68.219311, -37.58824], [-68.254253, -37.571931], [-68.250183, -36.172485], [-68.296132, -36.172547], 
-            [-68.29641, -35.997622], [-65.107809, -35.999062], [-65.106759, -35.01533], [-63.385734, -35.002218], 
-            [-63.385884, -35.010928]
-        ]]
-    }
-};
 
 // ----------------- MARCADOR DE LAGUNA MAR CHIQUITA -----------------
-
 var coordsMarChiquita = [-30.600242, -62.870913];
 var linkImagen = 'https://tr.rbxcdn.com/180DAY-8c528bd4c92002faf069c7f4f966f9f9/256/256/Image/Webp/noFilter';
 var linkJuego = 'https://www.roblox.com/games/119851378620864/25-REMASTER';
 
-// Creamos el marcador en el mapa
 var marcadorFoto = L.marker(coordsMarChiquita).addTo(map);
 
-// bindTooltip: Hace que el texto aparezca al pasar el mouse POR ENCIMA
 marcadorFoto.bindTooltip("Laguna Mar Chiquita (Punto de interés) <br> Link del juego: " + linkJuego, {
-    direction: 'top',
-    offset: [0, -10]
+    direction: 'top', offset: [0, -10]
 });
 
-// bindPopup: Hace que al hacer CLICK, puedan ir al juego real en otra pestaña
 marcadorFoto.bindPopup("<a href='" + linkJuego + "' target='_blank'><b>¡Haz clic aquí para jugar 25 REMASTER!</b></a>");
 
-// Función para que el icono cambie de tamaño al hacer zoom
 function actualizarTamanoIcono() {
     var zoomActual = map.getZoom();
-    
-    // Calcula el tamaño en base al zoom
     var nuevoTamano = Math.max(30, zoomActual * 6); 
     
     var iconoDinamico = L.icon({
@@ -134,35 +28,118 @@ function actualizarTamanoIcono() {
         iconAnchor: [nuevoTamano / 2, nuevoTamano / 2], 
         className: 'icono-con-borde' 
     });
-    
     marcadorFoto.setIcon(iconoDinamico);
 }
 
-// Le decimos al mapa que ejecute la función cuando se hace zoom
 map.on('zoomend', actualizarTamanoIcono);
-
-// Ejecutamos la función una vez al inicio
 actualizarTamanoIcono();
 
 
-// ----------------- DIBUJAR PROVINCIAS EN EL MAPA -----------------
+// ----------------- LEER EL ARCHIVO GEOJSON EXTERNO -----------------
 
-// Dibujar Córdoba (Celeste claro)
-L.geoJSON(cordobaGeoJSON, {
-    style: {
-        color: '#00bfff',     // Borde celeste
-        weight: 3,
-        fillColor: '#b0e0e6', // Relleno celeste claro
-        fillOpacity: 0.25     
-    }
+// Vamos a buscar el archivo que subiste a GitHub
+fetch('provincias.geojson')
+    .then(function(respuesta) {
+        // Convertimos el archivo a datos que JavaScript entiende
+        return respuesta.json();
+    })
+    .then(function(datosProvincias) {
+        // Una vez que tenemos los datos, los agregamos al mapa
+        L.geoJSON(datosProvincias, {
+            
+            // Esta función decide el color dependiendo de la provincia
+            style: function(feature) {
+                // Obtenemos el nombre de la provincia desde el archivo
+                var nombreProvincia = feature.properties.nombre;
+
+                if (nombreProvincia === 'Córdoba') {
+                    // Estilo para Córdoba (Celeste claro)
+                    return { color: '#00bfff', weight: 3, fillColor: '#b0e0e6', fillOpacity: 0.25 };
+                    
+                } else if (nombreProvincia === 'Buenos Aires' || nombreProvincia === 'La Pampa') {
+                    // Estilo para la provincia oscura
+                    return { color: '#00008B', weight: 3, fillColor: '#0000CD', fillOpacity: 0.40 };
+                    
+                } else {
+                    // Estilo por defecto para cualquier otra provincia que agregues después
+                    return { color: '#333333', weight: 2, fillColor: '#cccccc', fillOpacity: 0.20 };
+                }
+            }
+            
+        }).addTo(map);
+    })
+    .catch(function(error) {
+        console.error("Hubo un error cargando el archivo geojson:", error);
+    });var map = L.map('map').setView([-35.0, -64.0], 6);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-// Dibujar la nueva provincia (Azul oscuro)
-L.geoJSON(provinciaOscuraGeoJSON, {
-    style: {
-        color: '#00008B',     // Borde Azul Oscuro (DarkBlue)
-        weight: 3,
-        fillColor: '#0000CD', // Relleno Azul Medio (MediumBlue)
-        fillOpacity: 0.40     // Un poco más opaco para que resalte más
-    }
-}).addTo(map);
+
+// ----------------- MARCADOR DE LAGUNA MAR CHIQUITA -----------------
+var coordsMarChiquita = [-30.600242, -62.870913];
+var linkImagen = 'https://tr.rbxcdn.com/180DAY-8c528bd4c92002faf069c7f4f966f9f9/256/256/Image/Webp/noFilter';
+var linkJuego = 'https://www.roblox.com/games/119851378620864/25-REMASTER';
+
+var marcadorFoto = L.marker(coordsMarChiquita).addTo(map);
+
+marcadorFoto.bindTooltip("Laguna Mar Chiquita (Punto de interés) <br> Link del juego: " + linkJuego, {
+    direction: 'top', offset: [0, -10]
+});
+
+marcadorFoto.bindPopup("<a href='" + linkJuego + "' target='_blank'><b>¡Haz clic aquí para jugar 25 REMASTER!</b></a>");
+
+function actualizarTamanoIcono() {
+    var zoomActual = map.getZoom();
+    var nuevoTamano = Math.max(30, zoomActual * 6); 
+    
+    var iconoDinamico = L.icon({
+        iconUrl: linkImagen,   
+        iconSize: [nuevoTamano, nuevoTamano],      
+        iconAnchor: [nuevoTamano / 2, nuevoTamano / 2], 
+        className: 'icono-con-borde' 
+    });
+    marcadorFoto.setIcon(iconoDinamico);
+}
+
+map.on('zoomend', actualizarTamanoIcono);
+actualizarTamanoIcono();
+
+
+// ----------------- LEER EL ARCHIVO GEOJSON EXTERNO -----------------
+
+// Vamos a buscar el archivo que subiste a GitHub
+fetch('provincias.geojson')
+    .then(function(respuesta) {
+        // Convertimos el archivo a datos que JavaScript entiende
+        return respuesta.json();
+    })
+    .then(function(datosProvincias) {
+        // Una vez que tenemos los datos, los agregamos al mapa
+        L.geoJSON(datosProvincias, {
+            
+            // Esta función decide el color dependiendo de la provincia
+            style: function(feature) {
+                // Obtenemos el nombre de la provincia desde el archivo
+                var nombreProvincia = feature.properties.nombre;
+
+                if (nombreProvincia === 'Córdoba') {
+                    // Estilo para Córdoba (Celeste claro)
+                    return { color: '#00bfff', weight: 3, fillColor: '#b0e0e6', fillOpacity: 0.25 };
+                    
+                } else if (nombreProvincia === 'Buenos Aires' || nombreProvincia === 'La Pampa') {
+                    // Estilo para la provincia oscura
+                    return { color: '#00008B', weight: 3, fillColor: '#0000CD', fillOpacity: 0.40 };
+                    
+                } else {
+                    // Estilo por defecto para cualquier otra provincia que agregues después
+                    return { color: '#333333', weight: 2, fillColor: '#cccccc', fillOpacity: 0.20 };
+                }
+            }
+            
+        }).addTo(map);
+    })
+    .catch(function(error) {
+        console.error("Hubo un error cargando el archivo geojson:", error);
+    });
