@@ -11,14 +11,14 @@
 <body>
     <div id="map"></div>
 
-    <!-- HUD 1: MODO VISITANTE (No logueado) -->
-    <div id="panel-visitante" class="panel-ui">
+    <!-- HUD 1: MODO VISITANTE -->
+    <div id="panel-visitante" class="panel-ui oculto">
         <h3>Modo Visitante</h3>
         <p>Observando estado global</p>
         <button id="btn-abrir-login">Iniciar Sesión / Registrarse</button>
     </div>
 
-    <!-- HUD 2: MODO USUARIO (Logueado pero sin ejército aprobado) -->
+    <!-- HUD 2: SOLDADO ACTIVO -->
     <div id="panel-usuario" class="panel-ui oculto">
         <h3 style="color: #00bfff;">Soldado Activo</h3>
         <p id="texto-usuario">Logueado como: ...</p>
@@ -26,15 +26,96 @@
         <button id="btn-cerrar-sesion" style="background: #dc3545;">Cerrar Sesión</button>
     </div>
 
-    <!-- HUD 3: MODO ALTO MANDO (Aprobado) -->
+    <!-- HUD 3: ALTO MANDO -->
     <div id="panel-comandante" class="panel-ui oculto">
         <h3 style="color: gold;">🎖️ ALTO MANDO</h3>
         <p id="texto-comandante">Comandante de: ...</p>
-        <button id="btn-panel-control" style="background: gold; color: black; margin-bottom: 5px;">Herramientas Militares</button>
+        <button id="btn-panel-control" style="background: gold; color: black; margin-bottom: 5px;">⚙️ Herramientas Militares</button>
         <button id="btn-cerrar-sesion-cmd" style="background: #dc3545;">Cerrar Sesión</button>
     </div>
 
-    <!-- MODAL DE LOGIN / REGISTRO -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- PANEL TERRITORIO (HOI4 STYLE) — aparece a izquierda -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div id="panel-territorio" class="panel-territorio oculto">
+        <button id="btn-cerrar-territorio" class="btn-cerrar-ter">✕</button>
+
+        <div class="ter-header">
+            <div class="ter-flag">🗺️</div>
+            <div>
+                <div class="ter-titulo" id="territorio-nombre">Región</div>
+                <div class="ter-subtitulo" id="territorio-ejercito">Ejército</div>
+            </div>
+        </div>
+
+        <div class="ter-seccion">
+            <div class="ter-label">👤 COMANDANTE</div>
+            <div class="ter-valor" id="territorio-lider">—</div>
+        </div>
+
+        <div class="ter-seccion">
+            <div class="ter-label">📋 DESCRIPCIÓN / LORE</div>
+            <div class="ter-desc" id="territorio-desc">Sin información disponible.</div>
+        </div>
+
+        <div class="ter-seccion">
+            <div class="ter-label">🌐 RELACIONES DIPLOMÁTICAS</div>
+            <div id="territorio-relaciones" class="ter-relaciones">
+                <span class="rel-neutral">Sin relaciones</span>
+            </div>
+        </div>
+
+        <div class="ter-footer">
+            <a id="territorio-btn-juego" href="#" target="_blank" class="btn-ir-juego">
+                ▶ IR AL JUEGO EN ROBLOX
+            </a>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- PANEL HERRAMIENTAS COMANDANTE -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div id="panel-herramientas" class="panel-herramientas oculto">
+        <div class="herr-header">
+            <span>⚙️ SALA DE MANDO</span>
+            <button id="btn-cerrar-herramientas" class="btn-cerrar-herr">✕</button>
+        </div>
+
+        <div class="herr-bloque">
+            <div class="herr-label">EJÉRCITO</div>
+            <div class="herr-valor" id="hud-ejercito-nombre">—</div>
+            <div class="herr-label" style="margin-top:6px;">COMANDANTE</div>
+            <div class="herr-valor" id="hud-ejercito-lider">—</div>
+        </div>
+
+        <div class="herr-bloque">
+            <div class="herr-label">DESCRIPCIÓN / LORE DEL EJÉRCITO</div>
+            <textarea id="hud-ejercito-desc" class="herr-textarea" placeholder="Escribí la historia, lore o descripción de tu ejército..."></textarea>
+            <button id="btn-guardar-desc" class="herr-btn verde">💾 Guardar Descripción</button>
+        </div>
+
+        <div class="herr-bloque">
+            <div class="herr-label">GESTIÓN DIPLOMÁTICA</div>
+            <select id="sel-ejercito-relacion" class="herr-select">
+                <option value="" disabled selected>-- Seleccioná ejército --</option>
+            </select>
+            <select id="sel-tipo-relacion" class="herr-select" style="margin-top:6px;">
+                <option value="Aliado">🟢 Aliado</option>
+                <option value="Neutral" selected>⚪ Neutral</option>
+                <option value="Enemigo">🔴 Enemigo</option>
+            </select>
+            <button id="btn-guardar-relacion" class="herr-btn azul">📡 Actualizar Relación</button>
+        </div>
+
+        <div class="herr-bloque">
+            <div class="herr-label">RELACIONES ACTUALES</div>
+            <div id="lista-relaciones-panel" class="herr-lista-rel">—</div>
+        </div>
+
+        <p id="msj-herramientas" style="margin:8px 0 0;font-size:11px;text-align:center;min-height:16px;"></p>
+    </div>
+
+    <!-- MODAL LOGIN -->
     <div id="modal-login" class="modal oculto">
         <h3>Identificación Militar</h3>
         <input type="email" id="input-email" placeholder="Correo (ej: usuario@roarmys.com)">
@@ -47,12 +128,11 @@
         <p id="msj-login"></p>
     </div>
 
-    <!-- MODAL PARA RECLAMAR (Con menú desplegable) -->
+    <!-- MODAL RECLAMAR -->
     <div id="modal-reclamar" class="modal oculto">
         <h3>Reclamar Ejército</h3>
         <label>Nombre en Roblox:</label>
         <input type="text" id="input-roblox" placeholder="Ej: salamelag">
-        
         <label>Selecciona la Facción:</label>
         <select id="input-ejercito" class="desplegable">
             <option value="" disabled selected>-- Elige un ejército --</option>
@@ -62,7 +142,6 @@
             <option value="EB_Mirage">EB do Mirage (Rio de Janeiro)</option>
             <option value="War_Front_Finland">War on the Front (Finlandia)</option>
         </select>
-        
         <div style="margin-top: 15px;">
             <button id="btn-enviar" style="background-color: #28a745;">Enviar Petición</button>
             <button id="btn-cerrar-reclamar" style="background-color: #dc3545;">Cancelar</button>
