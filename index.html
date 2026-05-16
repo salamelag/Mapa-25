@@ -3,17 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapa-25 | Ro-armys</title>
-    
+    <title>Mapa Militar Global | Ro-armys</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    
     <link rel="stylesheet" href="style.css" />
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <div id="map"></div>
 
+    <div id="panel-ui">
+        <h3>Modo Visitante</h3>
+        <p>Observando estado global</p>
+        <button id="btn-abrir-reclamar">Reclamar un Ejército</button>
+    </div>
+
+    <!-- VENTANA FLOTANTE PARA RECLAMAR (Oculta por defecto) -->
+    <div id="modal-reclamar" class="oculto">
+        <h3>Reclamar Territorio/Ejército</h3>
+        <p>Envía tu petición al Alto Mando.</p>
+        
+        <label>Usuario de Roblox:</label>
+        <input type="text" id="input-roblox" placeholder="Ej: salamelag">
+        
+        <label>Ejército a reclamar:</label>
+        <input type="text" id="input-ejercito" placeholder="Ej: FARA, EB, etc.">
+        
+        <div style="margin-top: 15px;">
+            <button id="btn-enviar" style="background-color: #28a745;">Enviar</button>
+            <button id="btn-cerrar" style="background-color: #dc3545;">Cancelar</button>
+        </div>
+        <p id="mensaje-estado"></p>
+    </div>
+
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    
     <script src="script.js"></script>
 </body>
 </html>
