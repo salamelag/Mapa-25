@@ -332,7 +332,7 @@ function cargarGeografia() {
         });
 
     // Uruguay
-    fetch('https://raw.githubusercontent.com/glynnbird/countriesgeojson/master/uruguay.geojson')
+    fetch('https://raw.githubusercontent.com/georgique/world-geojson/refs/heads/develop/countries/uruguay.json')
         .then(r => r.json()).then(data => {
             L.geoJSON(data, {
                 style: () => geoStyle('Ejercito_Uruguayo'),
