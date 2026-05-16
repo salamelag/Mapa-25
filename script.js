@@ -1,3 +1,59 @@
+// ----------------- CONFIGURACIÓN DE SUPABASE -----------------
+const supabaseUrl = 'https://hwyedjcprazfnzgvughb.supabase.co';
+const supabaseKey = 'sb_publishable_0DtFI1RtzZAgNGN0GJOW1g_Qg-mwebE'; 
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+// ----------------- LÓGICA DE LA INTERFAZ -----------------
+document.addEventListener('DOMContentLoaded', () => {
+    const btnAbrir = document.getElementById('btn-abrir-reclamar');
+    const btnCerrar = document.getElementById('btn-cerrar');
+    const btnEnviar = document.getElementById('btn-enviar');
+    const modal = document.getElementById('modal-reclamar');
+    const msjEstado = document.getElementById('mensaje-estado');
+
+    btnAbrir.addEventListener('click', () => {
+        modal.classList.remove('oculto');
+        msjEstado.innerText = '';
+    });
+
+    btnCerrar.addEventListener('click', () => {
+        modal.classList.add('oculto');
+    });
+
+    btnEnviar.addEventListener('click', async () => {
+        const usuario = document.getElementById('input-roblox').value;
+        const ejercito = document.getElementById('input-ejercito').value;
+
+        if (usuario === '' || ejercito === '') {
+            msjEstado.innerText = "Error: Llena todos los campos.";
+            msjEstado.style.color = "red";
+            return;
+        }
+
+        msjEstado.innerText = "Enviando conexión encriptada...";
+        msjEstado.style.color = "yellow";
+
+        // Aquí insertamos los datos en la tabla 'peticiones'
+        const { data, error } = await supabase
+            .from('peticiones')
+            .insert([
+                { usuario_roblox: usuario, ejercito: ejercito }
+            ]);
+
+        if (error) {
+            console.error("Error al enviar:", error);
+            msjEstado.innerText = "Error de conexión con la base.";
+            msjEstado.style.color = "red";
+        } else {
+            msjEstado.innerText = "¡Petición enviada al Alto Mando!";
+            msjEstado.style.color = "#32CD32";
+            setTimeout(() => {
+                modal.classList.add('oculto');
+            }, 2500);
+        }
+    });
+});
+
 var map = L.map('map').setView([15.0, -30.0], 3);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
