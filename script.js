@@ -78,16 +78,13 @@ fetch('provincias.geojson')
 
 
 // ----------------- LEER ARCHIVO Y DIBUJAR TODO BRASIL -----------------
-fetch('https://raw.githubusercontent.com/tbrugz/geodata-br/refs/heads/master/geojson/geojs-100-uf.json')
+fetch('https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/brazil-states.geojson')
     .then(function(respuesta) { return respuesta.json(); })
     .then(function(datosBrasil) {
-        
         L.geoJSON(datosBrasil, {
-            
             style: function(feature) {
                 return { color: '#006400', weight: 2, fillColor: '#32CD32', fillOpacity: 0.25 };
             }
         }).addTo(map);
-        
     })
     .catch(function(error) { console.error("Error cargando geojson de Brasil:", error); });
