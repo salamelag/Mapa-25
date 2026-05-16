@@ -61,7 +61,7 @@ fetch('provincias.geojson')
                 if (feature.properties.nombre === 'Córdoba') {
                     return { color: '#00bfff', weight: 3, fillColor: '#b0e0e6', fillOpacity: 0.25 };
                 } else if (feature.properties.nombre === 'Buenos Aires') {
-                    return { color: '#00008B', weight: 3, fillColor: '#0000CD', fillOpacity: 0.40 };
+                    return { color: '#00008B', weight: 3, fillColor: '#0067cd', fillOpacity: 0.25 };
                 }
             }
             
