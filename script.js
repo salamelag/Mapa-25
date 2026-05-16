@@ -1,4 +1,4 @@
-var map = L.map('map').setView([-25.0, -55.0], 4);
+var map = L.map('map').setView([15.0, -30.0], 3);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
@@ -40,17 +40,26 @@ var marcadorRio = L.marker(coordsRio).addTo(map);
 marcadorRio.bindTooltip("Rio de Janeiro <br> Link del juego: " + linkJuegoRio, { direction: 'top', offset: [0, -10] });
 marcadorRio.bindPopup("<a href='" + linkJuegoRio + "' target='_blank'><b>¡Haz clic aquí para jugar EB do Mirage!</b></a>");
 
+// ----------------- MARCADOR 5: HELSINKI (FINLANDIA) -----------------
+var coordsFinlandia = [60.1699, 24.9384]; // Coordenadas de Helsinki
+var linkImagenFinlandia = 'https://tr.rbxcdn.com/180DAY-d1401c2af40cc8338406405cf7734c51/256/256/Image/Webp/noFilter';
+var linkJuegoFinlandia = 'https://www.roblox.com/games/102445517344578/War-on-the-Front-Finland-RP';
+
+var marcadorFinlandia = L.marker(coordsFinlandia).addTo(map);
+marcadorFinlandia.bindTooltip("Helsinki (Finlandia) <br> Link del juego: " + linkJuegoFinlandia, { direction: 'top', offset: [0, -10] });
+marcadorFinlandia.bindPopup("<a href='" + linkJuegoFinlandia + "' target='_blank'><b>¡Haz clic aquí para jugar War on the Front: Finland RP!</b></a>");
+
 
 // ----------------- ACTUALIZAR TAMAÑO (TODOS LOS ICONOS) -----------------
 function actualizarTamanoIcono() {
     var zoomActual = map.getZoom();
     var nuevoTamano = Math.max(30, zoomActual * 6); 
-    
     var listaMarcadores = [
         { obj: marcadorMar, url: linkImagenMar },
         { obj: marcadorCampo, url: linkImagenCampo },
         { obj: marcadorBrasilia, url: linkImagenBrasilia },
-        { obj: marcadorRio, url: linkImagenRio }
+        { obj: marcadorRio, url: linkImagenRio },
+        { obj: marcadorFinlandia, url: linkImagenFinlandia }
     ];
 
     listaMarcadores.forEach(function(item) {
@@ -88,20 +97,14 @@ fetch('provincias.geojson')
     .catch(function(error) { console.error("Error cargando provincias:", error); });
 
 
-// ----------------- LEER ARCHIVO Y DIBUJAR TODO BRASIL -----------------
+// ----------------- LEER ARCHIVO Y DIBUJAR BRASIL -----------------
 fetch('https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/brazil-states.geojson')
     .then(function(respuesta) { return respuesta.json(); })
     .then(function(datosBrasil) {
         L.geoJSON(datosBrasil, {
             style: function(feature) {
                 var nombreEstado = feature.properties.name || "";
-                
-                var estadosDestacados = [
-                    'São Paulo', 'Sao Paulo', 
-                    'Rio de Janeiro', 
-                    'Minas Gerais', 
-                    'Espírito Santo', 'Espirito Santo'
-                ];
+                var estadosDestacados = ['São Paulo', 'Sao Paulo', 'Rio de Janeiro', 'Minas Gerais', 'Espírito Santo', 'Espirito Santo'];
 
                 if (estadosDestacados.includes(nombreEstado)) {
                     return { color: '#004d00', weight: 3, fillColor: '#00FF00', fillOpacity: 0.55 };
@@ -112,3 +115,16 @@ fetch('https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/pub
         }).addTo(map);
     })
     .catch(function(error) { console.error("Error cargando geojson de Brasil:", error); });
+
+
+// ----------------- LEER ARCHIVO Y DIBUJAR FINLANDIA -----------------
+fetch('https://raw.githubusercontent.com/glynnbird/countriesgeojson/master/finland.geojson')
+    .then(function(respuesta) { return respuesta.json(); })
+    .then(function(datosFinlandia) {
+        L.geoJSON(datosFinlandia, {
+            style: function(feature) {
+                return { color: '#000000', weight: 2, fillColor: '#404040', fillOpacity: 0.55 };
+            }
+        }).addTo(map);
+    })
+    .catch(function(error) { console.error("Error cargando geojson de Finlandia:", error); });
