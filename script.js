@@ -31,15 +31,26 @@ var marcadorBrasilia = L.marker(coordsBrasilia).addTo(map);
 marcadorBrasilia.bindTooltip("Brasília <br> Link del juego: " + linkJuegoBrasilia, { direction: 'top', offset: [0, -10] });
 marcadorBrasilia.bindPopup("<a href='" + linkJuegoBrasilia + "' target='_blank'><b>¡Haz clic aquí para jugar Exército Brasileiro!</b></a>");
 
+// ----------------- MARCADOR 4: RIO DE JANEIRO (BRASIL) -----------------
+var coordsRio = [-22.9068, -43.1729]; 
+var linkImagenRio = 'https://tr.rbxcdn.com/180DAY-05b3c4bc174a604f84a4cde981d7975c/256/256/Image/Webp/noFilter';
+var linkJuegoRio = 'https://www.roblox.com/games/73767462197411/EB-do-Mirage-Ex-rcito-Brasileiro';
+
+var marcadorRio = L.marker(coordsRio).addTo(map);
+marcadorRio.bindTooltip("Rio de Janeiro <br> Link del juego: " + linkJuegoRio, { direction: 'top', offset: [0, -10] });
+marcadorRio.bindPopup("<a href='" + linkJuegoRio + "' target='_blank'><b>¡Haz clic aquí para jugar EB do Mirage!</b></a>");
+
 
 // ----------------- ACTUALIZAR TAMAÑO (TODOS LOS ICONOS) -----------------
 function actualizarTamanoIcono() {
     var zoomActual = map.getZoom();
     var nuevoTamano = Math.max(30, zoomActual * 6); 
+    
     var listaMarcadores = [
         { obj: marcadorMar, url: linkImagenMar },
         { obj: marcadorCampo, url: linkImagenCampo },
-        { obj: marcadorBrasilia, url: linkImagenBrasilia }
+        { obj: marcadorBrasilia, url: linkImagenBrasilia },
+        { obj: marcadorRio, url: linkImagenRio }
     ];
 
     listaMarcadores.forEach(function(item) {
@@ -83,7 +94,20 @@ fetch('https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/pub
     .then(function(datosBrasil) {
         L.geoJSON(datosBrasil, {
             style: function(feature) {
-                return { color: '#006400', weight: 2, fillColor: '#32CD32', fillOpacity: 0.25 };
+                var nombreEstado = feature.properties.name || "";
+                
+                var estadosDestacados = [
+                    'São Paulo', 'Sao Paulo', 
+                    'Rio de Janeiro', 
+                    'Minas Gerais', 
+                    'Espírito Santo', 'Espirito Santo'
+                ];
+
+                if (estadosDestacados.includes(nombreEstado)) {
+                    return { color: '#004d00', weight: 3, fillColor: '#00FF00', fillOpacity: 0.55 };
+                } else {
+                    return { color: '#006400', weight: 2, fillColor: '#32CD32', fillOpacity: 0.25 };
+                }
             }
         }).addTo(map);
     })
