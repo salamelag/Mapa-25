@@ -314,6 +314,18 @@ function cargarGeografia() {
                 }
             }).addTo(map);
         });
+    
+    // Uruguay
+    fetch('https://raw.githubusercontent.com/alotropico/uruguay.geo/master/uruguay.geojson')
+        .then(r => r.json()).then(data => {
+            L.geoJSON(data, {
+                style: () => geoStyle('Ejercito_Uruguayo'),
+                onEachFeature: (feature, layer) => {
+                    addClickHover(layer, 'Ejercito_Uruguayo', 'Uruguay', ESTILOS_GEO['Ejercito_Uruguayo'].op, 0.80);
+                }
+            }).addTo(map);
+        })
+        .catch(err => console.error("Error cargando fronteras de Uruguay:", err));
 }
 
 // ==================== PANEL TERRITORIO ====================
