@@ -44,6 +44,7 @@ async function cargarDatosEjercitos() {
 }
 
 async function obtenerComandanteRoblox(ejercitoId) {
+    if (ejercitoId === 'FK_Zone') return null;
     const { data } = await clienteSupabase
         .from('peticiones').select('usuario_roblox')
         .eq('ejercito', ejercitoId).eq('estado', 'Aprobado').limit(1);
@@ -177,7 +178,6 @@ async function verificarAprobacionHUD() {
         const e = todosLosEjercitos[ejercitoActual];
         document.getElementById('panel-comandante').classList.remove('oculto');
         document.getElementById('texto-comandante').innerText = e ? e.nombre : ejercitoActual;
-        // Sincronizar nombre Roblox como lider del ejército
         await clienteSupabase.from('ejercitos')
             .update({ lider: data[0].usuario_roblox, email_lider: usuarioActual.email })
             .eq('id', ejercitoActual);
@@ -194,7 +194,6 @@ async function verificarAprobacionHUD() {
 var map;
 var listaMarcadores = [];
 
-// Paleta por ejército — un color por faccion
 const ESTILOS_GEO = {
     '25_REMASTER':         { borde: '#1ab4ff', fill: '#90d8f5', op: 0.38 },
     'Argentine_Army':      { borde: '#2244cc', fill: '#4466ee', op: 0.42 },
@@ -202,7 +201,8 @@ const ESTILOS_GEO = {
     'EB_Mirage':           { borde: '#007700', fill: '#00bb00', op: 0.62 },
     'War_Front_Finland':   { borde: '#1a1a1a', fill: '#333333', op: 0.58 },
     'Ejercito_Uruguayo':   { borde: '#0038a8', fill: '#7bafd4', op: 0.45 },
-    'Ejercito_Colombia':   { borde: '#ccaa00', fill: '#ffea00', op: 0.45 }
+    'Ejercito_Colombia':   { borde: '#ccaa00', fill: '#ffea00', op: 0.45 },
+    'FK_Zone':             { borde: '#ff2200', fill: '#ff4422', op: 0.50 }
 };
 
 function geoStyle(id) {
@@ -228,7 +228,8 @@ function configurarMarcadores() {
         { coords: [-22.9068,   -43.1729  ], label: 'Rio de Janeiro',      ejId: 'EB_Mirage',           region: 'Rio de Janeiro, Brasil', img: 'https://tr.rbxcdn.com/180DAY-05b3c4bc174a604f84a4cde981d7975c/256/256/Image/Webp/noFilter' },
         { coords: [60.1699,     24.9384  ], label: 'Helsinki',            ejId: 'War_Front_Finland',   region: 'Helsinki, Finlandia',  img: 'https://tr.rbxcdn.com/180DAY-d1401c2af40cc8338406405cf7734c51/256/256/Image/Webp/noFilter' },
         { coords: [-34.9011,   -56.1645  ], label: 'Montevideo',          ejId: 'Ejercito_Uruguayo',   region: 'Montevideo, Uruguay',  img: 'https://tr.rbxcdn.com/180DAY-678a18d475f292e91b46914384aff56e/256/256/Image/Webp/noFilter' },
-        { coords: [4.24,       -74.64    ], label: 'Fuerte Militar Tolemaida', ejId: 'Ejercito_Colombia', region: 'Tolemaida, Colombia', img: 'https://tr.rbxcdn.com/180DAY-0219f2fba401ee55c3a0db8ccc44d272/256/256/Image/Webp/noFilter' }
+        { coords: [4.24,       -74.64    ], label: 'Fuerte Militar Tolemaida', ejId: 'Ejercito_Colombia', region: 'Tolemaida, Colombia', img: 'https://tr.rbxcdn.com/180DAY-0219f2fba401ee55c3a0db8ccc44d272/256/256/Image/Webp/noFilter' },
+        { coords: [-51.7963,   -59.5236  ], label: 'Islas Malvinas (Zona de Lucha)', ejId: 'FK_Zone',  region: 'Islas Malvinas',       img: 'https://tr.rbxcdn.com/180DAY-ff9a30bdc11fd1a21e07cdf3837b6757/352/352/Image/Png/noFilter' }
     ];
     datos.forEach(m => {
         const marcador = L.marker(m.coords).addTo(map);
@@ -245,8 +246,7 @@ function actualizarIconos() {
     listaMarcadores.forEach(m => m.obj.setIcon(L.icon({ iconUrl: m.url, iconSize: [s, s], iconAnchor: [s/2, s/2], className: 'icono-con-borde' })));
 }
 
-// Provincias que tienen presencia reforzada (EB do Mirage controla solo Rio; estas son Ejercito Brasileiro fuerte)
-const EB_FUERTE  = []; // ya no se usa como capa separada
+const EB_FUERTE  = []; 
 const EB_MIRAGE  = ['Rio de Janeiro', 'São Paulo', 'Sao Paulo', 'Minas Gerais', 'Espírito Santo', 'Espirito Santo'];
 
 function addClickHover(layer, ejId, region, opBase, opHover) {
@@ -276,7 +276,6 @@ function cargarGeografia() {
     // Brasil
     fetch('https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/brazil-states.geojson')
         .then(r => r.json()).then(data => {
-            // EB do Mirage — solo Rio de Janeiro (verde intenso)
             L.geoJSON(data, {
                 filter: f => EB_MIRAGE.includes(f.properties.name || ''),
                 style: () => geoStyle('EB_Mirage'),
@@ -285,7 +284,6 @@ function cargarGeografia() {
                 }
             }).addTo(map);
 
-            // Exército Brasileiro — São Paulo, Minas Gerais, Espírito Santo (verde medio-alto)
             L.geoJSON(data, {
                 filter: f => EB_FUERTE.includes(f.properties.name || ''),
                 style: () => ({ color: '#1a7a1a', weight: 2, fillColor: '#2ecc2e', fillOpacity: 0.48 }),
@@ -295,7 +293,6 @@ function cargarGeografia() {
                 }
             }).addTo(map);
 
-            // Exército Brasileiro — resto del país (verde suave)
             L.geoJSON(data, {
                 filter: f => !EB_MIRAGE.includes(f.properties.name || '') && !EB_FUERTE.includes(f.properties.name || ''),
                 style: () => ({ color: '#1a7a1a', weight: 1, fillColor: '#2ecc2e', fillOpacity: 0.18 }),
@@ -338,6 +335,17 @@ function cargarGeografia() {
                 }
             }).addTo(map);
         });
+
+    // Falkland Islands (Islas Malvinas)
+    fetch('https://raw.githubusercontent.com/glynnbird/countriesgeojson/master/falkland_islands.geojson')
+        .then(r => r.json()).then(data => {
+            L.geoJSON(data, {
+                style: () => geoStyle('FK_Zone'),
+                onEachFeature: (feature, layer) => {
+                    addClickHover(layer, 'FK_Zone', 'Islas Malvinas', ESTILOS_GEO['FK_Zone'].op, 0.85);
+                }
+            }).addTo(map);
+        }).catch(e => console.log("Error cargando GeoJSON FK:", e));
 }
 
 // ==================== PANEL TERRITORIO ====================
@@ -348,24 +356,32 @@ const LINKS_JUEGO = {
     'Exercito_Brasileiro': 'https://www.roblox.com/games/2069320852/Ex-rcito-Brasileiro-EB',
     'EB_Mirage':           'https://www.roblox.com/games/73767462197411/EB-do-Mirage-Ex-rcito-Brasileiro',
     'War_Front_Finland':   'https://www.roblox.com/games/102445517344578/War-on-the-Front-Finland-RP',
-    'Ejercito_Uruguayo':   'TU_LINK_AQUI',
-    'Ejercito_Colombia':   'https://www.roblox.com/games/8575062452/ENC-Fuerte-Militar-Tolemaida'
+    'Ejercito_Uruguayo':   'https://www.roblox.com/games/18893023733/Ejercito-Uruguayo',
+    'Ejercito_Colombia':   'https://www.roblox.com/games/8575062452/ENC-Fuerte-Militar-Tolemaida',
+    'FK_Zone':             'https://www.roblox.com/games/11531150499/Soledad-Island-Malvinas-2030'
 };
 
 async function mostrarPanelTerritorio(ejercitoId, tituloRegion) {
     const panel = document.getElementById('panel-territorio');
-    const e = todosLosEjercitos[ejercitoId];
 
-    document.getElementById('territorio-nombre').innerText = tituloRegion;
-    document.getElementById('territorio-ejercito').innerText = e?.nombre || ejercitoId;
-    document.getElementById('territorio-desc').innerText = e?.descripcion || 'Sin informacion disponible.';
+    if (ejercitoId === 'FK_Zone') {
+        document.getElementById('territorio-nombre').innerText = tituloRegion;
+        document.getElementById('territorio-ejercito').innerText = 'Espacio de Lucha / Mapa Neutral';
+        document.getElementById('territorio-desc').innerText = 'Territorio libre destinado exclusivamente a simulaciones de combate, guerra de guerrillas y operaciones tácticas inter-ejércitos. No posee facción gobernante.';
+        document.getElementById('territorio-lider').innerText = 'Sin Comandante';
+        document.getElementById('territorio-relaciones').innerHTML = '<span class="rel-vacio" style="color: #ff4422; font-weight: bold;">ZONA DE GUERRA LIBRE</span>';
+    } else {
+        const e = todosLosEjercitos[ejercitoId];
+        document.getElementById('territorio-nombre').innerText = tituloRegion;
+        document.getElementById('territorio-ejercito').innerText = e?.nombre || ejercitoId;
+        document.getElementById('territorio-desc').innerText = e?.descripcion || 'Sin informacion disponible.';
 
-    // Obtener comandante real desde peticiones (nombre Roblox)
-    document.getElementById('territorio-lider').innerText = '...';
-    const cmd = await obtenerComandanteRoblox(ejercitoId);
-    document.getElementById('territorio-lider').innerText = cmd || 'Sin registrar';
+        document.getElementById('territorio-lider').innerText = '...';
+        const cmd = await obtenerComandanteRoblox(ejercitoId);
+        document.getElementById('territorio-lider').innerText = cmd || 'Sin registrar';
+        renderizarRelaciones(ejercitoId);
+    }
 
-    renderizarRelaciones(ejercitoId);
     document.getElementById('territorio-btn-juego').href = LINKS_JUEGO[ejercitoId] || '#';
 
     panel.classList.remove('oculto');
