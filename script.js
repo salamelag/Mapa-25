@@ -201,7 +201,8 @@ const ESTILOS_GEO = {
     'Exercito_Brasileiro': { borde: '#1a7a1a', fill: '#2ecc2e', op: 0.28 },
     'EB_Mirage':           { borde: '#007700', fill: '#00bb00', op: 0.62 },
     'War_Front_Finland':   { borde: '#1a1a1a', fill: '#333333', op: 0.58 },
-    'Ejercito_Uruguayo':   { borde: '#0038a8', fill: '#7bafd4', op: 0.45 }
+    'Ejercito_Uruguayo':   { borde: '#0038a8', fill: '#7bafd4', op: 0.45 },
+    'Ejercito_Colombia':   { borde: '#ccaa00', fill: '#ffea00', op: 0.45 }
 };
 
 function geoStyle(id) {
@@ -221,12 +222,13 @@ function iniciarMapa() {
 
 function configurarMarcadores() {
     const datos = [
-        { coords: [-30.600242, -62.870913], label: 'Laguna Mar Chiquita', ejId: '25_REMASTER',         region: 'Cordoba, Argentina',   img: 'https://tr.rbxcdn.com/180DAY-8c528bd4c92002faf069c7f4f966f9f9/256/256/Image/Webp/noFilter' },
+        { coords: [-30.600242, -62.870913], label: 'Laguna Mar Chiquita', ejId: '25_REMASTER',         region: 'Cordoba, Argentina',   img: '25.png' },
         { coords: [-34.533805, -58.649166], label: 'Campo de Mayo',       ejId: 'Argentine_Army',      region: 'Buenos Aires, Argentina', img: 'https://tr.rbxcdn.com/180DAY-cdfd2b3c913f59789ac50bda58fa8e97/256/256/Image/Webp/noFilter' },
         { coords: [-15.778361, -47.905083], label: 'Brasilia',            ejId: 'Exercito_Brasileiro', region: 'Brasilia, Brasil',      img: 'https://tr.rbxcdn.com/180DAY-40a3b8aacb25617525f5903f172f4db8/256/256/Image/Webp/noFilter' },
         { coords: [-22.9068,   -43.1729  ], label: 'Rio de Janeiro',      ejId: 'EB_Mirage',           region: 'Rio de Janeiro, Brasil', img: 'https://tr.rbxcdn.com/180DAY-05b3c4bc174a604f84a4cde981d7975c/256/256/Image/Webp/noFilter' },
         { coords: [60.1699,     24.9384  ], label: 'Helsinki',            ejId: 'War_Front_Finland',   region: 'Helsinki, Finlandia',  img: 'https://tr.rbxcdn.com/180DAY-d1401c2af40cc8338406405cf7734c51/256/256/Image/Webp/noFilter' },
-        { coords: [-34.9011,   -56.1645  ], label: 'Montevideo',          ejId: 'Ejercito_Uruguayo',   region: 'Montevideo, Uruguay',  img: 'https://tr.rbxcdn.com/180DAY-678a18d475f292e91b46914384aff56e/256/256/Image/Webp/noFilter' }
+        { coords: [-34.9011,   -56.1645  ], label: 'Montevideo',          ejId: 'Ejercito_Uruguayo',   region: 'Montevideo, Uruguay',  img: 'https://tr.rbxcdn.com/180DAY-678a18d475f292e91b46914384aff56e/256/256/Image/Webp/noFilter' },
+        { coords: [4.24,       -74.64    ], label: 'Fuerte Militar Tolemaida', ejId: 'Ejercito_Colombia', region: 'Tolemaida, Colombia', img: 'https://tr.rbxcdn.com/180DAY-0219f2fba401ee55c3a0db8ccc44d272/256/256/Image/Webp/noFilter' }
     ];
     datos.forEach(m => {
         const marcador = L.marker(m.coords).addTo(map);
@@ -269,7 +271,7 @@ function cargarGeografia() {
                 addClickHover(layer, id, region, s.op, Math.min(s.op + 0.25, 0.9));
             }
         }).addTo(map);
-    });
+    }).catch(e => console.log("Error cargando provincias:", e));
 
     // Brasil
     fetch('https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/brazil-states.geojson')
@@ -314,9 +316,9 @@ function cargarGeografia() {
                 }
             }).addTo(map);
         });
-    
+
     // Uruguay
-    fetch('https://raw.githubusercontent.com/alotropico/uruguay.geo/master/uruguay.geojson')
+    fetch('https://raw.githubusercontent.com/glynnbird/countriesgeojson/master/uruguay.geojson')
         .then(r => r.json()).then(data => {
             L.geoJSON(data, {
                 style: () => geoStyle('Ejercito_Uruguayo'),
@@ -324,8 +326,18 @@ function cargarGeografia() {
                     addClickHover(layer, 'Ejercito_Uruguayo', 'Uruguay', ESTILOS_GEO['Ejercito_Uruguayo'].op, 0.80);
                 }
             }).addTo(map);
-        })
-        .catch(err => console.error("Error cargando fronteras de Uruguay:", err));
+        });
+
+    // Colombia
+    fetch('https://raw.githubusercontent.com/glynnbird/countriesgeojson/master/colombia.geojson')
+        .then(r => r.json()).then(data => {
+            L.geoJSON(data, {
+                style: () => geoStyle('Ejercito_Colombia'),
+                onEachFeature: (feature, layer) => {
+                    addClickHover(layer, 'Ejercito_Colombia', 'Colombia', ESTILOS_GEO['Ejercito_Colombia'].op, 0.80);
+                }
+            }).addTo(map);
+        });
 }
 
 // ==================== PANEL TERRITORIO ====================
@@ -336,7 +348,8 @@ const LINKS_JUEGO = {
     'Exercito_Brasileiro': 'https://www.roblox.com/games/2069320852/Ex-rcito-Brasileiro-EB',
     'EB_Mirage':           'https://www.roblox.com/games/73767462197411/EB-do-Mirage-Ex-rcito-Brasileiro',
     'War_Front_Finland':   'https://www.roblox.com/games/102445517344578/War-on-the-Front-Finland-RP',
-    'Ejercito_Uruguayo':   'https://www.roblox.com/games/18893023733/Ejercito-Uruguayo'
+    'Ejercito_Uruguayo':   'TU_LINK_AQUI',
+    'Ejercito_Colombia':   'https://www.roblox.com/games/8575062452/ENC-Fuerte-Militar-Tolemaida'
 };
 
 async function mostrarPanelTerritorio(ejercitoId, tituloRegion) {
