@@ -21,11 +21,12 @@ function geoStyle(id) {
 }
 
 function iniciarMapa() {
+    inyectarPattern();
     map = L.map('map').setView([15.0, -30.0], 3);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
-    map.on('click', () => cerrarPanelTerritorio());
+    map.on('click', () => { cerrarPanelTerritorio(); limpiarSeleccion(); });
     configurarMarcadores();
     cargarGeografia();
 }
@@ -49,7 +50,7 @@ function configurarMarcadores() {
     datos.forEach(m => {
         const marcador = L.marker(m.coords).addTo(map);
         marcador.bindTooltip(m.label, { direction: 'top', offset: [0, -10] });
-        marcador.on('click', (e) => { L.DomEvent.stopPropagation(e); mostrarPanelTerritorio(m.ejId, m.region); });
+        marcador.on('click', (e) => { L.DomEvent.stopPropagation(e); limpiarSeleccion(); mostrarPanelTerritorio(m.ejId, m.region); });
         listaMarcadores.push({ obj: marcador, url: m.img });
     });
     map.on('zoomend', actualizarIconos);
@@ -64,8 +65,33 @@ function actualizarIconos() {
 const EB_FUERTE  = []; 
 const EB_MIRAGE  = ['Rio de Janeiro', 'São Paulo', 'Sao Paulo', 'Minas Gerais', 'Espírito Santo', 'Espirito Santo'];
 
+let capaClon = null;
+
+function inyectarPattern() {
+    if (document.getElementById('stripes-pattern')) return;
+    const div = document.createElement('div');
+    div.innerHTML = `<svg width="0" height="0" style="position:absolute;z-index:-1;"><defs><pattern id="stripes-pattern" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M-10,10 l20,-20 M0,40 l40,-40 M30,50 l20,-20" stroke="rgba(0,0,0,0.3)" stroke-width="20" /><animateTransform attributeName="patternTransform" type="translate" from="0 0" to="0 -40" dur="2s" repeatCount="indefinite"/></pattern></defs></svg>`;
+    document.body.appendChild(div);
+}
+
+function limpiarSeleccion() {
+    if (capaClon) { map.removeLayer(capaClon); capaClon = null; }
+}
+
+function resaltarTerritorio(layer) {
+    limpiarSeleccion();
+    if (!layer.feature) return;
+    capaClon = L.geoJSON(layer.feature, {
+        style: { fillColor: 'url(#stripes-pattern)', fillOpacity: 1, color: 'transparent', weight: 0, interactive: false }
+    }).addTo(map);
+}
+
 function addClickHover(layer, ejId, region, opBase, opHover) {
-    layer.on('click', (e) => { L.DomEvent.stopPropagation(e); mostrarPanelTerritorio(ejId, region); });
+    layer.on('click', (e) => { 
+        L.DomEvent.stopPropagation(e); 
+        mostrarPanelTerritorio(ejId, region); 
+        resaltarTerritorio(layer);
+    });
     layer.on('mouseover', () => layer.setStyle({ fillOpacity: opHover }));
     layer.on('mouseout',  () => layer.setStyle({ fillOpacity: opBase  }));
 }
@@ -244,5 +270,8 @@ function renderizarRelaciones(ejercitoId) {
     }).join('');
 }
 
-function cerrarPanelTerritorio() { document.getElementById('panel-territorio').classList.add('oculto'); }
+function cerrarPanelTerritorio() { 
+    document.getElementById('panel-territorio').classList.add('oculto'); 
+    limpiarSeleccion();
+}
 document.getElementById('btn-cerrar-territorio').onclick = cerrarPanelTerritorio;
