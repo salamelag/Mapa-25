@@ -126,7 +126,7 @@ function cargarGeografia() {
         });
 
     // Finlandia
-    fetch('https://raw.githubusercontent.com/glynnbird/countriesgeojson/master/finland.geojson')
+    fetch('https://raw.githubusercontent.com/georgique/world-geojson/refs/heads/develop/countries/finland.json')
         .then(r => r.json()).then(data => {
             L.geoJSON(data, {
                 style: () => geoStyle('War_Front_Finland'),
