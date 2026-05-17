@@ -1,5 +1,6 @@
 // --- LOGIN Y REGISTRO ---
 document.getElementById('btn-abrir-login').onclick = () => document.getElementById('modal-login').classList.remove('oculto');
+document.getElementById('btn-abrir-registro').onclick = () => document.getElementById('modal-login').classList.remove('oculto');
 document.getElementById('btn-cerrar-login').onclick = () => document.getElementById('modal-login').classList.add('oculto');
 
 document.getElementById('btn-registro').onclick = async () => {
