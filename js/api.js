@@ -22,7 +22,7 @@ async function cargarDatosEjercitos() {
 }
 
 async function obtenerComandanteRoblox(ejercitoId) {
-    if (ejercitoId === 'FK_Zone') return null;
+    if (ejercitoId === 'FK_Zone' || ejercitoId === 'Colombia_Conflict') return null;
     const { data } = await clienteSupabase
         .from('peticiones').select('usuario_roblox')
         .eq('ejercito', ejercitoId).eq('estado', 'Aprobado').limit(1);

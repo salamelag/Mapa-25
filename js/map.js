@@ -39,7 +39,8 @@ function configurarMarcadores() {
         { coords: [4.24,       -74.64    ], label: 'Fuerte Militar Tolemaida', ejId: 'Ejercito_Colombia', region: 'Tolemaida, Colombia', img: 'https://tr.rbxcdn.com/180DAY-0219f2fba401ee55c3a0db8ccc44d272/256/256/Image/Webp/noFilter' },
         { coords: [-51.7963,   -59.5236  ], label: 'Islas Malvinas (Zona de Lucha)', ejId: 'FK_Zone',  region: 'Islas Malvinas',       img: 'https://tr.rbxcdn.com/180DAY-ff9a30bdc11fd1a21e07cdf3837b6757/352/352/Image/Png/noFilter' },
         { coords: [-33.4132, -70.5796], label: 'Escuela Militar', ejId: 'Ejercito_Chile', region: 'Santiago, Chile', img: 'https://tr.rbxcdn.com/180DAY-6d15efeaa6c140b24fb4486eb7eaea9e/150/150/Image/Webp/noFilter' },
-        { coords: [-33.0475, -71.6133], label: 'Congreso Nacional', ejId: 'Congreso_Chile', region: 'Valparaíso, Chile', img: 'https://tr.rbxcdn.com/180DAY-063b85b1f16c771a04d66a39917f351c/150/150/Image/Webp/noFilter' }
+        { coords: [-33.0475, -71.6133], label: 'Congreso Nacional', ejId: 'Congreso_Chile', region: 'Valparaíso, Chile', img: 'https://tr.rbxcdn.com/180DAY-063b85b1f16c771a04d66a39917f351c/150/150/Image/Webp/noFilter' },
+        { coords: [6.2442, -75.5812], label: 'Medellín (Zona de Lucha)', ejId: 'Colombia_Conflict', region: 'Medellín, Colombia', img: 'https://tr.rbxcdn.com/180DAY-7c849cd096c2fd5076264c49d9a96db6/256/256/Image/Webp/noFilter' }
     ];
     datos.forEach(m => {
         const marcador = L.marker(m.coords).addTo(map);
@@ -181,13 +182,14 @@ const LINKS_JUEGO = {
     'Ejercito_Colombia':   'https://www.roblox.com/games/8575062452/ENC-Fuerte-Militar-Tolemaida',
     'FK_Zone':             'https://www.roblox.com/games/11531150499/Soledad-Island-Malvinas-2030',
     'Ejercito_Chile':      'https://www.roblox.com/games/99857138661549/Academia-Militar-de-Chile-El-Libertador',
-    'Congreso_Chile':      'https://www.roblox.com/games/71789289496320/Congreso-Nacional'
+    'Congreso_Chile':      'https://www.roblox.com/games/71789289496320/Congreso-Nacional',
+    'Colombia_Conflict':   'https://www.roblox.com/games/107389230881781/Colombia'
 };
 
 async function mostrarPanelTerritorio(ejercitoId, tituloRegion) {
     const panel = document.getElementById('panel-territorio');
 
-    if (ejercitoId === 'FK_Zone') {
+    if (ejercitoId === 'FK_Zone' || ejercitoId === 'Colombia_Conflict') {
         document.getElementById('territorio-nombre').innerText = tituloRegion;
         document.getElementById('territorio-ejercito').innerText = 'Espacio de Lucha / Mapa Neutral';
         document.getElementById('territorio-desc').innerText = 'Territorio libre destinado exclusivamente a simulaciones de combate, guerra de guerrillas y operaciones tácticas inter-ejércitos. No posee facción gobernante.';
