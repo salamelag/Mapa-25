@@ -19,11 +19,12 @@
     <div id="map"></div>
 
     <!-- HUD VISITANTE -->
-    <div id="panel-visitante" class="panel-ui oculto" style="width: auto; min-width: 250px;">
+    <div id="panel-visitante" class="panel-ui oculto" style="width: auto; padding-right: 20px;">
         <div class="panel-tag">MODO VISITANTE</div>
-        <div class="auth-row">
+        <div class="auth-row" style="justify-content: flex-start; gap: 20px;">
             <div class="live-indicator">
                 <span class="live-dot-red"></span>
+                <span id="num-visitantes" style="color:white; font-family:var(--mono); font-size:11px; font-weight:bold;">—</span>
                 <span class="live-text">LIVE</span>
             </div>
             <div class="btn-group-auth" style="margin-top:0;">
@@ -127,8 +128,6 @@
         <p id="msj-herramientas" class="herr-msj"></p>
     </div>
 
-    <!-- CONTADOR DE VISITANTES (oculto en HTML, manejado en JS) -->
-    <span id="num-visitantes" style="display:none;"></span>
 
     <!-- MODAL LOGIN ESTILO WARWATCH -->
     <div id="modal-login" class="modal-war oculto">
