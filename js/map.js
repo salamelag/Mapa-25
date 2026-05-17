@@ -193,13 +193,14 @@ async function mostrarPanelTerritorio(ejercitoId, tituloRegion) {
         document.getElementById('territorio-nombre').innerText = tituloRegion;
         document.getElementById('territorio-ejercito').innerText = 'Espacio de Lucha / Mapa Neutral';
         document.getElementById('territorio-desc').innerText = 'Territorio libre destinado exclusivamente a simulaciones de combate, guerra de guerrillas y operaciones tácticas inter-ejércitos. No posee facción gobernante.';
-        document.getElementById('territorio-lider').innerText = 'Sin Comandante';
+        document.getElementById('territorio-comandante-box').classList.add('oculto');
         document.getElementById('territorio-relaciones').innerHTML = '<span class="rel-vacio" style="color: #ff4422; font-weight: bold;">ZONA DE GUERRA LIBRE</span>';
     } else {
         const e = todosLosEjercitos[ejercitoId];
         document.getElementById('territorio-nombre').innerText = tituloRegion;
         document.getElementById('territorio-ejercito').innerText = e?.nombre || ejercitoId;
         document.getElementById('territorio-desc').innerText = e?.descripcion || 'Sin informacion disponible.';
+        document.getElementById('territorio-comandante-box').classList.remove('oculto');
 
         document.getElementById('territorio-lider').innerText = '...';
         const cmd = await obtenerComandanteRoblox(ejercitoId);
