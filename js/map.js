@@ -10,7 +10,9 @@ const ESTILOS_GEO = {
     'Ejercito_Colombia':   { borde: '#ccaa00', fill: '#ffea00', op: 0.45 },
     'FK_Zone':             { borde: '#ff2200', fill: '#ff4422', op: 0.50 },
     'Ejercito_Chile':      { borde: '#cc2222', fill: '#ff4444', op: 0.40 },
-    'Congreso_Chile':      { borde: '#0033aa', fill: '#3366ff', op: 0.30 }
+    'Congreso_Chile':      { borde: '#0033aa', fill: '#3366ff', op: 0.30 },
+    'RFA_LaPampa':         { borde: '#008b8b', fill: '#00ced1', op: 0.45 },
+    'Imperio_Chubut':      { borde: '#8a2be2', fill: '#9370db', op: 0.45 }
 };
 
 function geoStyle(id) {
@@ -40,7 +42,9 @@ function configurarMarcadores() {
         { coords: [-51.7963,   -59.5236  ], label: 'Islas Malvinas (Zona de Lucha)', ejId: 'FK_Zone',  region: 'Islas Malvinas',       img: 'https://tr.rbxcdn.com/180DAY-ff9a30bdc11fd1a21e07cdf3837b6757/352/352/Image/Png/noFilter' },
         { coords: [-33.4132, -70.5796], label: 'Escuela Militar', ejId: 'Ejercito_Chile', region: 'Santiago, Chile', img: 'https://tr.rbxcdn.com/180DAY-6d15efeaa6c140b24fb4486eb7eaea9e/150/150/Image/Webp/noFilter' },
         { coords: [-33.0475, -71.6133], label: 'Congreso Nacional', ejId: 'Congreso_Chile', region: 'Valparaíso, Chile', img: 'https://tr.rbxcdn.com/180DAY-063b85b1f16c771a04d66a39917f351c/150/150/Image/Webp/noFilter' },
-        { coords: [6.2442, -75.5812], label: 'Medellín (Zona de Lucha)', ejId: 'Colombia_Conflict', region: 'Medellín, Colombia', img: 'https://tr.rbxcdn.com/180DAY-7c849cd096c2fd5076264c49d9a96db6/256/256/Image/Webp/noFilter' }
+        { coords: [6.2442, -75.5812], label: 'Medellín (Zona de Lucha)', ejId: 'Colombia_Conflict', region: 'Medellín, Colombia', img: 'https://tr.rbxcdn.com/180DAY-7c849cd096c2fd5076264c49d9a96db6/256/256/Image/Webp/noFilter' },
+        { coords: [-36.67, -64.38], label: 'Regimiento de Infantería Mecanizado 6', ejId: 'RFA_LaPampa', region: 'La Pampa, Argentina', img: 'https://tr.rbxcdn.com/180DAY-ad94cf2036acc8cb7972731f9c142647/256/256/Image/Webp/noFilter' },
+        { coords: [-43.25, -65.30], label: 'Trelew', ejId: 'Imperio_Chubut', region: 'Chubut, Argentina', img: 'https://tr.rbxcdn.com/180DAY-d5ce0f3fda3285f338d4dfa2371cf2f5/150/150/Image/Webp/noFilter' }
     ];
     datos.forEach(m => {
         const marcador = L.marker(m.coords).addTo(map);
@@ -70,14 +74,20 @@ function cargarGeografia() {
     // Argentina
     fetch('provincias.geojson').then(r => r.json()).then(data => {
         L.geoJSON(data, {
-            filter: f => ['Córdoba', 'Buenos Aires'].includes(f.properties.nombre),
+            filter: f => ['Córdoba', 'Buenos Aires', 'La Pampa', 'Chubut'].includes(f.properties.nombre),
             style: f => {
-                const id = f.properties.nombre === 'Córdoba' ? '25_REMASTER' : 'Argentine_Army';
+                let id = 'Argentine_Army';
+                if (f.properties.nombre === 'Córdoba') id = '25_REMASTER';
+                else if (f.properties.nombre === 'La Pampa') id = 'RFA_LaPampa';
+                else if (f.properties.nombre === 'Chubut') id = 'Imperio_Chubut';
                 return geoStyle(id);
             },
             onEachFeature: (feature, layer) => {
-                const id = feature.properties.nombre === 'Córdoba' ? '25_REMASTER' : 'Argentine_Army';
-                const region = feature.properties.nombre === 'Córdoba' ? 'Cordoba, Argentina' : 'Buenos Aires, Argentina';
+                let id = 'Argentine_Army';
+                let region = 'Buenos Aires, Argentina';
+                if (feature.properties.nombre === 'Córdoba') { id = '25_REMASTER'; region = 'Cordoba, Argentina'; }
+                else if (feature.properties.nombre === 'La Pampa') { id = 'RFA_LaPampa'; region = 'La Pampa, Argentina'; }
+                else if (feature.properties.nombre === 'Chubut') { id = 'Imperio_Chubut'; region = 'Chubut, Argentina'; }
                 const s = ESTILOS_GEO[id];
                 addClickHover(layer, id, region, s.op, Math.min(s.op + 0.25, 0.9));
             }
@@ -183,7 +193,9 @@ const LINKS_JUEGO = {
     'FK_Zone':             'https://www.roblox.com/games/11531150499/Soledad-Island-Malvinas-2030',
     'Ejercito_Chile':      'https://www.roblox.com/games/99857138661549/Academia-Militar-de-Chile-El-Libertador',
     'Congreso_Chile':      'https://www.roblox.com/games/71789289496320/Congreso-Nacional',
-    'Colombia_Conflict':   'https://www.roblox.com/games/107389230881781/Colombia'
+    'Colombia_Conflict':   'https://www.roblox.com/games/107389230881781/Colombia',
+    'RFA_LaPampa':         'https://www.roblox.com/games/94432191767668/RFA-Argentine-Armed-Forces#!/about',
+    'Imperio_Chubut':      'https://www.roblox.com/games/135668711660767/Imperio-Argentino'
 };
 
 async function mostrarPanelTerritorio(ejercitoId, tituloRegion) {
