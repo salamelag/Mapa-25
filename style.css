@@ -375,7 +375,15 @@ body, html { margin: 0; padding: 0; height: 100%; font-family: var(--mono); }
     font-weight: 600;
 }
 
-/* ==================== MODALES ==================== */
+/* ==================== MODALES Y OVERLAYS ==================== */
+#overlay-oscuro {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    z-index: 1500;
+    backdrop-filter: blur(2px);
+}
+
+/* Modal Antiguo (Reclamar) */
 .modal {
     position: fixed; top: 50%; left: 50%;
     transform: translate(-50%, -50%);
@@ -410,6 +418,71 @@ body, html { margin: 0; padding: 0; height: 100%; font-family: var(--mono); }
 }
 
 .oculto { display: none !important; }
+
+/* Nuevo Modal WarWatch (Login/Registro) */
+.modal-war {
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2000;
+    width: 100%; max-width: 400px;
+    font-family: var(--mono);
+    color: white;
+}
+
+.mw-header { text-align: center; margin-bottom: 24px; }
+.mw-logo { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; margin-bottom: 12px; }
+.icono-war { width: 32px; height: 32px; color: #cc2222; }
+.mw-logo-text { font-size: 24px; font-weight: 700; letter-spacing: 0.1em; }
+.text-rojo { color: #cc2222; }
+
+.mw-subtitle-box { border-top: 1px solid var(--borde); padding-top: 12px; }
+.mw-subtitle { color: var(--verde); font-size: 12px; letter-spacing: 0.1em; margin: 0; }
+
+.mw-body {
+    background: #0a0f0a;
+    border: 1px solid var(--borde);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+}
+.mw-top-line { height: 2px; background: #cc2222; }
+.mw-content { padding: 24px; }
+
+.mw-title-box { margin-bottom: 20px; }
+.mw-title { font-size: 18px; font-weight: 700; letter-spacing: 0.05em; margin: 0 0 4px; }
+.mw-desc { color: #888; font-size: 12px; margin: 0; }
+
+.mw-input-group { margin-bottom: 16px; text-align: left; }
+.mw-input-group label { display: block; font-size: 10px; color: #888; letter-spacing: 0.1em; margin-bottom: 6px; }
+.mw-input-group input {
+    width: 100%; background: #060a06; border: 1px solid var(--borde);
+    border-radius: 4px; padding: 10px 12px; color: white;
+    font-family: var(--mono); font-size: 14px;
+    box-sizing: border-box; transition: border-color 0.2s;
+}
+.mw-input-group input:focus { outline: none; border-color: #cc2222; }
+
+.mw-btn {
+    flex: 1; padding: 12px; font-family: var(--mono); font-weight: 700;
+    font-size: 13px; letter-spacing: 0.05em; border-radius: 4px;
+    cursor: pointer; transition: all 0.2s; border: none;
+}
+.mw-btn-red { background: #cc2222; color: white; }
+.mw-btn-red:hover { background: #ff3333; }
+.mw-btn-outline { background: transparent; color: #888; border: 1px solid var(--borde); }
+.mw-btn-outline:hover { color: white; border-color: #555; }
+
+.mw-btn-cancel {
+    width: 100%; margin-top: 15px; background: transparent; color: #555;
+    border: none; font-family: var(--mono); font-size: 11px;
+    cursor: pointer; letter-spacing: 0.1em; transition: color 0.2s;
+}
+.mw-btn-cancel:hover { color: #cc2222; }
+
+.mw-msj { text-align: center; font-size: 12px; margin: 15px 0 0; min-height: 15px; }
+
+.mw-footer { text-align: center; font-size: 10px; color: #555; margin: 0; }
 
 .modal input, .desplegable {
     width: 100%;

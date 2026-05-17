@@ -13,6 +13,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+    <!-- OVERLAY OSCURO -->
+    <div id="overlay-oscuro" class="oculto"></div>
+
     <div id="map"></div>
 
     <!-- HUD VISITANTE -->
@@ -126,17 +129,47 @@
         <span class="vis-label">EN LINEA</span>
     </div>
 
-    <!-- MODAL LOGIN -->
-    <div id="modal-login" class="modal oculto">
-        <div class="modal-titulo">IDENTIFICACION MILITAR</div>
-        <input type="email" id="input-email" placeholder="Correo">
-        <input type="password" id="input-pass" placeholder="Contrasena">
-        <div class="modal-botones">
-            <button id="btn-login" style="background:#00bfff;color:#050a05;">Entrar</button>
-            <button id="btn-registro" style="background:#1a7a1a;color:white;">Registrarse</button>
-            <button id="btn-cerrar-login" style="background:#222;color:#aaa;">Cancelar</button>
+    <!-- MODAL LOGIN ESTILO WARWATCH -->
+    <div id="modal-login" class="modal-war oculto">
+        <div class="mw-header">
+            <div class="mw-logo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icono-war"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path></svg>
+                <span class="mw-logo-text">WAR<span class="text-rojo">WATCH</span></span>
+            </div>
+            <div class="mw-subtitle-box">
+                <p class="mw-subtitle">NEW OPERATIVE REGISTRATION</p>
+            </div>
         </div>
-        <p id="msj-login" class="modal-msj"></p>
+
+        <div class="mw-body">
+            <div class="mw-top-line"></div>
+            <div class="mw-content">
+                <div class="mw-title-box">
+                    <h1 class="mw-title">CREATE ACCOUNT / LOGIN</h1>
+                    <p class="mw-desc">Free tier — upgrade anytime</p>
+                </div>
+                
+                <div class="mw-form">
+                    <div class="mw-input-group">
+                        <label>EMAIL / IDENTIFIER</label>
+                        <input type="email" id="input-email" placeholder="operator@warwatch.io">
+                    </div>
+                    <div class="mw-input-group">
+                        <label>PASSPHRASE</label>
+                        <input type="password" id="input-pass" placeholder="••••••••••••">
+                    </div>
+                    
+                    <div style="display:flex; gap:10px; margin-top:20px;">
+                        <button id="btn-login" class="mw-btn mw-btn-outline">AUTHENTICATE →</button>
+                        <button id="btn-registro" class="mw-btn mw-btn-red">CREATE ACCOUNT</button>
+                    </div>
+                    
+                    <button id="btn-cerrar-login" class="mw-btn-cancel">CANCELAR X</button>
+                    <p id="msj-login" class="mw-msj"></p>
+                </div>
+            </div>
+        </div>
+        <p class="mw-footer">BY REGISTERING YOU AGREE TO OUR TERMS & PRIVACY POLICY</p>
     </div>
 
     <!-- MODAL RECLAMAR -->
