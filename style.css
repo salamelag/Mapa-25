@@ -257,11 +257,6 @@ body, html { margin: 0; padding: 0; height: 100%; font-family: var(--mono); }
     border-right: 1px solid #333c4a;
     min-height: 50px;
 }
-.bc-color-box {
-    width: 32px; height: 24px;
-    background: #333; margin-right: 12px;
-    border: 1px solid #000;
-}
 .bc-textos { display: flex; flex-direction: column; }
 .bc-nombre { font-size: 14px; font-weight: bold; letter-spacing: 0.05em; }
 .bc-lider { font-size: 10px; color: #888; margin-top: 2px; }
@@ -279,7 +274,7 @@ body, html { margin: 0; padding: 0; height: 100%; font-family: var(--mono); }
 }
 .bc-flex-row { flex: 1; }
 
-.bc-input, .bc-select {
+.bc-input {
     background: #111418;
     border: 1px solid #333c4a;
     color: #ccc;
@@ -289,7 +284,26 @@ body, html { margin: 0; padding: 0; height: 100%; font-family: var(--mono); }
     border-radius: 2px;
     flex: 1;
 }
-.bc-input:focus, .bc-select:focus { outline: none; border-color: #00bfff; }
+
+.bc-select {
+    appearance: none;
+    background: #111418 url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23cccccc%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E") no-repeat right 10px center;
+    background-size: 10px auto;
+    border: 1px solid #333c4a;
+    color: #ccc;
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 8px 25px 8px 12px;
+    border-radius: 2px;
+    flex: 1;
+    cursor: pointer;
+}
+.bc-input:focus { outline: none; border-color: #00bfff; }
+.bc-select:focus { 
+    outline: none; 
+    border-color: #00bfff; 
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2300bfff%22%20d%3D%22M287%20223a17.6%2017.6%200%200%201-13%205.4H18.4c-5%200-9.3-1.8-12.9-5.4A17.6%2017.6%200%200%201%200%20210.2c0-5%201.8-9.3%205.4-12.9l128-127.9c3.6-3.6%207.8-5.4%2012.8-5.4s9.2%201.8%2012.8%205.4L287%20197.4c3.5%203.5%205.4%207.8%205.4%2012.8%200%205-1.9%209.2-5.5%2012.8z%22%2F%3E%3C%2Fsvg%3E");
+}
 
 .bc-btn {
     padding: 8px 16px;

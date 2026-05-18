@@ -257,27 +257,35 @@ async function mostrarPanelTerritorio(ejercitoId, tituloRegion) {
 function renderizarRelaciones(ejercitoId) {
     const cont = document.getElementById('territorio-relaciones');
     const rel = todasLasRelaciones.filter(r => r.ejercito_a === ejercitoId || r.ejercito_b === ejercitoId);
-    if (rel.length === 0) { cont.innerHTML = '<span class="rel-vacio">Sin relaciones registradas</span>'; return; }
-    cont.innerHTML = rel.map(r => {
-        const otroId = r.ejercito_a === ejercitoId ? r.ejercito_b : r.ejercito_a;
-        const nombre = todosLosEjercitos[otroId]?.nombre || otroId;
-        
-        let color = '#555';
-        let texto = r.tipo.toUpperCase();
-        
-        if (r.estado === 'Pendiente') {
-            color = '#ff8c00'; // Naranja
-            texto = 'ALIANZA PENDIENTE';
-        } else {
-            color = r.tipo === 'Aliado' ? '#32CD32' : r.tipo === 'Enemigo' ? '#cc3333' : '#555';
-        }
-        
-        const borde = color;
-        return `<div class="rel-item" style="border-left-color:${borde}">
-            <span>${nombre}</span>
-            <span style="color:${color}">${texto}</span>
-        </div>`;
-    }).join('');
+    
+    let html = '';
+    if (rel.length === 0) { 
+        html = '<span class="rel-vacio">Todos los demás ejércitos son NEUTRALES.</span>'; 
+    } else {
+        html = rel.map(r => {
+            const otroId = r.ejercito_a === ejercitoId ? r.ejercito_b : r.ejercito_a;
+            const nombre = todosLosEjercitos[otroId]?.nombre || otroId;
+            
+            let color = '#555';
+            let texto = r.tipo.toUpperCase();
+            
+            if (r.estado === 'Pendiente') {
+                color = '#ff8c00'; // Naranja
+                texto = 'ALIANZA PENDIENTE';
+            } else {
+                color = r.tipo === 'Aliado' ? '#32CD32' : r.tipo === 'Enemigo' ? '#cc3333' : '#555';
+            }
+            
+            const borde = color;
+            return `<div class="rel-item" style="border-left-color:${borde}">
+                <span>${nombre}</span>
+                <span style="color:${color}">${texto}</span>
+            </div>`;
+        }).join('');
+        html += '<div style="font-size:9px;color:#666;margin-top:8px;font-family:var(--mono);">* El resto del mundo es Neutral.</div>';
+    }
+    
+    cont.innerHTML = html;
 }
 
 function cerrarPanelTerritorio() { 

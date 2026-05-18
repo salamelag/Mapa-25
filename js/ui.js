@@ -5,9 +5,6 @@ document.getElementById('btn-panel-control').onclick = () => {
     document.getElementById('bc-nombre').innerText = e ? e.nombre : ejercitoActual;
     document.getElementById('bc-lider').innerText = e ? (e.lider || usuarioActual.email) : usuarioActual.email;
     document.getElementById('bc-desc').value = e?.descripcion || '';
-    if (e && e.color) {
-        document.getElementById('bc-color').style.background = e.color;
-    }
     cargarRelacionesPanel();
     document.getElementById('barra-comando').classList.remove('oculto');
 };
