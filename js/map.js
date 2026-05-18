@@ -250,12 +250,35 @@ async function mostrarPanelTerritorio(ejercitoId, tituloRegion) {
     
     // Logica de acciones diplomaticas
     window.territorioInspeccionado = ejercitoId;
+    const esZonaNeutra = ejercitoId === 'FK_Zone' || ejercitoId === 'Colombia_Conflict';
+    const esPropioEjercito = ejercitoActual && ejercitoActual === ejercitoId;
+
     const boxDiplo = document.getElementById('ter-acciones-diplo');
     if (boxDiplo) {
-        if (ejercitoActual && ejercitoActual !== ejercitoId && ejercitoId !== 'FK_Zone' && ejercitoId !== 'Colombia_Conflict') {
+        if (ejercitoActual && !esPropioEjercito && !esZonaNeutra) {
             boxDiplo.classList.remove('oculto');
         } else {
             boxDiplo.classList.add('oculto');
+        }
+    }
+
+    // Logica de suministros: solo si es comandante, NO es su propio eje, y la relacion NO es Enemigo
+    const boxSuministros = document.getElementById('ter-suministros');
+    if (boxSuministros) {
+        if (ejercitoActual && !esPropioEjercito && !esZonaNeutra) {
+            // Verificar si la relacion con ese ejercito es Enemigo
+            const relacion = todasLasRelaciones.find(r =>
+                (r.ejercito_a === ejercitoActual && r.ejercito_b === ejercitoId) ||
+                (r.ejercito_b === ejercitoActual && r.ejercito_a === ejercitoId)
+            );
+            const esEnemigo = relacion && relacion.tipo === 'Enemigo' && relacion.estado === 'Aprobado';
+            if (esEnemigo) {
+                boxSuministros.classList.add('oculto');
+            } else {
+                boxSuministros.classList.remove('oculto');
+            }
+        } else {
+            boxSuministros.classList.add('oculto');
         }
     }
 
@@ -264,6 +287,25 @@ async function mostrarPanelTerritorio(ejercitoId, tituloRegion) {
     panel.classList.add('entrando');
     setTimeout(() => panel.classList.remove('entrando'), 280);
 }
+
+// --- Boton decorativo de suministros ---
+document.getElementById('btn-enviar-suministro').onclick = () => {
+    const btn = document.getElementById('btn-enviar-suministro');
+    const msj = document.getElementById('ter-msj-suministro');
+    const tipo = document.getElementById('ter-sel-suministro').value;
+    const nombres = { armas:'Armas', municion:'Municion', gasolina:'Gasolina', medicamentos:'Medicamentos', alimentos:'Alimentos', vehiculos:'Vehiculos', explosivos:'Explosivos' };
+    btn.disabled = true;
+    btn.innerText = '...';
+    msj.style.color = 'yellow';
+    msj.innerText = 'Enviando ' + (nombres[tipo] || tipo) + '...';
+    setTimeout(() => {
+        msj.style.color = '#32CD32';
+        msj.innerText = '✓ ' + (nombres[tipo] || tipo) + ' enviados con exito.';
+        btn.disabled = false;
+        btn.innerText = 'ENVIAR';
+        setTimeout(() => msj.innerText = '', 4000);
+    }, 2200);
+};
 
 function renderizarRelaciones(ejercitoId) {
     const cont = document.getElementById('territorio-relaciones');
