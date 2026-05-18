@@ -288,23 +288,63 @@ async function mostrarPanelTerritorio(ejercitoId, tituloRegion) {
     setTimeout(() => panel.classList.remove('entrando'), 280);
 }
 
-// --- Boton decorativo de suministros ---
-document.getElementById('btn-enviar-suministro').onclick = () => {
+// --- Boton de suministros → Edge Function real ---
+document.getElementById('btn-enviar-suministro').onclick = async () => {
     const btn = document.getElementById('btn-enviar-suministro');
     const msj = document.getElementById('ter-msj-suministro');
     const tipo = document.getElementById('ter-sel-suministro').value;
-    const nombres = { armas:'Armas', municion:'Municion', gasolina:'Gasolina', medicamentos:'Medicamentos', alimentos:'Alimentos', vehiculos:'Vehiculos', explosivos:'Explosivos' };
+    const destino = window.territorioInspeccionado;
+
+    if (!destino) return;
+
     btn.disabled = true;
     btn.innerText = '...';
     msj.style.color = 'yellow';
-    msj.innerText = 'Enviando ' + (nombres[tipo] || tipo) + '...';
-    setTimeout(() => {
-        msj.style.color = '#32CD32';
-        msj.innerText = '✓ ' + (nombres[tipo] || tipo) + ' enviados con exito.';
-        btn.disabled = false;
-        btn.innerText = 'ENVIAR';
-        setTimeout(() => msj.innerText = '', 4000);
-    }, 2200);
+    msj.innerText = 'Enviando ' + tipo + '...';
+
+    try {
+        // Obtener el JWT del usuario autenticado
+        const { data: { session } } = await clienteSupabase.auth.getSession();
+        if (!session) {
+            msj.style.color = '#cc3333';
+            msj.innerText = 'Error: no autenticado.';
+            btn.disabled = false; btn.innerText = 'ENVIAR';
+            return;
+        }
+
+        const res = await fetch(
+            'https://hwyedjcprazfnzgvughb.supabase.co/functions/v1/enviar-suministros',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type':  'application/json',
+                    'Authorization': `Bearer ${session.access_token}`,
+                },
+                body: JSON.stringify({
+                    ejercito_destino: destino,
+                    tipo_suministro:  tipo,
+                }),
+            }
+        );
+
+        const data = await res.json();
+
+        if (res.ok) {
+            msj.style.color = '#32CD32';
+            msj.innerText = '✓ ' + (data.mensaje || 'Enviado con exito');
+        } else {
+            msj.style.color = '#cc3333';
+            msj.innerText = '✗ ' + (data.error || 'Error al enviar');
+        }
+    } catch (e) {
+        msj.style.color = '#cc3333';
+        msj.innerText = '✗ Error de red.';
+        console.error('Error suministros:', e);
+    }
+
+    btn.disabled = false;
+    btn.innerText = 'ENVIAR';
+    setTimeout(() => msj.innerText = '', 5000);
 };
 
 function renderizarRelaciones(ejercitoId) {
