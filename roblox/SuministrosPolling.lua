@@ -10,8 +10,10 @@ local RUTA_CAMION = {
     Vector3.new(100, 5, 40),
     Vector3.new(150, 5, 0),
 }
-local VELOCIDAD        = 25
+local VELOCIDAD        = 8
 local TIEMPO_DESTINO   = 30
+local DISTANCIA_AVANCE = 40
+local EJE_MOVIMIENTO   = "RightVector"
 
 local HttpService  = game:GetService("HttpService")
 local TweenService = game:GetService("TweenService")
@@ -80,8 +82,20 @@ local function animarCamion(tipo, origen, destino)
         end
     end)
 
-    local distanciaAvance = 40
-    local targetCFrame = spawnCFrame + (spawnCFrame.LookVector * distanciaAvance)
+    local vectorAvance
+    if EJE_MOVIMIENTO == "RightVector" then
+        vectorAvance = spawnCFrame.RightVector
+    elseif EJE_MOVIMIENTO == "-RightVector" then
+        vectorAvance = -spawnCFrame.RightVector
+    elseif EJE_MOVIMIENTO == "LookVector" then
+        vectorAvance = spawnCFrame.LookVector
+    elseif EJE_MOVIMIENTO == "-LookVector" then
+        vectorAvance = -spawnCFrame.LookVector
+    else
+        vectorAvance = spawnCFrame.LookVector
+    end
+
+    local targetCFrame = spawnCFrame + (vectorAvance * DISTANCIA_AVANCE)
     
     local cframeValue = Instance.new("CFrameValue")
     cframeValue.Value = spawnCFrame
@@ -89,7 +103,7 @@ local function animarCamion(tipo, origen, destino)
         camion:PivotTo(nuevoCFrame)
     end)
 
-    local duracionViaje = distanciaAvance / VELOCIDAD
+    local duracionViaje = DISTANCIA_AVANCE / VELOCIDAD
     local tweenInfoViaje = TweenInfo.new(duracionViaje, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
     local tweenEntrada = TweenService:Create(cframeValue, tweenInfoViaje, {Value = targetCFrame})
     tweenEntrada:Play()
