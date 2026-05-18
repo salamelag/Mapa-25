@@ -1,6 +1,4 @@
 // --- HERRAMIENTAS COMANDANTE ---
-document.getElementById('btn-cerrar-bc').onclick = () => document.getElementById('barra-comando').classList.add('oculto');
-
 document.getElementById('btn-guardar-desc').onclick = async () => {
     const desc = document.getElementById('bc-desc').value;
     const msj = document.getElementById('msj-herramientas');
