@@ -252,7 +252,7 @@ async function mostrarPanelTerritorio(ejercitoId, tituloRegion) {
     window.territorioInspeccionado = ejercitoId;
     const boxDiplo = document.getElementById('ter-acciones-diplo');
     if (boxDiplo) {
-        if (window.ejercitoActual && window.ejercitoActual !== ejercitoId && ejercitoId !== 'FK_Zone' && ejercitoId !== 'Colombia_Conflict') {
+        if (ejercitoActual && ejercitoActual !== ejercitoId && ejercitoId !== 'FK_Zone' && ejercitoId !== 'Colombia_Conflict') {
             boxDiplo.classList.remove('oculto');
         } else {
             boxDiplo.classList.add('oculto');
