@@ -22,16 +22,18 @@
     <div id="panel-visitante" class="panel-ui oculto" style="width: auto; padding-right: 20px;">
         <div class="panel-tag">MODO VISITANTE</div>
         <div class="auth-row" style="justify-content: flex-start; gap: 20px;">
-            <div class="live-indicator">
-                <span class="live-dot-red"></span>
-                <span id="num-visitantes" style="color:white; font-family:var(--mono); font-size:11px; font-weight:bold;">—</span>
-                <span class="live-text">LIVE</span>
-            </div>
             <div class="btn-group-auth" style="margin-top:0;">
                 <button id="btn-abrir-login" class="btn-auth-link">LOGIN</button>
                 <button id="btn-abrir-registro" class="btn-auth-solid">JOIN FREE</button>
             </div>
         </div>
+    </div>
+
+    <!-- LIVE INDICATOR (siempre visible) -->
+    <div id="live-widget" class="live-widget">
+        <span class="live-dot-red"></span>
+        <span id="num-visitantes" style="color:white; font-family:var(--mono); font-size:11px; font-weight:bold;">—</span>
+        <span class="live-text">LIVE</span>
     </div>
 
     <!-- HUD SOLDADO -->
