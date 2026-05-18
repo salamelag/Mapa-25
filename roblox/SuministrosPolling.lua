@@ -1,65 +1,30 @@
---[[
-    ============================================================
-    SuministrosPolling.lua  (VERSION RECOMENDADA)
-    Script de SERVIDOR para Roblox Studio
-    
-    VENTAJA sobre MessagingService:
-    - Funciona en cualquier juego de cualquier creador
-    - No necesita API Key de Roblox Open Cloud
-    - Solo necesita el ID del ejercito en el mapa (ej: "25_REMASTER")
-    
-    INSTRUCCIONES:
-    1. En Roblox Studio → ServerScriptService
-    2. Nuevo Script de servidor → pegar este codigo
-    3. Cambiar EJERCITO_ID al ID de TU ejercito en el mapa
-    4. Crear modelo "CamionSuministros" en ReplicatedStorage con:
-       - Part principal llamada "PrimaryPart" (set as PrimaryPart)
-       - Model o Part hijo llamado "Cartel" (opcional, para mostrar texto)
-    ============================================================
---]]
-
--- ============================================================
--- CONFIGURACION — editar esto
--- ============================================================
-
--- ID de TU ejercito en el mapa (ver tabla de ejercitos)
 local EJERCITO_ID = "25_REMASTER"
-
--- Cuantos segundos esperar entre cada verificacion de nuevos suministros
 local INTERVALO_POLLING = 5
 
--- URL base del backend (no cambiar)
 local SUPABASE_URL  = "https://hwyedjcprazfnzgvughb.supabase.co"
 local SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh3eWVkamNwcmF6Zm56Z3Z1Z2hiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5MDU4MzMsImV4cCI6MjA5NDQ4MTgzM30.BQPEDKZXu5HvNoZ0Dft3u8Bnp74SE78Lb-eZWYEEN8A"
 
--- Ruta del camion (ajustar a tu mapa)
 local RUTA_CAMION = {
     Vector3.new(0,   5, 100),
     Vector3.new(50,  5, 80),
     Vector3.new(100, 5, 40),
     Vector3.new(150, 5, 0),
 }
-local VELOCIDAD        = 25   -- studs/segundo
-local TIEMPO_DESTINO   = 8    -- segundos en destino
-
--- ============================================================
--- LOGICA
--- ============================================================
+local VELOCIDAD        = 25
+local TIEMPO_DESTINO   = 30
 
 local HttpService  = game:GetService("HttpService")
 local TweenService = game:GetService("TweenService")
 
--- Guardamos el ultimo ID procesado para no repetir eventos
 local ultimoIdProcesado = 0
 
--- Colores por tipo de suministro
 local COLORES = {
     armas        = Color3.fromRGB(200, 50,  50),
     municion     = Color3.fromRGB(220, 110, 30),
     gasolina     = Color3.fromRGB(50,  150, 220),
     medicamentos = Color3.fromRGB(50,  200, 100),
     alimentos    = Color3.fromRGB(200, 180, 50),
-    vehiculos    = Color3.fromRGB(100, 100, 200),
+    repuestos    = Color3.fromRGB(100, 100, 200),
     explosivos   = Color3.fromRGB(220, 50,  220),
 }
 
@@ -73,55 +38,82 @@ local function animarCamion(tipo, origen, destino)
     local camion = plantilla:Clone()
     camion.Parent = workspace
 
-    -- Posicionar en inicio
-    if camion.PrimaryPart then
-        camion:SetPrimaryPartCFrame(CFrame.new(RUTA_CAMION[1]))
+    if not camion.PrimaryPart then
+        warn("[SUMINISTROS] ADVERTENCIA: El modelo 'CamionSuministros' NO tiene asignado un 'PrimaryPart' en las propiedades de Roblox Studio. Se recomienda asignar una parte central (como 'Chasis') como PrimaryPart para evitar desfases.")
     end
 
-    -- Actualizar cartel si existe
-    local cartel = camion:FindFirstChild("Cartel", true)
-    if cartel and cartel:IsA("SurfaceGui") then
-        local label = cartel:FindFirstChildWhichIsA("TextLabel")
-        if label then
-            label.Text = string.format("SUMINISTROS\n%s\nDE: %s\nPARA: %s", tipo:upper(), origen, destino)
-            if cartel.Parent and COLORES[tipo] then
-                cartel.BackgroundColor3 = COLORES[tipo]
+    local spawnCFrame
+    local spawnPart = workspace:FindFirstChild("SpawnCamion") or workspace:FindFirstChild("CamionSpawn")
+    if spawnPart and spawnPart:IsA("BasePart") then
+        spawnCFrame = spawnPart.CFrame
+        print("[SUMINISTROS] Usando SpawnPart:", spawnPart:GetFullName())
+    else
+        spawnCFrame = CFrame.new(RUTA_CAMION[1])
+        print("[SUMINISTROS] Usando RUTA_CAMION[1]")
+    end
+
+    camion:PivotTo(spawnCFrame)
+
+    local cartelesEncontrados = 0
+    for _, descendant in ipairs(camion:GetDescendants()) do
+        if descendant:IsA("TextLabel") or descendant:IsA("TextBox") or descendant:IsA("TextButton") then
+            if descendant.Name == "Texto" or descendant.Name == "TextLabel" then
+                cartelesEncontrados = cartelesEncontrados + 1
+                local nombreOrigenLimpio = string.gsub(origen, "_", " ")
+                descendant.Text = string.format("SUMINISTROS\n%s\nDE: %s", tipo:upper(), nombreOrigenLimpio)
             end
         end
     end
-
-    -- Mover por la ruta
-    for _, punto in ipairs(RUTA_CAMION) do
-        local part = camion.PrimaryPart
-        if not part then break end
-        local distancia = (part.Position - punto).Magnitude
-        local duracion  = math.max(0.1, distancia / VELOCIDAD)
-        local tween = TweenService:Create(
-            part,
-            TweenInfo.new(duracion, Enum.EasingStyle.Linear),
-            { CFrame = CFrame.new(punto) }
-        )
-        tween:Play()
-        tween.Completed:Wait()
+    
+    if cartelesEncontrados == 0 then
+        warn("[SUMINISTROS] No se encontro ninguna etiqueta de texto ('Texto' o 'TextLabel') en el camion")
     end
 
-    -- Anuncio en chat del servidor
-    local StarterGui = game:GetService("StarterGui")
     pcall(function()
-        StarterGui:SetCore("ChatMakeSystemMessage", {
-            Text     = string.format("[LOGISTICA] Convoy de '%s' llego a '%s' con %s", origen, destino, tipo:upper()),
-            Color    = COLORES[tipo] or Color3.fromRGB(50, 200, 100),
-            Font     = Enum.Font.GothamBold,
-            FontSize = Enum.FontSize.Size18,
-        })
+        local chatEvent = game:GetService("ReplicatedStorage"):FindFirstChild("SuministrosChatEvent")
+        if chatEvent then
+            local nombreOrigenLimpio = string.gsub(origen, "_", " ")
+            chatEvent:FireAllClients(
+                string.format("[LOGISTICA] Convoy de '%s' llego con %s", nombreOrigenLimpio, tipo:upper()),
+                COLORES[tipo] or Color3.fromRGB(50, 200, 100)
+            )
+        end
     end)
 
+    local distanciaAvance = 40
+    local targetCFrame = spawnCFrame + (spawnCFrame.LookVector * distanciaAvance)
+    
+    local cframeValue = Instance.new("CFrameValue")
+    cframeValue.Value = spawnCFrame
+    local connection = cframeValue.Changed:Connect(function(nuevoCFrame)
+        camion:PivotTo(nuevoCFrame)
+    end)
+
+    local duracionViaje = distanciaAvance / VELOCIDAD
+    local tweenInfoViaje = TweenInfo.new(duracionViaje, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local tweenEntrada = TweenService:Create(cframeValue, tweenInfoViaje, {Value = targetCFrame})
+    tweenEntrada:Play()
+    tweenEntrada.Completed:Wait()
+
     task.wait(TIEMPO_DESTINO)
+
+    local giraCFrame = targetCFrame * CFrame.Angles(0, math.rad(180), 0)
+    local tweenInfoGiro = TweenInfo.new(2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
+    local tweenGiro = TweenService:Create(cframeValue, tweenInfoGiro, {Value = giraCFrame})
+    tweenGiro:Play()
+    tweenGiro.Completed:Wait()
+
+    local retornoCFrame = spawnCFrame * CFrame.Angles(0, math.rad(180), 0)
+    local tweenSalida = TweenService:Create(cframeValue, tweenInfoViaje, {Value = retornoCFrame})
+    tweenSalida:Play()
+    tweenSalida.Completed:Wait()
+
+    connection:Disconnect()
+    cframeValue:Destroy()
     camion:Destroy()
 end
 
 local function verificarNuevosEventos()
-    -- Consultar suministros nuevos para ESTE ejercito que no se han procesado
     local url = string.format(
         "%s/rest/v1/historial_suministros?ejercito_destino=eq.%s&id=gt.%d&order=id.asc&select=id,tipo_suministro,ejercito_origen,ejercito_destino",
         SUPABASE_URL,
@@ -157,14 +149,47 @@ local function verificarNuevosEventos()
             evento.id, evento.tipo_suministro, evento.ejercito_origen
         ))
 
-        -- Necesitamos el nombre del origen (solo tenemos el ID)
-        -- Lo simplificamos con el ID por ahora; se puede mejorar con un join
         task.spawn(animarCamion, evento.tipo_suministro, evento.ejercito_origen, EJERCITO_ID)
     end
 end
 
--- Inicializar: cargar el ultimo ID ya existente para no reproducir eventos viejos
+local function inicializarChatSeguro()
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    local chatEvent = ReplicatedStorage:FindFirstChild("SuministrosChatEvent")
+    if not chatEvent then
+        chatEvent = Instance.new("RemoteEvent")
+        chatEvent.Name = "SuministrosChatEvent"
+        chatEvent.Parent = ReplicatedStorage
+    end
+
+    local StarterPlayer = game:GetService("StarterPlayer")
+    local clientScript = StarterPlayer.StarterPlayerScripts:FindFirstChild("SuministrosClient")
+    if not clientScript then
+        clientScript = Instance.new("LocalScript")
+        clientScript.Name = "SuministrosClient"
+        clientScript.Source = [[
+            local ReplicatedStorage = game:GetService("ReplicatedStorage")
+            local StarterGui = game:GetService("StarterGui")
+            local chatEvent = ReplicatedStorage:WaitForChild("SuministrosChatEvent")
+
+            chatEvent.OnClientEvent:Connect(function(text, color)
+                pcall(function()
+                    StarterGui:SetCore("ChatMakeSystemMessage", {
+                        Text = text,
+                        Color = color,
+                        Font = Enum.Font.GothamBold,
+                        FontSize = Enum.FontSize.Size18,
+                    })
+                end)
+            end)
+        ]]
+        clientScript.Parent = StarterPlayer.StarterPlayerScripts
+    end
+end
+
 local function inicializar()
+    pcall(inicializarChatSeguro)
+
     local url = string.format(
         "%s/rest/v1/historial_suministros?ejercito_destino=eq.%s&order=id.desc&limit=1&select=id",
         SUPABASE_URL,
@@ -191,12 +216,10 @@ local function inicializar()
     print("[SUMINISTROS] Polling activo para ejercito: " .. EJERCITO_ID)
     print("[SUMINISTROS] Verificando cada " .. INTERVALO_POLLING .. " segundos")
 
-    -- Loop de polling
     while true do
         task.wait(INTERVALO_POLLING)
         verificarNuevosEventos()
     end
 end
 
--- Habilitar HttpService (debe estar habilitado en Game Settings → Security)
 inicializar()
