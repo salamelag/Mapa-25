@@ -261,11 +261,21 @@ function renderizarRelaciones(ejercitoId) {
     cont.innerHTML = rel.map(r => {
         const otroId = r.ejercito_a === ejercitoId ? r.ejercito_b : r.ejercito_a;
         const nombre = todosLosEjercitos[otroId]?.nombre || otroId;
-        const color = r.tipo === 'Aliado' ? '#32CD32' : r.tipo === 'Enemigo' ? '#cc3333' : '#555';
+        
+        let color = '#555';
+        let texto = r.tipo.toUpperCase();
+        
+        if (r.estado === 'Pendiente') {
+            color = '#ff8c00'; // Naranja
+            texto = 'ALIANZA PENDIENTE';
+        } else {
+            color = r.tipo === 'Aliado' ? '#32CD32' : r.tipo === 'Enemigo' ? '#cc3333' : '#555';
+        }
+        
         const borde = color;
         return `<div class="rel-item" style="border-left-color:${borde}">
             <span>${nombre}</span>
-            <span style="color:${color}">${r.tipo.toUpperCase()}</span>
+            <span style="color:${color}">${texto}</span>
         </div>`;
     }).join('');
 }

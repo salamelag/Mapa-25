@@ -87,45 +87,48 @@
         </div>
     </div>
 
-    <!-- PANEL HERRAMIENTAS COMANDANTE -->
-    <div id="panel-herramientas" class="panel-herramientas oculto">
-        <div class="herr-header">
-            <span>SALA DE MANDO</span>
-            <button id="btn-cerrar-herramientas" class="btn-cerrar-herr">x</button>
+    <!-- BARRA DE COMANDO INFERIOR -->
+    <div id="barra-comando" class="barra-comando oculto">
+        <div class="bc-info">
+            <div class="bc-color-box" id="bc-color"></div>
+            <div class="bc-textos">
+                <div class="bc-nombre" id="bc-nombre">—</div>
+                <div class="bc-lider" id="bc-lider">—</div>
+            </div>
         </div>
 
-        <div class="herr-bloque">
-            <div class="herr-label">EJERCITO</div>
-            <div class="herr-valor" id="hud-ejercito-nombre">—</div>
-            <div class="herr-label mt6">COMANDANTE</div>
-            <div class="herr-valor" id="hud-ejercito-lider">—</div>
+        <div class="bc-separador"></div>
+
+        <div class="bc-seccion bc-flex-row">
+            <input type="text" id="bc-desc" class="bc-input" placeholder="Lore / Descripcion del ejercito...">
+            <button id="btn-guardar-desc" class="bc-btn verde">GUARDAR</button>
         </div>
 
-        <div class="herr-bloque">
-            <div class="herr-label">DESCRIPCION / LORE</div>
-            <textarea id="hud-ejercito-desc" class="herr-textarea" placeholder="Historia, lore o descripcion del ejercito..."></textarea>
-            <button id="btn-guardar-desc" class="herr-btn verde">Guardar Descripcion</button>
-        </div>
+        <div class="bc-separador"></div>
 
-        <div class="herr-bloque">
-            <div class="herr-label">GESTION DIPLOMATICA</div>
-            <select id="sel-ejercito-relacion" class="herr-select">
-                <option value="" disabled selected>-- Selecciona ejercito --</option>
+        <div class="bc-seccion bc-flex-row">
+            <select id="bc-sel-ej" class="bc-select">
+                <option value="" disabled selected>-- Ejercito --</option>
             </select>
-            <select id="sel-tipo-relacion" class="herr-select mt6">
-                <option value="Aliado">Aliado</option>
+            <select id="bc-sel-tipo" class="bc-select">
+                <option value="Aliado">Aliar</option>
                 <option value="Neutral" selected>Neutral</option>
-                <option value="Enemigo">Enemigo</option>
+                <option value="Enemigo">Guerra</option>
             </select>
-            <button id="btn-guardar-relacion" class="herr-btn azul">Actualizar Relacion</button>
+            <button id="btn-actualizar-rel" class="bc-btn azul">ENVIAR</button>
         </div>
 
-        <div class="herr-bloque">
-            <div class="herr-label">RELACIONES ACTUALES</div>
-            <div id="lista-relaciones-panel" class="herr-lista-rel">—</div>
+        <div class="bc-separador"></div>
+
+        <div class="bc-seccion bc-notificaciones">
+            <div class="bc-label">PETICIONES DE ALIANZA:</div>
+            <div id="bc-lista-peticiones" class="bc-lista">
+                <span class="bc-vacio">Sin peticiones</span>
+            </div>
         </div>
 
-        <p id="msj-herramientas" class="herr-msj"></p>
+        <button id="btn-cerrar-bc" class="bc-btn-cerrar">X</button>
+        <p id="msj-herramientas" class="bc-msj"></p>
     </div>
 
 

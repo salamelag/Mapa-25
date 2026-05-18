@@ -228,106 +228,99 @@ body, html { margin: 0; padding: 0; height: 100%; font-family: var(--mono); }
 }
 .btn-cerrar-ter:hover { color: #cc3333; }
 
-/* ==================== PANEL HERRAMIENTAS ==================== */
-.panel-herramientas {
-    position: absolute;
-    top: 20px; right: 248px;
-    z-index: 1001;
-    background: var(--fondo);
-    border: 1px solid var(--borde);
-    border-top: 3px solid gold;
-    color: white;
-    width: 255px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.85);
-    max-height: 82vh;
-    overflow-y: auto;
-}
-
-.herr-header {
+/* ==================== BARRA DE COMANDO (Bottom HUD) ==================== */
+.barra-comando {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95%;
+    max-width: 1200px;
+    background: #1a1e24; /* Color oscuro base (estilo segunda imagen) */
+    border-radius: 4px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 11px 14px;
-    background: rgba(255,215,0,0.06);
-    border-bottom: 1px solid #1a1a00;
-    font-family: var(--cond);
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: gold;
-    position: sticky; top: 0; z-index: 2;
-    background: rgba(6,10,6,0.99);
+    padding: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+    border: 1px solid #333c4a;
+    font-family: var(--mono);
+    color: white;
 }
-.btn-cerrar-herr {
-    background: none; border: none; color: #333;
-    cursor: pointer; font-size: 13px; font-family: var(--mono);
-    transition: color 0.15s;
-}
-.btn-cerrar-herr:hover { color: #cc3333; }
 
-.herr-bloque {
-    padding: 11px 14px;
-    border-bottom: 1px solid #0d150d;
+.bc-info {
+    display: flex;
+    align-items: center;
+    background: #111418;
+    padding: 10px 20px;
+    border-radius: 4px 0 0 4px;
+    border-right: 1px solid #333c4a;
+    min-height: 50px;
 }
-.herr-label {
-    font-size: 9px;
-    letter-spacing: 2px;
-    color: gold;
-    opacity: 0.55;
-    margin-bottom: 5px;
-    font-family: var(--cond);
-    font-weight: 600;
+.bc-color-box {
+    width: 32px; height: 24px;
+    background: #333; margin-right: 12px;
+    border: 1px solid #000;
 }
-.herr-label.mt6 { margin-top: 8px; }
-.herr-valor { font-size: 12px; color: #ccc; word-break: break-all; }
+.bc-textos { display: flex; flex-direction: column; }
+.bc-nombre { font-size: 14px; font-weight: bold; letter-spacing: 0.05em; }
+.bc-lider { font-size: 10px; color: #888; margin-top: 2px; }
 
-.herr-textarea {
-    width: 100%;
-    min-height: 68px;
-    resize: vertical;
-    background: #080d08;
-    border: 1px solid var(--borde);
+.bc-separador {
+    width: 1px; height: 30px;
+    background: #333c4a;
+    margin: 0 15px;
+}
+
+.bc-seccion {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.bc-flex-row { flex: 1; }
+
+.bc-input, .bc-select {
+    background: #111418;
+    border: 1px solid #333c4a;
     color: #ccc;
     font-family: var(--mono);
     font-size: 12px;
-    padding: 7px;
-    box-sizing: border-box;
-    margin-top: 5px;
-    line-height: 1.4;
+    padding: 8px 12px;
+    border-radius: 2px;
+    flex: 1;
 }
-.herr-select {
-    width: 100%;
-    padding: 7px;
-    background: #080d08;
-    border: 1px solid var(--borde);
-    color: #ccc;
-    font-family: var(--mono);
-    font-size: 12px;
-    box-sizing: border-box;
-}
-.herr-select.mt6 { margin-top: 6px; }
-.herr-btn {
-    width: 100%;
-    padding: 8px;
+.bc-input:focus, .bc-select:focus { outline: none; border-color: #00bfff; }
+
+.bc-btn {
+    padding: 8px 16px;
     font-family: var(--cond);
-    font-weight: 700;
-    font-size: 13px;
+    font-weight: bold;
+    font-size: 12px;
     letter-spacing: 1px;
     border: none;
+    border-radius: 2px;
     cursor: pointer;
-    margin-top: 8px;
-    transition: opacity 0.15s;
+    transition: opacity 0.2s;
+    height: 100%;
 }
-.herr-btn:hover { opacity: 0.82; }
-.herr-btn.verde { background: var(--verde); color: #050a05; }
-.herr-btn.azul  { background: #00bfff; color: #050a05; }
-.herr-lista-rel { display: flex; flex-direction: column; gap: 3px; margin-top: 6px; }
-.herr-msj { margin: 8px 0 0; font-size: 11px; text-align: center; min-height: 15px; padding: 0 14px 10px; }
+.bc-btn:hover { opacity: 0.8; }
+.bc-btn.verde { background: var(--verde); color: #050a05; }
+.bc-btn.azul { background: #00bfff; color: #050a05; }
+.bc-btn.rojo { background: #cc3333; color: white; padding: 4px 8px; font-size: 10px; }
 
-/* Scrollbar */
-.panel-herramientas::-webkit-scrollbar { width: 3px; }
-.panel-herramientas::-webkit-scrollbar-track { background: #060a06; }
-.panel-herramientas::-webkit-scrollbar-thumb { background: var(--borde); }
+.bc-notificaciones {
+    display: flex; flex-direction: column; justify-content: center;
+    min-width: 200px; max-width: 300px;
+}
+.bc-label { font-size: 9px; color: #888; margin-bottom: 4px; letter-spacing: 0.1em; }
+.bc-lista { display: flex; flex-direction: column; gap: 4px; max-height: 40px; overflow-y: auto; }
+.bc-vacio { font-size: 10px; color: #555; }
+.bc-peticion-item { display: flex; justify-content: space-between; align-items: center; background: #111418; padding: 4px 8px; font-size: 10px; border-radius: 2px; }
+
+.bc-cerrar-box { padding: 0 15px; }
+.bc-btn-cerrar { background: transparent; color: #888; border: none; font-size: 16px; cursor: pointer; padding: 15px; }
+.bc-btn-cerrar:hover { color: #cc3333; }
+.bc-msj { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 11px; color: yellow; }
 
 /* ==================== WIDGET LIVE (Modo Visitante) ==================== */
 .auth-row {
