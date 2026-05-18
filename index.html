@@ -46,7 +46,6 @@
     <div id="panel-comandante" class="panel-ui oculto">
         <div class="panel-tag" style="color:gold;border-color:gold;">ALTO MANDO</div>
         <p id="texto-comandante">—</p>
-        <button id="btn-panel-control" style="background:gold;color:#0a0a05;margin-bottom:5px;">Herramientas Militares</button>
         <button id="btn-cerrar-sesion-cmd" style="background:#8b1a1a;">Cerrar Sesion</button>
     </div>
 
@@ -80,6 +79,19 @@
             </div>
         </div>
 
+        <div id="ter-acciones-diplo" class="ter-seccion oculto" style="margin-top: 15px; border-top: 1px dashed #333; padding-top: 15px;">
+            <div class="ter-label" style="color:gold;">ACCION DIPLOMATICA</div>
+            <div style="display:flex; gap:6px; margin-top:8px;">
+                <select id="ter-sel-tipo" class="bc-select" style="flex:1;">
+                    <option value="Aliado">Proponer Alianza</option>
+                    <option value="Neutral" selected>Declarar Neutralidad</option>
+                    <option value="Enemigo">Declarar Guerra</option>
+                </select>
+                <button id="btn-ter-enviar-rel" class="bc-btn azul">ENVIAR</button>
+            </div>
+            <p id="ter-msj-diplo" style="font-size:10px; color:yellow; margin-top:6px; min-height: 12px;"></p>
+        </div>
+
         <div class="ter-footer">
             <a id="territorio-btn-juego" href="#" target="_blank" class="btn-ir-juego">
                 IR AL JUEGO EN ROBLOX
@@ -101,20 +113,6 @@
         <div class="bc-seccion bc-flex-row">
             <input type="text" id="bc-desc" class="bc-input" placeholder="Lore / Descripcion del ejercito...">
             <button id="btn-guardar-desc" class="bc-btn verde">GUARDAR</button>
-        </div>
-
-        <div class="bc-separador"></div>
-
-        <div class="bc-seccion bc-flex-row">
-            <select id="bc-sel-ej" class="bc-select">
-                <option value="" disabled selected>-- Ejercito --</option>
-            </select>
-            <select id="bc-sel-tipo" class="bc-select">
-                <option value="Aliado">Aliar</option>
-                <option value="Neutral" selected>Neutral</option>
-                <option value="Enemigo">Guerra</option>
-            </select>
-            <button id="btn-actualizar-rel" class="bc-btn azul">ENVIAR</button>
         </div>
 
         <div class="bc-separador"></div>

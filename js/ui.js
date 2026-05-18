@@ -1,14 +1,4 @@
 // --- HERRAMIENTAS COMANDANTE ---
-document.getElementById('btn-panel-control').onclick = () => {
-    if (!ejercitoActual) return;
-    const e = todosLosEjercitos[ejercitoActual];
-    document.getElementById('bc-nombre').innerText = e ? e.nombre : ejercitoActual;
-    document.getElementById('bc-lider').innerText = e ? (e.lider || usuarioActual.email) : usuarioActual.email;
-    document.getElementById('bc-desc').value = e?.descripcion || '';
-    cargarRelacionesPanel();
-    document.getElementById('barra-comando').classList.remove('oculto');
-};
-
 document.getElementById('btn-cerrar-bc').onclick = () => document.getElementById('barra-comando').classList.add('oculto');
 
 document.getElementById('btn-guardar-desc').onclick = async () => {
@@ -26,11 +16,11 @@ document.getElementById('btn-guardar-desc').onclick = async () => {
     }
 };
 
-document.getElementById('btn-actualizar-rel').onclick = async () => {
-    const ejB = document.getElementById('bc-sel-ej').value;
-    const tipo = document.getElementById('bc-sel-tipo').value;
-    const msj = document.getElementById('msj-herramientas');
-    if (!ejB) { msj.innerText = "Selecciona un ejercito."; msj.style.color = "#cc3333"; return; }
+document.getElementById('btn-ter-enviar-rel').onclick = async () => {
+    if (!window.territorioInspeccionado) return;
+    const ejB = window.territorioInspeccionado;
+    const tipo = document.getElementById('ter-sel-tipo').value;
+    const msj = document.getElementById('ter-msj-diplo');
     
     msj.innerText = "Enviando..."; msj.style.color = "yellow";
     
@@ -48,7 +38,10 @@ document.getElementById('btn-actualizar-rel').onclick = async () => {
         msj.innerText = estado === 'Pendiente' ? "Peticion de alianza enviada" : tipo + " establecido";
         msj.style.color = "#32CD32";
         await cargarDatosEjercitos();
-        cargarRelacionesPanel();
+        // Recargar la UI del territorio actual para reflejar cambios
+        if (typeof mostrarPanelTerritorio === 'function') {
+            mostrarPanelTerritorio(window.territorioInspeccionado, document.getElementById('territorio-nombre').innerText);
+        }
         setTimeout(() => msj.innerText = '', 3000);
     }
 };
@@ -90,12 +83,14 @@ function cargarRelacionesPanel() {
     }
 }
 
-function poblarSelectorRelaciones() {
-    const sel = document.getElementById('bc-sel-ej');
-    sel.innerHTML = '<option value="" disabled selected>-- Ejercito --</option>';
-    Object.entries(todosLosEjercitos).forEach(([id, e]) => {
-        if (id !== ejercitoActual) sel.innerHTML += `<option value="${id}">${e.nombre}</option>`;
-    });
+function abrirBarraComando() {
+    if (!ejercitoActual) return;
+    const e = todosLosEjercitos[ejercitoActual];
+    document.getElementById('bc-nombre').innerText = e ? e.nombre : ejercitoActual;
+    document.getElementById('bc-lider').innerText = e ? (e.lider || usuarioActual.email) : usuarioActual.email;
+    document.getElementById('bc-desc').value = e?.descripcion || '';
+    cargarRelacionesPanel();
+    document.getElementById('barra-comando').classList.remove('oculto');
 }
 
 async function verificarAprobacionHUD() {
@@ -111,7 +106,7 @@ async function verificarAprobacionHUD() {
             .update({ lider: data[0].usuario_roblox, email_lider: usuarioActual.email })
             .eq('id', ejercitoActual);
         if (todosLosEjercitos[ejercitoActual]) todosLosEjercitos[ejercitoActual].lider = data[0].usuario_roblox;
-        poblarSelectorRelaciones();
+        abrirBarraComando();
     } else {
         document.getElementById('panel-usuario').classList.remove('oculto');
         document.getElementById('texto-usuario').innerText = usuarioActual.email;

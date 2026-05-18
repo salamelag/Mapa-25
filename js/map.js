@@ -247,6 +247,17 @@ async function mostrarPanelTerritorio(ejercitoId, tituloRegion) {
     }
 
     document.getElementById('territorio-btn-juego').href = LINKS_JUEGO[ejercitoId] || '#';
+    
+    // Logica de acciones diplomaticas
+    window.territorioInspeccionado = ejercitoId;
+    const boxDiplo = document.getElementById('ter-acciones-diplo');
+    if (boxDiplo) {
+        if (window.ejercitoActual && window.ejercitoActual !== ejercitoId && ejercitoId !== 'FK_Zone' && ejercitoId !== 'Colombia_Conflict') {
+            boxDiplo.classList.remove('oculto');
+        } else {
+            boxDiplo.classList.add('oculto');
+        }
+    }
 
     panel.classList.remove('oculto');
     void panel.offsetWidth;
