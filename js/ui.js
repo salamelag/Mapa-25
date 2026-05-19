@@ -89,6 +89,10 @@ function abrirBarraComando() {
     document.getElementById('bc-desc').value = e?.descripcion || '';
     cargarRelacionesPanel();
     document.getElementById('barra-comando').classList.remove('oculto');
+    
+    // Mostrar la barra de simbolos tacticos
+    const barraSimbolos = document.getElementById('barra-simbolos');
+    if (barraSimbolos) barraSimbolos.classList.remove('oculto');
 }
 
 async function verificarAprobacionHUD() {
@@ -110,3 +114,106 @@ async function verificarAprobacionHUD() {
         document.getElementById('texto-usuario').innerText = usuarioActual.email;
     }
 }
+
+// --- LOGICA DE GALERIA DE SIMBOLOS TACTICOS ---
+document.addEventListener('DOMContentLoaded', () => {
+    const btnAgregar = document.getElementById('btn-agregar-simbolo');
+    const btnCerrar = document.getElementById('btn-cerrar-galeria');
+    const panelGaleria = document.getElementById('panel-galeria-simbolos');
+
+    if (btnAgregar && panelGaleria) {
+        btnAgregar.onclick = () => {
+            panelGaleria.classList.toggle('oculto');
+        };
+    }
+
+    if (btnCerrar && panelGaleria) {
+        btnCerrar.onclick = () => {
+            panelGaleria.classList.add('oculto');
+        };
+    }
+
+    // Manejo de Tabs (Formaciones vs Busqueda)
+    const tabs = document.querySelectorAll('.pg-tab');
+    const categoriasBar = document.querySelector('.pg-categorias');
+    const pgContenido = document.getElementById('pg-contenido');
+
+    tabs.forEach(tab => {
+        tab.onclick = function() {
+            tabs.forEach(t => t.classList.remove('pg-tab-activo'));
+            this.classList.add('pg-tab-activo');
+
+            const targetTab = this.dataset.tab;
+            if (targetTab === 'busqueda') {
+                if (categoriasBar) categoriasBar.style.display = 'none';
+                pgContenido.innerHTML = `
+                    <div style="padding: 20px 0; text-align: center;">
+                        <input type="text" class="bc-input" placeholder="Buscar simbolo MSS..." style="width:100%; box-sizing:border-box; margin-bottom:15px;">
+                        <p style="color: #666; font-size:11px;">Escribe una palabra clave (ej. infanteria, blindado)</p>
+                    </div>
+                `;
+            } else {
+                if (categoriasBar) categoriasBar.style.display = 'flex';
+                // Recargar contenido original recargando la pagina o simplemente recargando el div de formaciones
+                location.reload(); // Para simplicidad, o simplemente reconstruimos.
+            }
+        };
+    });
+
+    // Manejo de colapsables de sección
+    const titulosSeccion = document.querySelectorAll('.pg-seccion-titulo');
+    titulosSeccion.forEach(titulo => {
+        titulo.onclick = function() {
+            const grid = this.nextElementSibling;
+            const flecha = this.querySelector('.pg-flecha');
+            
+            if (grid) {
+                const estaOculto = grid.classList.toggle('oculto');
+                if (flecha) {
+                    flecha.innerText = estaOculto ? '►' : '▼';
+                }
+            }
+        };
+    });
+
+    // Manejo de click en categorías del toolbar superior (Smooth Scroll + Expandir)
+    const catBtns = document.querySelectorAll('.pg-cat');
+    catBtns.forEach(btn => {
+        btn.onclick = function() {
+            catBtns.forEach(b => b.classList.remove('pg-cat-activo'));
+            this.classList.add('pg-cat-activo');
+
+            const catId = this.dataset.cat;
+            const targetSec = document.querySelector(`.pg-seccion[data-seccion="${catId}"]`);
+            if (targetSec) {
+                // Expandir la sección primero
+                const grid = targetSec.querySelector('.pg-seccion-grid');
+                const flecha = targetSec.querySelector('.pg-flecha');
+                if (grid) grid.classList.remove('oculto');
+                if (flecha) flecha.innerText = '▼';
+
+                // Hacer scroll suave hacia ella
+                targetSec.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        };
+    });
+
+    // Click en un símbolo (Decorativo por ahora)
+    const simbolos = document.querySelectorAll('.pg-simbolo');
+    simbolos.forEach(simb => {
+        simb.onclick = function() {
+            const titulo = this.getAttribute('title');
+            const msj = document.getElementById('msj-herramientas');
+            if (msj) {
+                msj.innerText = `Modo colocación: Haz click en el mapa para colocar "${titulo}"`;
+                msj.style.color = "gold";
+                
+                // Efecto de feedback visual temporal
+                this.style.borderColor = "gold";
+                setTimeout(() => {
+                    this.style.borderColor = "";
+                }, 1000);
+            }
+        };
+    });
+});
