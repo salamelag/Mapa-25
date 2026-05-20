@@ -793,12 +793,10 @@ body, html { margin: 0; padding: 0; height: 100%; font-family: var(--mono); }
 .pg-simbolo {
     width: 50px;
     height: 35px;
-    border: 1px solid #000;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    background: #8bd3f4; /* Light blue NATO background */
     transition: transform 0.2s, box-shadow 0.2s;
     box-sizing: border-box;
 }
@@ -869,13 +867,9 @@ body, html { margin: 0; padding: 0; height: 100%; font-family: var(--mono); }
     z-index: 99999;
     width: 50px;
     height: 35px;
-    border: 1px solid #000;
-    background: #8bd3f4;
 }
 
 .map-simbolo-tactico {
-    border: 1px solid #000;
-    background: #8bd3f4;
     display: flex;
     align-items: center;
     justify-content: center;
