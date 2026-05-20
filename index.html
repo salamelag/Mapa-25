@@ -139,7 +139,8 @@
             </div>
         </div>
 
-        <div id="ter-acciones-diplo" class="ter-seccion oculto" style="margin-top: 15px; border-top: 1px dashed #333; padding-top: 15px;">
+        <!-- Solo comandantes: Acciones de diplo -->
+        <div id="ter-acciones-diplo" class="ter-seccion oculto" style="margin-top: 15px; padding-top: 15px;">
             <div class="ter-label" style="color:gold;">ACCION DIPLOMATICA</div>
             <div style="display:flex; gap:6px; margin-top:8px;">
                 <select id="ter-sel-tipo" class="bc-select" style="flex:1;">
@@ -149,11 +150,10 @@
                 </select>
                 <button id="btn-ter-enviar-rel" class="bc-btn azul">ENVIAR</button>
             </div>
-            <p id="ter-msj-diplo" style="font-size:10px; color:yellow; margin-top:6px; min-height: 12px;"></p>
         </div>
 
-        <!-- SUMINISTROS (solo visible si no es enemigo y es comandante) -->
-        <div id="ter-suministros" class="ter-seccion oculto" style="margin-top: 15px; border-top: 1px dashed #333; padding-top: 15px;">
+        <!-- Logistica / Suministros (solo aliados o dueño) -->
+        <div id="ter-suministros" class="ter-seccion oculto" style="margin-top: 15px; padding-top: 15px;">
             <div class="ter-label" style="color:#32CD32;">ENVIAR SUMINISTROS</div>
             <div style="display:flex; gap:6px; margin-top:8px; align-items:center;">
                 <span style="font-size:10px; color:#888; font-family:var(--mono); white-space:nowrap;">TIPO:</span>

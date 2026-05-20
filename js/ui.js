@@ -18,7 +18,7 @@ document.getElementById('btn-ter-enviar-rel').onclick = async () => {
     if (!window.territorioInspeccionado) return;
     const ejB = window.territorioInspeccionado;
     const tipo = document.getElementById('ter-sel-tipo').value;
-    const msj = document.getElementById('ter-msj-diplo');
+    const msj = document.getElementById('msj-herramientas');
     
     msj.innerText = "Enviando..."; msj.style.color = "yellow";
     
