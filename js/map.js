@@ -26,7 +26,27 @@ function iniciarMapa() {
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
-    map.on('click', () => { cerrarPanelTerritorio(); limpiarSeleccion(); });
+    map.on('click', (e) => { 
+        if (window.simboloEnMano) {
+            const icon = L.divIcon({
+                className: 'map-simbolo-tactico',
+                html: window.simboloEnMano.html,
+                iconSize: [40, 28],
+                iconAnchor: [20, 14]
+            });
+            L.marker(e.latlng, { icon: icon, title: window.simboloEnMano.titulo }).addTo(map);
+            
+            // Limpiar estado
+            window.simboloEnMano = null;
+            if (window.simboloGhost) {
+                document.body.removeChild(window.simboloGhost);
+                window.simboloGhost = null;
+            }
+        } else {
+            cerrarPanelTerritorio(); 
+            limpiarSeleccion(); 
+        }
+    });
     configurarMarcadores();
     cargarGeografia();
 }

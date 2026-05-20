@@ -71,84 +71,92 @@
         </div>
 
         <!-- Categorias toolbar -->
-        <div class="pg-categorias">
-            <button class="pg-cat pg-cat-activo" data-cat="infanteria">
-                <span class="pg-cat-icono">⚔</span>
-                <span class="pg-cat-nombre">Infanteria</span>
+        <div class="pg-categorias-scrollable">
+            <button class="pg-cat-nuevo" data-cat="favoritos">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+                <span class="pg-cat-nuevo-nombre">Favoritos</span>
             </button>
-            <button class="pg-cat" data-cat="blindados">
-                <span class="pg-cat-icono">◆</span>
-                <span class="pg-cat-nombre">Blindados</span>
+            <button class="pg-cat-nuevo pg-cat-nuevo-activo" data-cat="formaciones">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="1.5" fill="none"><rect x="4" y="6" width="16" height="12" rx="1"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>
+                <span class="pg-cat-nuevo-nombre">Formaciones</span>
             </button>
-            <button class="pg-cat" data-cat="artilleria">
-                <span class="pg-cat-icono">●</span>
-                <span class="pg-cat-nombre">Artilleria</span>
+            <button class="pg-cat-nuevo" data-cat="equipos">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="1.5" fill="none"><circle cx="12" cy="12" r="10"/><path d="M9 8v8 M15 8v8 M9 12h6"/></svg>
+                <span class="pg-cat-nuevo-nombre">Equipos e Instalaciones</span>
             </button>
-            <button class="pg-cat" data-cat="aviacion">
-                <span class="pg-cat-icono">▲</span>
-                <span class="pg-cat-nombre">Aviacion</span>
+            <button class="pg-cat-nuevo" data-cat="graficos">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M9 20v-5a4 4 0 0 1 4-4h6"/><path d="M15 7l4 4-4 4"/></svg>
+                <span class="pg-cat-nuevo-nombre">Gráficos Tácticos</span>
             </button>
-            <button class="pg-cat" data-cat="ingenieros">
-                <span class="pg-cat-icono">⛏</span>
-                <span class="pg-cat-nombre">Ingenieros</span>
+            <button class="pg-cat-nuevo" data-cat="especificos">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="currentColor"/></svg>
+                <span class="pg-cat-nuevo-nombre">Símbolos específicos de función</span>
             </button>
-            <button class="pg-cat" data-cat="logistica">
-                <span class="pg-cat-icono">⊕</span>
-                <span class="pg-cat-nombre">Logistica</span>
-            </button>
-            <button class="pg-cat" data-cat="especiales">
-                <span class="pg-cat-icono">★</span>
-                <span class="pg-cat-nombre">F. Especiales</span>
+            <button class="pg-cat-nuevo" data-cat="metoc">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M4 22V2"/><path d="M4 4l14 2-2 4 2 4-14 2"/></svg>
+                <span class="pg-cat-nuevo-nombre">Metoc</span>
             </button>
         </div>
 
         <!-- Contenido de simbolos -->
         <div class="pg-contenido" id="pg-contenido">
-            <!-- Seccion Infanteria -->
-            <div class="pg-seccion" data-seccion="infanteria">
+            
+            <div class="pg-seccion">
+                <button class="pg-seccion-titulo">
+                    <span>Símbolos de Unidad (vacío)</span><span class="pg-flecha">►</span>
+                </button>
+                <div class="pg-seccion-grid oculto"></div>
+            </div>
+
+            <div class="pg-seccion">
+                <button class="pg-seccion-titulo">
+                    <span>Grandes Formaciones, Comando y Control</span><span class="pg-flecha">►</span>
+                </button>
+                <div class="pg-seccion-grid oculto"></div>
+            </div>
+
+            <div class="pg-seccion">
                 <button class="pg-seccion-titulo pg-seccion-abierta">
-                    <span>Infanteria</span><span class="pg-flecha">▼</span>
+                    <span>Infantería, Tanques y Artillería</span><span class="pg-flecha">▼</span>
                 </button>
                 <div class="pg-seccion-grid">
-                    <div class="pg-simbolo" title="Infanteria"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><line x1="2" y1="2" x2="58" y2="38" stroke="#000" stroke-width="1.5"/><line x1="58" y1="2" x2="2" y2="38" stroke="#000" stroke-width="1.5"/></svg></div>
-                    <div class="pg-simbolo" title="Infanteria Ligera"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><line x1="2" y1="2" x2="58" y2="38" stroke="#000" stroke-width="1.5"/><line x1="58" y1="2" x2="2" y2="38" stroke="#000" stroke-width="1.5"/><text x="30" y="32" text-anchor="middle" font-size="14" font-weight="bold">L</text></svg></div>
-                    <div class="pg-simbolo" title="Infanteria Mecanizada"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><line x1="2" y1="2" x2="58" y2="38" stroke="#000" stroke-width="1.5"/><line x1="58" y1="2" x2="2" y2="38" stroke="#000" stroke-width="1.5"/><line x1="30" y1="2" x2="30" y2="38" stroke="#000" stroke-width="1.5"/></svg></div>
-                    <div class="pg-simbolo" title="Infanteria de Montana"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><line x1="2" y1="2" x2="58" y2="38" stroke="#000" stroke-width="1.5"/><line x1="58" y1="2" x2="2" y2="38" stroke="#000" stroke-width="1.5"/><polyline points="20,6 30,18 40,6" fill="none" stroke="#000" stroke-width="1.5"/></svg></div>
-                    <div class="pg-simbolo" title="Infanteria Aerotransportada"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><line x1="2" y1="2" x2="58" y2="38" stroke="#000" stroke-width="1.5"/><line x1="58" y1="2" x2="2" y2="38" stroke="#000" stroke-width="1.5"/><ellipse cx="22" cy="32" rx="8" ry="4" fill="none" stroke="#000" stroke-width="1"/><ellipse cx="38" cy="32" rx="8" ry="4" fill="none" stroke="#000" stroke-width="1"/></svg></div>
+                    <div class="pg-subseccion">
+                        <div class="pg-subseccion-titulo">Infantería</div>
+                        <div class="pg-subseccion-grid">
+                            <div class="pg-simbolo" title="Infanteria"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><line x1="2" y1="2" x2="58" y2="38" stroke="#000" stroke-width="1.5"/><line x1="58" y1="2" x2="2" y2="38" stroke="#000" stroke-width="1.5"/></svg></div>
+                            <div class="pg-simbolo" title="Infanteria Ligera"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><line x1="2" y1="2" x2="58" y2="38" stroke="#000" stroke-width="1.5"/><line x1="58" y1="2" x2="2" y2="38" stroke="#000" stroke-width="1.5"/><text x="30" y="32" text-anchor="middle" font-size="14" font-weight="bold">L</text></svg></div>
+                            <div class="pg-simbolo" title="Infanteria Mecanizada"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><line x1="2" y1="2" x2="58" y2="38" stroke="#000" stroke-width="1.5"/><line x1="58" y1="2" x2="2" y2="38" stroke="#000" stroke-width="1.5"/><line x1="30" y1="2" x2="30" y2="38" stroke="#000" stroke-width="1.5"/></svg></div>
+                            <div class="pg-simbolo" title="Infanteria de Montana"><img style="width:100%; height:100%; object-fit:contain;" src="data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIGJhc2VQcm9maWxlPSJmdWxsIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHdpZHRoPSI5OCIgaGVpZ2h0PSI2MiIgdmlld0JveD0iMCAwIDE5NjAgMTI0MCI+PG1ldGFkYXRhPjxyZGY6UkRGPjxyZGY6RGVzY3JpcHRpb24+PGRjOmRlc2NyaXB0aW9uPk1TUy9NaWxYLUV4cG9ydCB0byBTVkc8L2RjOmRlc2NyaXB0aW9uPjxkYzpwdWJsaXNoZXI+Z3Mtc29mdCBBRzwvZGM6cHVibGlzaGVyPjwvcmRmOkRlc2NyaXB0aW9uPjwvcmRmOlJERj48L21ldGFkYXRhPjxkZWZzPjxtYXNrIGlkPSJjcjAiIG1hc2tVbml0cz0idXNlclNwYWNlT25Vc2UiIHg9IjAiIHk9IjAiIHdpZHRoPSIxOTYwIiBoZWlnaHQ9IjEyNDAiIGZpbGwtcnVsZT0ibm9uemVybyI+PHVzZSB4bGluazpocmVmPSIjY3AwIiBmaWxsPSJ3aGl0ZSIvPjwvbWFzaz48cG9seWdvbiBpZD0iY3AwIiBwb2ludHM9IjEwNiw0NiAxODExLDQ2IDE4MTEsMTE3MSAxMDYsMTE3MSIgc2hhcGUtcmVuZGVyaW5nPSJjcmlzcEVkZ2VzIi8+PHN0eWxlIHR5cGU9InRleHQvY3NzIj4uc3MwIHtmaWxsOnJnYigxMjgsMjI0LDI1NSk7c3Ryb2tlOmJsYWNrO3N0cm9rZS13aWR0aDo0MTt9LmJzMCB7ZmlsbDpibGFjaztzdHJva2U6bm9uZTt9LnBzMCB7ZmlsbDpub25lO3N0cm9rZTpibGFjaztzdHJva2Utd2lkdGg6MjA7fTwvc3R5bGU+PC9kZWZzPjxnIHRyYW5zZm9ybT0ibWF0cml4KDEuMTMxMTkgMCAwIDEuMTI4MTkgMTA2LjA3NiA0NS45MjU5KSI+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjE1MDAiIGhlaWdodD0iMTAwMCIgY2xhc3M9InNzMCIvPjwvZz48ZyBtYXNrPSJ1cmwoI2NyMCkiPjxnIHRyYW5zZm9ybT0ibWF0cml4KDEuMTMxMTkgMCAwIDEuMTI4MTkgMTA2LjA3NiA0NS45MjU5KSI+PHBvbHlnb24gcG9pbnRzPSI1NzgsOTA4IDkyMiw5MDggNzUwLDU3NCIgY2xhc3M9ImJzMCIvPjxwb2x5bGluZSBwb2ludHM9IjAsMSAxNDk4LDEwMDAiIGNsYXNzPSJwczAiLz48cG9seWxpbmUgcG9pbnRzPSIxNDk4LDEgMCwxMDAwIiBjbGFzcz0icHMwIi8+PC9nPjwvZz48L3N2Zz4="></div>
+                            <div class="pg-simbolo" title="Infanteria Aerotransportada"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><line x1="2" y1="2" x2="58" y2="38" stroke="#000" stroke-width="1.5"/><line x1="58" y1="2" x2="2" y2="38" stroke="#000" stroke-width="1.5"/><ellipse cx="22" cy="32" rx="8" ry="4" fill="none" stroke="#000" stroke-width="1"/><ellipse cx="38" cy="32" rx="8" ry="4" fill="none" stroke="#000" stroke-width="1"/></svg></div>
+                        </div>
+                    </div>
+
+                    <div class="pg-subseccion">
+                        <div class="pg-subseccion-titulo">Blindados / Orugas</div>
+                        <div class="pg-subseccion-grid">
+                            <div class="pg-simbolo" title="Blindado"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><ellipse cx="14" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><line x1="14" y1="6" x2="46" y2="6" stroke="#000" stroke-width="1.5"/><line x1="14" y1="34" x2="46" y2="34" stroke="#000" stroke-width="1.5"/><ellipse cx="46" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/></svg></div>
+                            <div class="pg-simbolo" title="Tanque"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><ellipse cx="14" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><line x1="14" y1="6" x2="46" y2="6" stroke="#000" stroke-width="1.5"/><line x1="14" y1="34" x2="46" y2="34" stroke="#000" stroke-width="1.5"/><ellipse cx="46" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><line x1="2" y1="2" x2="58" y2="38" stroke="#000" stroke-width="1.5"/><line x1="58" y1="2" x2="2" y2="38" stroke="#000" stroke-width="1.5"/></svg></div>
+                            <div class="pg-simbolo" title="Reconocimiento"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><ellipse cx="14" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><line x1="14" y1="6" x2="46" y2="6" stroke="#000" stroke-width="1.5"/><line x1="14" y1="34" x2="46" y2="34" stroke="#000" stroke-width="1.5"/><ellipse cx="46" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><line x1="2" y1="38" x2="58" y2="2" stroke="#000" stroke-width="1.5"/></svg></div>
+                            <div class="pg-simbolo" title="APC"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><ellipse cx="14" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><line x1="14" y1="6" x2="46" y2="6" stroke="#000" stroke-width="1.5"/><line x1="14" y1="34" x2="46" y2="34" stroke="#000" stroke-width="1.5"/><ellipse cx="46" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><polygon points="22,28 30,14 38,28" fill="#000"/></svg></div>
+                        </div>
+                    </div>
+
+                    <div class="pg-subseccion">
+                        <div class="pg-subseccion-titulo">Artillería</div>
+                        <div class="pg-subseccion-grid">
+                            <div class="pg-simbolo" title="Artilleria"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><circle cx="30" cy="24" r="8" fill="#000"/></svg></div>
+                            <div class="pg-simbolo" title="Artilleria Autopropulsada"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><ellipse cx="14" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><line x1="14" y1="6" x2="46" y2="6" stroke="#000" stroke-width="1.5"/><line x1="14" y1="34" x2="46" y2="34" stroke="#000" stroke-width="1.5"/><ellipse cx="46" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><circle cx="30" cy="24" r="6" fill="#000"/></svg></div>
+                            <div class="pg-simbolo" title="Misiles"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><polygon points="26,10 30,2 34,10" fill="#000"/><line x1="30" y1="6" x2="30" y2="34" stroke="#000" stroke-width="1.5"/><circle cx="30" cy="34" r="4" fill="none" stroke="#000" stroke-width="1.5"/></svg></div>
+                            <div class="pg-simbolo" title="Mortero"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><polyline points="20,30 30,10 40,30" fill="none" stroke="#000" stroke-width="1.5"/></svg></div>
+                            <div class="pg-simbolo" title="Cohetes"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><polyline points="20,18 30,6 40,18" fill="none" stroke="#000" stroke-width="1.5"/><polyline points="22,26 30,16 38,26" fill="none" stroke="#000" stroke-width="1.5"/><circle cx="30" cy="34" r="4" fill="#000"/></svg></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Seccion Blindados -->
-            <div class="pg-seccion" data-seccion="blindados">
+            <div class="pg-seccion">
                 <button class="pg-seccion-titulo">
-                    <span>Blindados / Orugas</span><span class="pg-flecha">►</span>
-                </button>
-                <div class="pg-seccion-grid oculto">
-                    <div class="pg-simbolo" title="Blindado"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><ellipse cx="14" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><line x1="14" y1="6" x2="46" y2="6" stroke="#000" stroke-width="1.5"/><line x1="14" y1="34" x2="46" y2="34" stroke="#000" stroke-width="1.5"/><ellipse cx="46" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/></svg></div>
-                    <div class="pg-simbolo" title="Tanque"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><ellipse cx="14" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><line x1="14" y1="6" x2="46" y2="6" stroke="#000" stroke-width="1.5"/><line x1="14" y1="34" x2="46" y2="34" stroke="#000" stroke-width="1.5"/><ellipse cx="46" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><line x1="2" y1="2" x2="58" y2="38" stroke="#000" stroke-width="1.5"/><line x1="58" y1="2" x2="2" y2="38" stroke="#000" stroke-width="1.5"/></svg></div>
-                    <div class="pg-simbolo" title="Reconocimiento"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><ellipse cx="14" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><line x1="14" y1="6" x2="46" y2="6" stroke="#000" stroke-width="1.5"/><line x1="14" y1="34" x2="46" y2="34" stroke="#000" stroke-width="1.5"/><ellipse cx="46" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><line x1="2" y1="38" x2="58" y2="2" stroke="#000" stroke-width="1.5"/></svg></div>
-                    <div class="pg-simbolo" title="APC"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><ellipse cx="14" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><line x1="14" y1="6" x2="46" y2="6" stroke="#000" stroke-width="1.5"/><line x1="14" y1="34" x2="46" y2="34" stroke="#000" stroke-width="1.5"/><ellipse cx="46" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><polygon points="22,28 30,14 38,28" fill="#000"/></svg></div>
-                </div>
-            </div>
-
-            <!-- Seccion Artilleria -->
-            <div class="pg-seccion" data-seccion="artilleria">
-                <button class="pg-seccion-titulo">
-                    <span>Artilleria</span><span class="pg-flecha">►</span>
-                </button>
-                <div class="pg-seccion-grid oculto">
-                    <div class="pg-simbolo" title="Artilleria"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><circle cx="30" cy="24" r="8" fill="#000"/></svg></div>
-                    <div class="pg-simbolo" title="Artilleria Autopropulsada"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><ellipse cx="14" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><line x1="14" y1="6" x2="46" y2="6" stroke="#000" stroke-width="1.5"/><line x1="14" y1="34" x2="46" y2="34" stroke="#000" stroke-width="1.5"/><ellipse cx="46" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><circle cx="30" cy="24" r="6" fill="#000"/></svg></div>
-                    <div class="pg-simbolo" title="Misiles"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><polygon points="26,10 30,2 34,10" fill="#000"/><line x1="30" y1="6" x2="30" y2="34" stroke="#000" stroke-width="1.5"/><circle cx="30" cy="34" r="4" fill="none" stroke="#000" stroke-width="1.5"/></svg></div>
-                    <div class="pg-simbolo" title="Mortero"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><polyline points="20,30 30,10 40,30" fill="none" stroke="#000" stroke-width="1.5"/></svg></div>
-                    <div class="pg-simbolo" title="Cohetes"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><polyline points="20,18 30,6 40,18" fill="none" stroke="#000" stroke-width="1.5"/><polyline points="22,26 30,16 38,26" fill="none" stroke="#000" stroke-width="1.5"/><circle cx="30" cy="34" r="4" fill="#000"/></svg></div>
-                </div>
-            </div>
-
-            <!-- Seccion Aviacion -->
-            <div class="pg-seccion" data-seccion="aviacion">
-                <button class="pg-seccion-titulo">
-                    <span>Aviacion</span><span class="pg-flecha">►</span>
+                    <span>Aviación</span><span class="pg-flecha">►</span>
                 </button>
                 <div class="pg-seccion-grid oculto">
                     <div class="pg-simbolo" title="Aviacion de Combate"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><polyline points="10,34 30,6 50,34" fill="none" stroke="#000" stroke-width="1.5"/></svg></div>
@@ -157,10 +165,9 @@
                 </div>
             </div>
 
-            <!-- Seccion Ingenieros -->
-            <div class="pg-seccion" data-seccion="ingenieros">
+            <div class="pg-seccion">
                 <button class="pg-seccion-titulo">
-                    <span>Ingenieros</span><span class="pg-flecha">►</span>
+                    <span>Ingeniero</span><span class="pg-flecha">►</span>
                 </button>
                 <div class="pg-seccion-grid oculto">
                     <div class="pg-simbolo" title="Ingeniero de Combate"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><rect x="16" y="12" x2="44" width="28" height="16" fill="none" stroke="#000" stroke-width="1.5"/><line x1="30" y1="12" x2="30" y2="22" stroke="#000" stroke-width="1.5"/></svg></div>
@@ -168,10 +175,16 @@
                 </div>
             </div>
 
-            <!-- Seccion Logistica -->
-            <div class="pg-seccion" data-seccion="logistica">
+            <div class="pg-seccion">
                 <button class="pg-seccion-titulo">
-                    <span>Logistica y Medica</span><span class="pg-flecha">►</span>
+                    <span>Comando, Transmisión y GE</span><span class="pg-flecha">►</span>
+                </button>
+                <div class="pg-seccion-grid oculto"></div>
+            </div>
+
+            <div class="pg-seccion">
+                <button class="pg-seccion-titulo">
+                    <span>Logística y Médica</span><span class="pg-flecha">►</span>
                 </button>
                 <div class="pg-seccion-grid oculto">
                     <div class="pg-simbolo" title="Logistica"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><line x1="22" y1="20" x2="38" y2="20" stroke="#000" stroke-width="2"/><line x1="30" y1="12" x2="30" y2="28" stroke="#000" stroke-width="2"/></svg></div>
@@ -180,8 +193,7 @@
                 </div>
             </div>
 
-            <!-- Seccion Fuerzas Especiales -->
-            <div class="pg-seccion" data-seccion="especiales">
+            <div class="pg-seccion">
                 <button class="pg-seccion-titulo">
                     <span>Fuerzas Especiales</span><span class="pg-flecha">►</span>
                 </button>

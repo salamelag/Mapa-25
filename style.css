@@ -762,34 +762,126 @@ body, html { margin: 0; padding: 0; height: 100%; font-family: var(--mono); }
 }
 
 .pg-seccion-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     padding-top: 5px;
 }
 
+.pg-subseccion {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.pg-subseccion-titulo {
+    font-size: 11px;
+    color: #aaa;
+    margin-bottom: 5px;
+}
+
+.pg-subseccion-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
 .pg-simbolo {
-    aspect-ratio: 3/2;
-    border: 1px dashed var(--borde);
-    border-radius: 3px;
+    width: 50px;
+    height: 35px;
+    border: 1px solid #000;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    padding: 4px;
-    background: rgba(0,0,0,0.4);
-    transition: transform 0.2s, border-color 0.2s, background-color 0.2s;
+    background: #8bd3f4; /* Light blue NATO background */
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
 }
 
 .pg-simbolo:hover {
     transform: scale(1.08);
-    border-color: var(--verde);
-    background-color: rgba(50,205,50,0.08);
+    box-shadow: 0 0 8px rgba(255,255,255,0.8);
+    z-index: 10;
+    position: relative;
 }
 
-.pg-simbolo svg {
+.pg-simbolo svg, .pg-simbolo img {
     width: 100%;
     height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+/* Nuevas categorias scrollables estilo light-theme */
+.pg-categorias-scrollable {
+    display: flex;
+    gap: 5px;
+    padding: 8px 15px;
+    background: #fff;
+    border-bottom: 1px solid #ccc;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.pg-categorias-scrollable::-webkit-scrollbar { display: none; }
+
+.pg-cat-nuevo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 70px;
+    padding: 8px 4px;
+    background: #fff;
+    border: none;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.pg-cat-nuevo:hover {
+    background: #eef8ff;
+}
+
+.pg-cat-nuevo-activo {
+    background: #5cc4ff;
+    color: #000;
+    font-weight: bold;
+}
+
+.pg-cat-nuevo svg {
+    margin-bottom: 4px;
+}
+.pg-cat-nuevo-nombre {
+    font-size: 9px;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    line-height: 1.1;
+}
+
+.simbolo-ghost {
+    pointer-events: none;
+    position: absolute;
+    z-index: 99999;
+    width: 50px;
+    height: 35px;
+    border: 1px solid #000;
+    background: #8bd3f4;
+}
+
+.map-simbolo-tactico {
+    border: 1px solid #000;
+    background: #8bd3f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.map-simbolo-tactico svg, .map-simbolo-tactico img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 .pg-footer {

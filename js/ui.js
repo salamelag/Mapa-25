@@ -198,22 +198,38 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     });
 
-    // Click en un símbolo (Decorativo por ahora)
+    // Click en un símbolo -> Poner en mano y seguir cursor
     const simbolos = document.querySelectorAll('.pg-simbolo');
     simbolos.forEach(simb => {
-        simb.onclick = function() {
+        simb.onclick = function(e) {
+            e.stopPropagation();
             const titulo = this.getAttribute('title');
-            const msj = document.getElementById('msj-herramientas');
-            if (msj) {
-                msj.innerText = `Modo colocación: Haz click en el mapa para colocar "${titulo}"`;
-                msj.style.color = "gold";
-                
-                // Efecto de feedback visual temporal
-                this.style.borderColor = "gold";
-                setTimeout(() => {
-                    this.style.borderColor = "";
-                }, 1000);
+            const svgHtml = this.innerHTML;
+            
+            window.simboloEnMano = { titulo, html: svgHtml };
+            
+            if (window.simboloGhost) {
+                document.body.removeChild(window.simboloGhost);
             }
+            
+            window.simboloGhost = document.createElement('div');
+            window.simboloGhost.className = 'simbolo-ghost';
+            window.simboloGhost.innerHTML = svgHtml;
+            document.body.appendChild(window.simboloGhost);
+            
+            // Efecto visual temporal en la galería
+            this.style.boxShadow = "0 0 10px gold";
+            setTimeout(() => {
+                this.style.boxShadow = "none";
+            }, 1000);
         };
+    });
+
+    // Actualizar posicion del ghost (solo cuando hay símbolo en mano)
+    document.addEventListener('mousemove', (e) => {
+        if (window.simboloGhost) {
+            window.simboloGhost.style.left = (e.pageX + 15) + 'px';
+            window.simboloGhost.style.top = (e.pageY + 15) + 'px';
+        }
     });
 });
