@@ -602,10 +602,10 @@ body, html { margin: 0; padding: 0; height: 100%; font-family: var(--mono); }
 /* ==================== PANEL GALERIA DE SIMBOLOS ==================== */
 .panel-galeria {
     position: absolute;
-    right: 245px;
+    right: 320px;
     top: 20px;
     z-index: 1000;
-    width: 320px;
+    width: 380px;
     background: var(--fondo);
     border: 1px solid var(--borde);
     border-left: 3px solid var(--verde);
@@ -948,7 +948,7 @@ body, html { margin: 0; padding: 0; height: 100%; font-family: var(--mono); }
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 8px 4px;
+    padding: 10px 4px;
     background: transparent;
     border: none;
     color: #777;
@@ -958,12 +958,12 @@ body, html { margin: 0; padding: 0; height: 100%; font-family: var(--mono); }
 }
 
 .pg-cat-btn span {
-    font-size: 8px;
+    font-size: 10px;
     font-family: var(--cond);
     text-align: center;
     margin-top: 3px;
-    line-height: 1.1;
-    white-space: nowrap;
+    line-height: 1.2;
+    white-space: normal;
 }
 
 .pg-cat-btn:hover {
