@@ -121,27 +121,29 @@ const SIMBOLOS_DB = {
         label: 'Formaciones',
         secciones: [
             {
-                nombre: 'Infantería',
+                nombre: 'Símbolos de Unidad (vacío)',
                 simbolos: [
+                    { title: 'Símbolo de Combate Desconocido', svg: `<svg viewBox="0 0 60 40"><circle cx="30" cy="20" r="16" fill="#8bd3f4" stroke="#000" stroke-width="2"/><text x="30" y="26" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#000">?</text></svg>` },
+                    { title: 'Símbolo de Unidad (vacío)', svg: `<svg viewBox="0 0 60 40"><rect x="10" y="4" width="40" height="32" fill="#8bd3f4" stroke="#000" stroke-width="2"/></svg>` },
+                ]
+            },
+            {
+                nombre: 'Infantería, Blindados y Artillería',
+                simbolos: [
+                    { isSeparator: true, title: 'Infantería' },
                     { title: 'Infantería', svg: `<svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#8bd3f4" stroke="#000" stroke-width="2"/><line x1="2" y1="2" x2="58" y2="38" stroke="#000" stroke-width="1.5"/><line x1="58" y1="2" x2="2" y2="38" stroke="#000" stroke-width="1.5"/></svg>` },
                     { title: 'Infantería Ligera', svg: `<svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#8bd3f4" stroke="#000" stroke-width="2"/><line x1="2" y1="2" x2="58" y2="38" stroke="#000" stroke-width="1.5"/><line x1="58" y1="2" x2="2" y2="38" stroke="#000" stroke-width="1.5"/><text x="30" y="30" text-anchor="middle" font-size="13" font-weight="bold" fill="#000">L</text></svg>` },
                     { title: 'Infantería Mecanizada', svg: `<svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#8bd3f4" stroke="#000" stroke-width="2"/><line x1="2" y1="2" x2="58" y2="38" stroke="#000" stroke-width="1.5"/><line x1="58" y1="2" x2="2" y2="38" stroke="#000" stroke-width="1.5"/><line x1="30" y1="2" x2="30" y2="38" stroke="#000" stroke-width="1.5"/></svg>` },
                     { title: 'Infantería de Montaña', svg: `<svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#8bd3f4" stroke="#000" stroke-width="2"/><line x1="2" y1="2" x2="58" y2="38" stroke="#000" stroke-width="1.5"/><line x1="58" y1="2" x2="2" y2="38" stroke="#000" stroke-width="1.5"/><polygon points="20,34 30,14 40,34" fill="#000"/></svg>` },
                     { title: 'Infantería Aerotransportada', svg: `<svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#8bd3f4" stroke="#000" stroke-width="2"/><line x1="2" y1="2" x2="58" y2="38" stroke="#000" stroke-width="1.5"/><line x1="58" y1="2" x2="2" y2="38" stroke="#000" stroke-width="1.5"/><ellipse cx="22" cy="32" rx="8" ry="4" fill="none" stroke="#000"/><ellipse cx="38" cy="32" rx="8" ry="4" fill="none" stroke="#000"/></svg>` },
-                ]
-            },
-            {
-                nombre: 'Blindados / Orugas',
-                simbolos: [
+                    
+                    { isSeparator: true, title: 'Blindados / Orugas' },
                     { title: 'Blindado', svg: `<svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#8bd3f4" stroke="#000" stroke-width="2"/><ellipse cx="14" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><line x1="14" y1="6" x2="46" y2="6" stroke="#000" stroke-width="1.5"/><line x1="14" y1="34" x2="46" y2="34" stroke="#000" stroke-width="1.5"/><ellipse cx="46" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/></svg>` },
                     { title: 'Tanque', svg: `<svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#8bd3f4" stroke="#000" stroke-width="2"/><ellipse cx="14" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><line x1="14" y1="6" x2="46" y2="6" stroke="#000" stroke-width="1.5"/><line x1="14" y1="34" x2="46" y2="34" stroke="#000" stroke-width="1.5"/><ellipse cx="46" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><line x1="2" y1="2" x2="58" y2="38" stroke="#000" stroke-width="1.5"/><line x1="58" y1="2" x2="2" y2="38" stroke="#000" stroke-width="1.5"/></svg>` },
                     { title: 'Reconocimiento', svg: `<svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#8bd3f4" stroke="#000" stroke-width="2"/><ellipse cx="14" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><line x1="14" y1="6" x2="46" y2="6" stroke="#000" stroke-width="1.5"/><line x1="14" y1="34" x2="46" y2="34" stroke="#000" stroke-width="1.5"/><ellipse cx="46" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><line x1="2" y1="38" x2="58" y2="2" stroke="#000" stroke-width="1.5"/></svg>` },
                     { title: 'APC', svg: `<svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#8bd3f4" stroke="#000" stroke-width="2"/><ellipse cx="14" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><line x1="14" y1="6" x2="46" y2="6" stroke="#000" stroke-width="1.5"/><line x1="14" y1="34" x2="46" y2="34" stroke="#000" stroke-width="1.5"/><ellipse cx="46" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><polygon points="22,28 30,14 38,28" fill="#000"/></svg>` },
-                ]
-            },
-            {
-                nombre: 'Artillería',
-                simbolos: [
+                    
+                    { isSeparator: true, title: 'Artillería' },
                     { title: 'Artillería', svg: `<svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#8bd3f4" stroke="#000" stroke-width="2"/><circle cx="30" cy="24" r="8" fill="#000"/></svg>` },
                     { title: 'Artillería Autopropulsada', svg: `<svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#8bd3f4" stroke="#000" stroke-width="2"/><ellipse cx="14" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><line x1="14" y1="6" x2="46" y2="6" stroke="#000" stroke-width="1.5"/><line x1="14" y1="34" x2="46" y2="34" stroke="#000" stroke-width="1.5"/><ellipse cx="46" cy="20" rx="8" ry="14" fill="none" stroke="#000" stroke-width="1.5"/><circle cx="30" cy="24" r="5" fill="#000"/></svg>` },
                     { title: 'Misiles', svg: `<svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#8bd3f4" stroke="#000" stroke-width="2"/><polygon points="26,10 30,2 34,10" fill="#000"/><line x1="30" y1="6" x2="30" y2="34" stroke="#000" stroke-width="1.5"/><circle cx="30" cy="34" r="4" fill="none" stroke="#000"/></svg>` },
@@ -275,9 +277,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span class="pg-flecha-acc">❮</span>
                 </button>
                 <div class="pg-acordeon-grid oculto">
-                    ${sec.simbolos.map(s => `
-                        <div class="pg-simbolo" title="${s.title}">${s.svg}</div>
-                    `).join('')}
+                    ${sec.simbolos.map(s => {
+                        if (s.isSeparator) {
+                            return `<div class="pg-separador-simbolos">${s.title}</div>`;
+                        }
+                        return `<div class="pg-simbolo" title="${s.title}">${s.svg}</div>`;
+                    }).join('')}
                 </div>
             </div>
         `).join('');
