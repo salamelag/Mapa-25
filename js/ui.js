@@ -102,8 +102,6 @@ async function verificarAprobacionHUD() {
     if (data && data.length > 0) {
         ejercitoActual = data[0].ejercito;
         const e = todosLosEjercitos[ejercitoActual];
-        document.getElementById('panel-comandante').classList.remove('oculto');
-        document.getElementById('texto-comandante').innerText = e ? e.nombre : ejercitoActual;
         await clienteSupabase.from('ejercitos')
             .update({ lider: data[0].usuario_roblox, email_lider: usuarioActual.email })
             .eq('id', ejercitoActual);
