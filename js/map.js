@@ -12,7 +12,8 @@ const ESTILOS_GEO = {
     'Ejercito_Chile':      { borde: '#cc2222', fill: '#ff4444', op: 0.40 },
     'Congreso_Chile':      { borde: '#0033aa', fill: '#3366ff', op: 0.30 },
     'RFA_LaPampa':         { borde: '#008b8b', fill: '#00ced1', op: 0.45 },
-    'Imperio_Chubut':      { borde: '#8a2be2', fill: '#9370db', op: 0.45 }
+    'Imperio_Chubut':      { borde: '#8a2be2', fill: '#9370db', op: 0.45 },
+    'Ejercito_Peru':       { borde: '#cc2222', fill: '#ff4444', op: 0.40 }
 };
 
 function geoStyle(id) {
@@ -59,13 +60,14 @@ function configurarMarcadores() {
         { coords: [-22.9068,   -43.1729  ], label: 'Rio de Janeiro',      ejId: 'EB_Mirage',           region: 'Rio de Janeiro, Brasil', img: 'https://tr.rbxcdn.com/180DAY-05b3c4bc174a604f84a4cde981d7975c/256/256/Image/Webp/noFilter' },
         { coords: [60.1699,     24.9384  ], label: 'Helsinki',            ejId: 'War_Front_Finland',   region: 'Helsinki, Finlandia',  img: 'https://tr.rbxcdn.com/180DAY-d1401c2af40cc8338406405cf7734c51/256/256/Image/Webp/noFilter' },
         { coords: [-34.9011,   -56.1645  ], label: 'Montevideo',          ejId: 'Ejercito_Uruguayo',   region: 'Montevideo, Uruguay',  img: 'https://tr.rbxcdn.com/180DAY-678a18d475f292e91b46914384aff56e/256/256/Image/Webp/noFilter' },
-        { coords: [4.24,       -74.64    ], label: 'Fuerte Militar Tolemaida', ejId: 'Ejercito_Colombia', region: 'Tolemaida, Colombia', img: 'https://tr.rbxcdn.com/180DAY-0219f2fba401ee55c3a0db8ccc44d272/256/256/Image/Webp/noFilter' },
+        { coords: [4.24,       -74.64    ], label: 'Fuerte Militar Tolemaida', ejId: 'Ejercito_Colombia', region: 'Tolemaida, Colombia', img: 'https://tr.rbxcdn.com/180DAY-3b03dfa0e5c65bfb164ed0c08ebd7e63/256/256/Image/Webp/noFilter' },
         { coords: [-51.7963,   -59.5236  ], label: 'Islas Malvinas (Zona de Lucha)', ejId: 'FK_Zone',  region: 'Islas Malvinas',       img: 'https://tr.rbxcdn.com/180DAY-ff9a30bdc11fd1a21e07cdf3837b6757/352/352/Image/Png/noFilter' },
         { coords: [-33.4132, -70.5796], label: 'Escuela Militar', ejId: 'Ejercito_Chile', region: 'Santiago, Chile', img: 'https://tr.rbxcdn.com/180DAY-6d15efeaa6c140b24fb4486eb7eaea9e/150/150/Image/Webp/noFilter' },
         { coords: [-33.0475, -71.6133], label: 'Congreso Nacional', ejId: 'Congreso_Chile', region: 'Valparaíso, Chile', img: 'https://tr.rbxcdn.com/180DAY-063b85b1f16c771a04d66a39917f351c/150/150/Image/Webp/noFilter' },
         { coords: [6.2442, -75.5812], label: 'Medellín (Zona de Lucha)', ejId: 'Colombia_Conflict', region: 'Medellín, Colombia', img: 'https://tr.rbxcdn.com/180DAY-7c849cd096c2fd5076264c49d9a96db6/256/256/Image/Webp/noFilter' },
         { coords: [-36.67, -64.38], label: 'Regimiento de Infantería Mecanizado 6', ejId: 'RFA_LaPampa', region: 'La Pampa, Argentina', img: 'https://tr.rbxcdn.com/180DAY-ad94cf2036acc8cb7972731f9c142647/256/256/Image/Webp/noFilter' },
-        { coords: [-43.25, -65.30], label: 'Trelew', ejId: 'Imperio_Chubut', region: 'Chubut, Argentina', img: 'https://tr.rbxcdn.com/180DAY-d5ce0f3fda3285f338d4dfa2371cf2f5/150/150/Image/Webp/noFilter' }
+        { coords: [-43.25, -65.30], label: 'Trelew', ejId: 'Imperio_Chubut', region: 'Chubut, Argentina', img: 'https://tr.rbxcdn.com/180DAY-d5ce0f3fda3285f338d4dfa2371cf2f5/150/150/Image/Webp/noFilter' },
+        { coords: [-12.0464, -77.0428], label: 'Base Lima', ejId: 'Ejercito_Peru', region: 'Lima, Peru', img: 'https://tr.rbxcdn.com/180DAY-7b2f9c9f8840cf56a2030cd948939cad/150/150/Image/Webp/noFilter' }
     ];
     datos.forEach(m => {
         const marcador = L.marker(m.coords).addTo(map);
@@ -214,6 +216,17 @@ function cargarGeografia() {
             }).addTo(map);
         });
 
+    // Peru
+    fetch('https://raw.githubusercontent.com/georgique/world-geojson/refs/heads/develop/countries/peru.json')
+        .then(r => r.json()).then(data => {
+            L.geoJSON(data, {
+                style: () => geoStyle('Ejercito_Peru'),
+                onEachFeature: (feature, layer) => {
+                    addClickHover(layer, 'Ejercito_Peru', 'Peru', ESTILOS_GEO['Ejercito_Peru'].op, 0.80);
+                }
+            }).addTo(map);
+        });
+
     // Falkland Islands (Islas Malvinas)
     fetch('https://raw.githubusercontent.com/georgique/world-geojson/develop/areas/united_kingdom/falkland_islands.json')
         .then(r => r.json()).then(data => {
@@ -235,13 +248,14 @@ const LINKS_JUEGO = {
     'EB_Mirage':           'https://www.roblox.com/games/73767462197411/EB-do-Mirage-Ex-rcito-Brasileiro',
     'War_Front_Finland':   'https://www.roblox.com/games/102445517344578/War-on-the-Front-Finland-RP',
     'Ejercito_Uruguayo':   'https://www.roblox.com/games/18893023733/Ejercito-Uruguayo',
-    'Ejercito_Colombia':   'https://www.roblox.com/games/8575062452/ENC-Fuerte-Militar-Tolemaida',
+    'Ejercito_Colombia':   'https://www.roblox.com/games/10358242329/Ejercito-Nacional-Colombiano#!/about',
     'FK_Zone':             'https://www.roblox.com/games/11531150499/Soledad-Island-Malvinas-2030',
     'Ejercito_Chile':      'https://www.roblox.com/games/99857138661549/Academia-Militar-de-Chile-El-Libertador',
     'Congreso_Chile':      'https://www.roblox.com/games/71789289496320/Congreso-Nacional',
     'Colombia_Conflict':   'https://www.roblox.com/games/107389230881781/Colombia',
     'RFA_LaPampa':         'https://www.roblox.com/games/94432191767668/RFA-Argentine-Armed-Forces#!/about',
-    'Imperio_Chubut':      'https://www.roblox.com/games/135668711660767/Imperio-Argentino'
+    'Imperio_Chubut':      'https://www.roblox.com/games/135668711660767/Imperio-Argentino',
+    'Ejercito_Peru':       'https://www.roblox.com/games/110479722460648/Ejercito-del-Per-Base-Lima#!/about'
 };
 
 async function mostrarPanelTerritorio(ejercitoId, tituloRegion) {
