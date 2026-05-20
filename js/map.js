@@ -39,8 +39,8 @@ function iniciarMapa() {
             const icon = L.divIcon({
                 className: 'map-simbolo-tactico',
                 html: htmlCompleto,
-                iconSize: [40, 28],
-                iconAnchor: [20, 14]
+                iconSize: [90, 60],
+                iconAnchor: [45, 30]
             });
             const marker = L.marker(e.latlng, { icon: icon, title: window.simboloEnMano.titulo }).addTo(map);
             

@@ -362,8 +362,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('mousemove', (e) => {
         if (window.simboloGhost) {
             // Center the ghost icon on the mouse pointer
-            const w = window.simboloGhost.offsetWidth || 50;
-            const h = window.simboloGhost.offsetHeight || 35;
+            const w = window.simboloGhost.offsetWidth || 90;
+            const h = window.simboloGhost.offsetHeight || 60;
             window.simboloGhost.style.left = (e.pageX - w / 2) + 'px';
             window.simboloGhost.style.top  = (e.pageY - h / 2) + 'px';
         }
