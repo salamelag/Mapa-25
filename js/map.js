@@ -311,7 +311,7 @@ async function mostrarPanelTerritorio(ejercitoId, tituloRegion) {
 // --- Boton de suministros → Edge Function real ---
 document.getElementById('btn-enviar-suministro').onclick = async () => {
     const btn = document.getElementById('btn-enviar-suministro');
-    const msj = document.getElementById('ter-msj-suministro');
+    const msj = document.getElementById('msj-herramientas');
     const tipo = document.getElementById('ter-sel-suministro').value;
     const destino = window.territorioInspeccionado;
 
