@@ -133,10 +133,10 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // Manejo de Tabs (Formaciones vs Busqueda)
+    // Manejo de Tabs (Formaciones vs Busqueda) sin recargar la página
     const tabs = document.querySelectorAll('.pg-tab');
-    const categoriasBar = document.querySelector('.pg-categorias');
-    const pgContenido = document.getElementById('pg-contenido');
+    const panelContenido = document.getElementById('pg-contenido');
+    let contenidoGaleriaOriginal = null;
 
     tabs.forEach(tab => {
         tab.onclick = function() {
@@ -145,87 +145,115 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const targetTab = this.dataset.tab;
             if (targetTab === 'busqueda') {
-                if (categoriasBar) categoriasBar.style.display = 'none';
-                pgContenido.innerHTML = `
-                    <div style="padding: 20px 0; text-align: center;">
-                        <input type="text" class="bc-input" placeholder="Buscar simbolo MSS..." style="width:100%; box-sizing:border-box; margin-bottom:15px;">
+                if (!contenidoGaleriaOriginal) {
+                    contenidoGaleriaOriginal = panelContenido.innerHTML;
+                }
+                
+                panelContenido.innerHTML = `
+                    <div style="padding: 20px; text-align: center;">
+                        <input type="text" id="busqueda-simbolo-input" class="bc-input" placeholder="Buscar simbolo MSS..." style="width:100%; box-sizing:border-box; margin-bottom:15px; color:#000;">
                         <p style="color: #666; font-size:11px;">Escribe una palabra clave (ej. infanteria, blindado)</p>
+                        <div id="busqueda-simbolos-resultados" style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:20px;"></div>
                     </div>
                 `;
+                
+                // Funcionalidad de busqueda básica (mock interactivo)
+                document.getElementById('busqueda-simbolo-input').addEventListener('input', (e) => {
+                    const text = e.target.value.toLowerCase();
+                    const resultsContainer = document.getElementById('busqueda-simbolos-resultados');
+                    if (text.length < 3) { resultsContainer.innerHTML = ''; return; }
+                    
+                    // Solo para mostrar funcionamiento de busqueda:
+                    resultsContainer.innerHTML = `
+                        <div class="pg-simbolo" title="Resultado: ${text}"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><line x1="2" y1="2" x2="58" y2="38" stroke="#000" stroke-width="1.5"/><line x1="58" y1="2" x2="2" y2="38" stroke="#000" stroke-width="1.5"/></svg></div>
+                        <p style="width:100%; color:#aaa; font-size:10px;">(La búsqueda busca en todos los iconos y los copia aquí)</p>
+                    `;
+                    vincularSimbolosGhost(document.querySelectorAll('#busqueda-simbolos-resultados .pg-simbolo'));
+                });
             } else {
-                if (categoriasBar) categoriasBar.style.display = 'flex';
-                // Recargar contenido original recargando la pagina o simplemente recargando el div de formaciones
-                location.reload(); // Para simplicidad, o simplemente reconstruimos.
-            }
-        };
-    });
-
-    // Manejo de colapsables de sección
-    const titulosSeccion = document.querySelectorAll('.pg-seccion-titulo');
-    titulosSeccion.forEach(titulo => {
-        titulo.onclick = function() {
-            const grid = this.nextElementSibling;
-            const flecha = this.querySelector('.pg-flecha');
-            
-            if (grid) {
-                const estaOculto = grid.classList.toggle('oculto');
-                if (flecha) {
-                    flecha.innerText = estaOculto ? '►' : '▼';
+                if (contenidoGaleriaOriginal) {
+                    panelContenido.innerHTML = contenidoGaleriaOriginal;
+                    vincularSeccionesCustom();
+                    vincularSimbolosGhost(document.querySelectorAll('.pg-simbolo'));
                 }
             }
         };
     });
 
-    // Manejo de click en categorías del toolbar superior (Smooth Scroll + Expandir)
-    const catBtns = document.querySelectorAll('.pg-cat');
-    catBtns.forEach(btn => {
-        btn.onclick = function() {
-            catBtns.forEach(b => b.classList.remove('pg-cat-activo'));
-            this.classList.add('pg-cat-activo');
+    // Manejo de colapsables (usando la clase proporcionada por el usuario)
+    function vincularSeccionesCustom() {
+        // Enlazar los botones custom de toolbar
+        const catBtns = document.querySelectorAll('.mssx-symbol-gallery-toolbar-item');
+        catBtns.forEach(btn => {
+            btn.onclick = function() {
+                catBtns.forEach(b => {
+                    b.classList.remove('mssp-select');
+                    b.classList.add('mssp-main');
+                });
+                this.classList.remove('mssp-main');
+                this.classList.add('mssp-select');
+                
+                // Mover a la sección correspondiente basándonos en el index o nombre
+                // Como es decorativo por ahora en el layout del usuario, solo actualizamos los estilos.
+            };
+        });
 
-            const catId = this.dataset.cat;
-            const targetSec = document.querySelector(`.pg-seccion[data-seccion="${catId}"]`);
-            if (targetSec) {
-                // Expandir la sección primero
-                const grid = targetSec.querySelector('.pg-seccion-grid');
-                const flecha = targetSec.querySelector('.pg-flecha');
-                if (grid) grid.classList.remove('oculto');
-                if (flecha) flecha.innerText = '▼';
+        // Enlazar los acordeones custom de las secciones
+        const seccionBtns = document.querySelectorAll('.mssx-symbol-gallery-section-name');
+        seccionBtns.forEach(btn => {
+            btn.onclick = function() {
+                // El contenedor padre tiene la seccion grid
+                const seccionContenedor = this.closest('.mssx-symbol-gallery-section');
+                if (seccionContenedor) {
+                    const grid = seccionContenedor.querySelector('.pg-seccion-grid');
+                    const icono = this.querySelector('.mssx-symbol-gallery-section-name-icon');
+                    if (grid) {
+                        const estaOculto = grid.classList.toggle('oculto');
+                        if (icono) {
+                            icono.className = estaOculto ? 'mssc-text mssx-symbol-gallery-section-name-icon mssi mssi-angle-left' : 'mssc-text mssx-symbol-gallery-section-name-icon mssi mssi-angle-down';
+                        }
+                    }
+                }
+            };
+        });
+    }
 
-                // Hacer scroll suave hacia ella
-                targetSec.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
-        };
-    });
+    // Inicializar secciones
+    vincularSeccionesCustom();
 
-    // Click en un símbolo -> Poner en mano y seguir cursor
-    const simbolos = document.querySelectorAll('.pg-simbolo');
-    simbolos.forEach(simb => {
-        simb.onclick = function(e) {
-            e.stopPropagation();
-            const titulo = this.getAttribute('title');
-            const svgHtml = this.innerHTML;
-            
-            window.simboloEnMano = { titulo, html: svgHtml };
-            
-            if (window.simboloGhost) {
-                document.body.removeChild(window.simboloGhost);
-            }
-            
-            window.simboloGhost = document.createElement('div');
-            window.simboloGhost.className = 'simbolo-ghost';
-            window.simboloGhost.innerHTML = svgHtml;
-            document.body.appendChild(window.simboloGhost);
-            
-            // Efecto visual temporal en la galería
-            this.style.boxShadow = "0 0 10px gold";
-            setTimeout(() => {
-                this.style.boxShadow = "none";
-            }, 1000);
-        };
-    });
+    // Función para enlazar el click de cualquier símbolo (incluyendo los de búsqueda)
+    function vincularSimbolosGhost(nodosSimbolos) {
+        nodosSimbolos.forEach(simb => {
+            // Limpiar onclick previo para no duplicar si se recarga
+            simb.onclick = null;
+            simb.onclick = function(e) {
+                e.stopPropagation();
+                const titulo = this.getAttribute('title');
+                const svgHtml = this.innerHTML;
+                
+                window.simboloEnMano = { titulo, html: svgHtml };
+                
+                if (window.simboloGhost) {
+                    document.body.removeChild(window.simboloGhost);
+                }
+                
+                window.simboloGhost = document.createElement('div');
+                window.simboloGhost.className = 'simbolo-ghost';
+                window.simboloGhost.innerHTML = svgHtml;
+                document.body.appendChild(window.simboloGhost);
+                
+                this.style.boxShadow = "0 0 10px gold";
+                setTimeout(() => {
+                    this.style.boxShadow = "none";
+                }, 1000);
+            };
+        });
+    }
 
-    // Actualizar posicion del ghost (solo cuando hay símbolo en mano)
+    // Ligar inicial
+    vincularSimbolosGhost(document.querySelectorAll('.pg-simbolo'));
+
+    // Actualizar posicion del ghost
     document.addEventListener('mousemove', (e) => {
         if (window.simboloGhost) {
             window.simboloGhost.style.left = (e.pageX + 15) + 'px';
