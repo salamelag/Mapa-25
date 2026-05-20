@@ -59,65 +59,66 @@
 
     <!-- PANEL GALERIA DE SIMBOLOS -->
     <div id="panel-galeria-simbolos" class="panel-galeria oculto">
+
+        <!-- Header con X -->
         <div class="pg-header">
             <div class="pg-titulo">GALERIA DE SIMBOLOS</div>
             <button id="btn-cerrar-galeria" class="pg-cerrar">X</button>
         </div>
 
-        <!-- Tabs -->
-        <div class="pg-tabs">
-            <button class="pg-tab pg-tab-activo" data-tab="formaciones">Formaciones</button>
-            <button class="pg-tab" data-tab="busqueda">Busqueda</button>
+        <!-- Dos tabs principales: Galería de símbolos / Búsqueda de símbolos MSS -->
+        <div class="pg-main-tabs">
+            <button class="pg-main-tab pg-main-tab-activo" id="tab-galeria">Galería de símbolos</button>
+            <button class="pg-main-tab" id="tab-busqueda">Búsqueda de símbolos MSS</button>
         </div>
 
-        <!-- Categorias toolbar -->
-        <div class="mss-flex-fixed mss-galleries-toolbar mssx-symbol-gallery-toolbar">
-            <div class="mss-galleries-toolbar-wrapper mss-flex-row mssx-symbol-gallery-toolbar-wrapper" style="display: flex; gap: 5px; overflow-x: auto; padding: 10px; border-bottom: 1px solid var(--borde);">
-                <button msstooltip="" class="mss-flex-auto-expanded mss-flex-col msse-control msst-underline mssx-symbol-gallery-toolbar-item mssp-main pg-cat-nuevo" aria-label="Tooltip" data-cat="favoritos" style="background:transparent; border:none; cursor:pointer; min-width:70px; display:flex; flex-direction:column; align-items:center;">
-                    <i class="msse-element mssc-icon appi appi-bookmark" style="font-size:18px; margin-bottom:4px; color:#555;"></i>
-                    <div class="mss-galleries-gallery-name msse-element mssc-text mssx-symbol-gallery-toolbar-item-text" style="font-size:9px; text-align:center; color:#888;">Favoritos</div>
+        <!-- VISTA: Galería -->
+        <div id="vista-galeria">
+            <!-- 6 botones de categoría en fila con icono -->
+            <div class="pg-cat-row">
+                <button class="pg-cat-btn" data-cat="favoritos">
+                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                    <span>Favoritos</span>
                 </button>
-                <button msstooltip="" class="mss-flex-auto-expanded mss-flex-col msse-control msst-underline mssx-symbol-gallery-toolbar-item mssp-select msst-end pg-cat-nuevo pg-cat-nuevo-activo" aria-label="Tooltip" data-cat="formaciones" style="background:rgba(50,205,50,0.1); border:none; border-bottom:2px solid var(--verde); cursor:pointer; min-width:70px; display:flex; flex-direction:column; align-items:center; padding-bottom:5px;">
-                    <i class="msse-element mssc-icon mssi-gallery-unit" style="font-size:18px; margin-bottom:4px; color:var(--verde);"></i>
-                    <div class="mss-galleries-gallery-name msse-element mssc-text mssx-symbol-gallery-toolbar-item-text" style="font-size:9px; text-align:center; color:#fff; font-weight:bold;">Formaciones</div>
+                <button class="pg-cat-btn" data-cat="formaciones">
+                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><rect x="3" y="6" width="18" height="13" rx="1"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/></svg>
+                    <span>Formaciones</span>
                 </button>
-                <button msstooltip="" class="mss-flex-auto-expanded mss-flex-col msse-control msst-underline mssx-symbol-gallery-toolbar-item mssp-main pg-cat-nuevo" aria-label="Tooltip" data-cat="equipos" style="background:transparent; border:none; cursor:pointer; min-width:70px; display:flex; flex-direction:column; align-items:center;">
-                    <i class="msse-element mssc-icon mssi-gallery-equipment" style="font-size:18px; margin-bottom:4px; color:#555;"></i>
-                    <div class="mss-galleries-gallery-name msse-element mssc-text mssx-symbol-gallery-toolbar-item-text" style="font-size:9px; text-align:center; color:#888;">Equipos e Instalaciones</div>
+                <button class="pg-cat-btn" data-cat="equipos">
+                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                    <span>Equipos e Instalaciones</span>
                 </button>
-                <button msstooltip="" class="mss-flex-auto-expanded mss-flex-col msse-control msst-underline mssx-symbol-gallery-toolbar-item mssp-main pg-cat-nuevo" aria-label="Tooltip" data-cat="graficos" style="background:transparent; border:none; cursor:pointer; min-width:70px; display:flex; flex-direction:column; align-items:center;">
-                    <i class="msse-element mssc-icon mssi-gallery-tact-graphic" style="font-size:18px; margin-bottom:4px; color:#555;"></i>
-                    <div class="mss-galleries-gallery-name msse-element mssc-text mssx-symbol-gallery-toolbar-item-text" style="font-size:9px; text-align:center; color:#888;">Gráficos Tácticos</div>
+                <button class="pg-cat-btn" data-cat="graficos">
+                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M9 20v-5a4 4 0 0 1 4-4h6"/><path d="M15 7l4 4-4 4"/></svg>
+                    <span>Gráficos Tácticos</span>
                 </button>
-                <button msstooltip="" class="mss-flex-auto-expanded mss-flex-col msse-control msst-underline mssx-symbol-gallery-toolbar-item mssp-main pg-cat-nuevo" aria-label="Tooltip" data-cat="especificos" style="background:transparent; border:none; cursor:pointer; min-width:70px; display:flex; flex-direction:column; align-items:center;">
-                    <i class="msse-element mssc-icon mssi-gallery-function-int" style="font-size:18px; margin-bottom:4px; color:#555;"></i>
-                    <div class="mss-galleries-gallery-name msse-element mssc-text mssx-symbol-gallery-toolbar-item-text" style="font-size:9px; text-align:center; color:#888;">Símbolos específicos de función</div>
+                <button class="pg-cat-btn" data-cat="especificos">
+                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="currentColor"/></svg>
+                    <span>Símbolos específicos de función</span>
                 </button>
-                <button msstooltip="" class="mss-flex-auto-expanded mss-flex-col msse-control msst-underline mssx-symbol-gallery-toolbar-item mssp-main pg-cat-nuevo" aria-label="Tooltip" data-cat="metoc" style="background:transparent; border:none; cursor:pointer; min-width:70px; display:flex; flex-direction:column; align-items:center;">
-                    <i class="msse-element mssc-icon mssi-gallery-metoc" style="font-size:18px; margin-bottom:4px; color:#555;"></i>
-                    <div class="mss-galleries-gallery-name msse-element mssc-text mssx-symbol-gallery-toolbar-item-text" style="font-size:9px; text-align:center; color:#888;">Metoc</div>
+                <button class="pg-cat-btn" data-cat="metoc">
+                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M4 22V2"/><path d="M4 4l14 2-2 4 2 4-14 2"/></svg>
+                    <span>Metoc</span>
                 </button>
+            </div>
+
+            <!-- Contenido que cambia según categoría -->
+            <div class="pg-cat-contenido" id="pg-cat-contenido">
+                <!-- Por defecto vacío, se llena al seleccionar categoría -->
+                <div class="pg-cat-vacio">Selecciona una categoría</div>
             </div>
         </div>
 
-        <!-- Contenido de simbolos -->
-        <div class="pg-contenido" id="pg-contenido">
-            
-            <div class="pg-seccion">
-                <button class="pg-seccion-titulo">
-                    <span>Fuerzas Especiales</span><span class="pg-flecha">►</span>
-                </button>
-                <div class="pg-seccion-grid oculto">
-                    <div class="pg-simbolo" title="Fuerzas Especiales"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><line x1="2" y1="2" x2="58" y2="38" stroke="#000" stroke-width="1.5"/><line x1="58" y1="2" x2="2" y2="38" stroke="#000" stroke-width="1.5"/><polygon points="30,30 22,34 24,26" fill="#000"/><polygon points="30,30 38,34 36,26" fill="#000"/></svg></div>
-                    <div class="pg-simbolo" title="Rangers"><svg viewBox="0 0 60 40"><rect x="2" y="2" width="56" height="36" fill="#80E0FF" stroke="#000" stroke-width="2"/><line x1="2" y1="2" x2="58" y2="38" stroke="#000" stroke-width="1.5"/><line x1="58" y1="2" x2="2" y2="38" stroke="#000" stroke-width="1.5"/><polyline points="20,6 30,18 40,6" fill="none" stroke="#000" stroke-width="1.5"/></svg></div>
-                </div>
-            </div>
+        <!-- VISTA: Búsqueda -->
+        <div id="vista-busqueda" style="display:none; padding:15px;">
+            <input type="text" id="busqueda-input" class="bc-input" placeholder="Buscar símbolo (ej: infantería, tanque, artillería...)"
+                   style="width:100%; box-sizing:border-box; background:#111; color:#fff; border:1px solid #444; padding:8px; font-size:12px; border-radius:3px; margin-bottom:10px;">
+            <div id="busqueda-resultados" class="pg-subseccion-grid"></div>
+            <p style="color:#555; font-size:10px; text-align:center;">Escribe al menos 3 caracteres para buscar</p>
         </div>
 
-        <div class="pg-footer">
-            <span class="pg-footer-texto">Haz click en un simbolo para colocarlo en el mapa</span>
-        </div>
     </div>
+
 
     <!-- PANEL TERRITORIO (izquierda abajo, HOI4 style) -->
     <div id="panel-territorio" class="panel-territorio oculto">
