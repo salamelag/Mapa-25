@@ -29,15 +29,33 @@ function iniciarMapa() {
     }).addTo(map);
     map.on('click', (e) => { 
         if (window.simboloEnMano) {
+            const htmlCompleto = `
+                <div class="simbolo-inner" style="width:100%;height:100%;position:relative;transform:rotate(0deg);">
+                    <div class="mst-rotador"></div>
+                    <div class="mst-motor"></div>
+                    ${window.simboloEnMano.html}
+                </div>
+            `;
             const icon = L.divIcon({
                 className: 'map-simbolo-tactico',
-                html: window.simboloEnMano.html,
+                html: htmlCompleto,
                 iconSize: [40, 28],
                 iconAnchor: [20, 14]
             });
-            L.marker(e.latlng, { icon: icon, title: window.simboloEnMano.titulo }).addTo(map);
+            const marker = L.marker(e.latlng, { icon: icon, title: window.simboloEnMano.titulo }).addTo(map);
             
-            // Limpiar estado
+            if (!window.marcadoresTacticosActivos) window.marcadoresTacticosActivos = [];
+            window.marcadoresTacticosActivos.push(marker);
+
+            marker.on('click', function(ev) {
+                L.DomEvent.stopPropagation(ev);
+                document.querySelectorAll('.map-simbolo-tactico').forEach(el => el.classList.remove('seleccionado'));
+                const el = marker.getElement();
+                el.classList.add('seleccionado');
+                window.simboloSeleccionado = { marker, el };
+            });
+            
+            // Limpiar estado de colocación
             window.simboloEnMano = null;
             if (window.simboloGhost) {
                 document.body.removeChild(window.simboloGhost);
@@ -46,6 +64,8 @@ function iniciarMapa() {
         } else {
             cerrarPanelTerritorio(); 
             limpiarSeleccion(); 
+            document.querySelectorAll('.map-simbolo-tactico').forEach(el => el.classList.remove('seleccionado'));
+            window.simboloSeleccionado = null;
         }
     });
     configurarMarcadores();
@@ -419,4 +439,45 @@ function cerrarPanelTerritorio() {
     document.getElementById('panel-territorio').classList.add('oculto'); 
     limpiarSeleccion();
 }
+
+// ==================== INTERACCION CON SIMBOLOS TACTICOS ====================
+let isDraggingRotador = false;
+let isDraggingMotor = false;
+
+document.addEventListener('mousedown', (e) => {
+    if (e.target.classList.contains('mst-rotador')) {
+        isDraggingRotador = true;
+        if (map) map.dragging.disable();
+        e.preventDefault();
+    } else if (e.target.classList.contains('mst-motor')) {
+        isDraggingMotor = true;
+        if (map) map.dragging.disable();
+        e.preventDefault();
+    }
+});
+
+document.addEventListener('mousemove', (e) => {
+    if (isDraggingRotador && window.simboloSeleccionado) {
+        const el = window.simboloSeleccionado.el;
+        const rect = el.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * 180 / Math.PI;
+        
+        const inner = el.querySelector('.simbolo-inner');
+        // Offset by 90 degrees because 0 deg is pointing straight up
+        if (inner) inner.style.transform = `rotate(${angle + 90}deg)`;
+    } else if (isDraggingMotor && window.simboloSeleccionado) {
+        const latlng = map.mouseEventToLatLng(e);
+        window.simboloSeleccionado.marker.setLatLng(latlng);
+    }
+});
+
+document.addEventListener('mouseup', () => {
+    if (isDraggingRotador || isDraggingMotor) {
+        isDraggingRotador = false;
+        isDraggingMotor = false;
+        if (map) map.dragging.enable();
+    }
+});
 document.getElementById('btn-cerrar-territorio').onclick = cerrarPanelTerritorio;
