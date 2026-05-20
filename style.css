@@ -1053,6 +1053,201 @@ body, html { margin: 0; padding: 0; height: 100%; font-family: var(--mono); }
     color: #fff;
 }
 
+    line-height: 1.1;
+}
+
+.simbolo-ghost {
+    pointer-events: none;
+    position: absolute;
+    z-index: 99999;
+    width: 90px;
+    height: 60px;
+}
+
+.map-simbolo-tactico {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative; /* For absolutely positioning the handlers */
+}
+.map-simbolo-tactico.seleccionado {
+    outline: 2px dashed #333;
+    z-index: 1000 !important;
+}
+.mst-rotador {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    background-color: yellow;
+    border: 1px solid #000;
+    border-radius: 50%;
+    cursor: grab;
+    display: none;
+    z-index: 10;
+}
+.mst-motor {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    border: 1px solid #000;
+    border-radius: 50%;
+    cursor: move;
+    display: none;
+    z-index: 10;
+}
+.map-simbolo-tactico.seleccionado .mst-rotador,
+.map-simbolo-tactico.seleccionado .mst-motor {
+    display: block;
+}
+.map-simbolo-tactico svg, .map-simbolo-tactico img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.pg-footer {
+    padding: 10px 15px;
+    border-top: 1px solid var(--borde);
+    background: #060a06;
+    text-align: center;
+}
+
+.pg-footer-texto {
+    font-size: 9px;
+    color: #555;
+    font-family: var(--mono);
+}
+
+/* ====== MAIN TABS (Galería / Búsqueda) ====== */
+.pg-main-tabs {
+    display: flex;
+    border-bottom: 1px solid #555;
+}
+
+.pg-main-tab {
+    flex: 1;
+    padding: 10px 8px;
+    background: #1a1a1a;
+    border: none;
+    color: #888;
+    font-family: var(--cond);
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.2s, color 0.2s;
+    border-bottom: 3px solid transparent;
+}
+
+.pg-main-tab:hover {
+    background: #222;
+    color: #ccc;
+}
+
+.pg-main-tab-activo {
+    background: #0a8fc7;
+    color: #fff;
+    border-bottom: 3px solid #06d6f7;
+}
+
+/* ====== 6 CATEGORY BUTTONS ROW ====== */
+.pg-cat-row {
+    display: flex;
+    gap: 2px;
+    padding: 8px 6px;
+    border-bottom: 1px solid var(--borde);
+    overflow-x: auto;
+    background: #0e0e0e;
+    scrollbar-width: none;
+}
+.pg-cat-row::-webkit-scrollbar { display: none; }
+
+.pg-cat-btn {
+    flex: 1;
+    min-width: 55px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 4px;
+    background: transparent;
+    border: none;
+    color: #777;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-bottom: 2px solid transparent;
+}
+
+.pg-cat-btn span {
+    font-size: 10px;
+    font-family: var(--cond);
+    text-align: center;
+    margin-top: 3px;
+    line-height: 1.2;
+    white-space: normal;
+}
+
+.pg-cat-btn:hover {
+    color: #ccc;
+    background: rgba(255,255,255,0.04);
+}
+
+.pg-cat-btn-activo {
+    background: #0a8fc7 !important;
+    color: #fff !important;
+    border-bottom: 2px solid #06d6f7;
+}
+
+/* ====== CATEGORY CONTENT AREA ====== */
+.pg-cat-contenido {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0;
+    max-height: calc(100vh - 320px);
+}
+
+.pg-cat-vacio {
+    padding: 30px 15px;
+    text-align: center;
+    color: #555;
+    font-size: 12px;
+    font-family: var(--mono);
+}
+
+/* ====== ACCORDION SECTIONS ====== */
+.pg-acordeon {
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.pg-acordeon-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 10px 15px;
+    background: rgba(255,255,255,0.03);
+    border: none;
+    color: #ccc;
+    font-family: var(--cond);
+    font-size: 13px;
+    font-weight: bold;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.pg-acordeon-btn:hover {
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+}
+
 .pg-flecha-acc {
     font-size: 10px;
     color: #666;
@@ -1067,4 +1262,33 @@ body, html { margin: 0; padding: 0; height: 100%; font-family: var(--mono); }
 
 .pg-acordeon-grid.oculto {
     display: none;
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+@media (max-width: 850px) {
+    .barra-comando {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 10px;
+        gap: 10px;
+        border-radius: 8px;
+    }
+    .bc-info {
+        border-right: none;
+        border-radius: 4px;
+        justify-content: center;
+        text-align: center;
+        min-height: auto;
+    }
+    .bc-separador {
+        display: none;
+    }
+    .bc-seccion {
+        justify-content: center;
+    }
+    .bc-notificaciones {
+        max-width: 100%;
+        align-items: center;
+        text-align: center;
+    }
 }
