@@ -12,4 +12,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     iniciarPresencia();
     iniciarMapa();
+    iniciarLogisticaMapa();
 });

@@ -95,6 +95,9 @@ function configurarMarcadores() {
         marcador.on('click', (e) => { L.DomEvent.stopPropagation(e); limpiarSeleccion(); mostrarPanelTerritorio(m.ejId, m.region); });
         listaMarcadores.push({ obj: marcador, url: m.img });
     });
+    // Coordenadas de las bases por id de ejercito (usadas por logistica.js para las rutas)
+    window.COORDS_BASES = {};
+    datos.forEach(m => { window.COORDS_BASES[m.ejId] = m.coords; });
     map.on('zoomend', actualizarIconos);
     actualizarIconos();
 }
@@ -347,6 +350,7 @@ document.getElementById('btn-enviar-suministro').onclick = async () => {
     const btn = document.getElementById('btn-enviar-suministro');
     const msj = document.getElementById('msj-herramientas');
     const tipo = document.getElementById('ter-sel-suministro').value;
+    const medio = document.getElementById('ter-sel-transporte').value;
     const destino = window.territorioInspeccionado;
 
     if (!destino) return;
@@ -377,6 +381,7 @@ document.getElementById('btn-enviar-suministro').onclick = async () => {
                 body: JSON.stringify({
                     ejercito_destino: destino,
                     tipo_suministro:  tipo,
+                    medio_transporte: medio,
                 }),
             }
         );
@@ -386,6 +391,8 @@ document.getElementById('btn-enviar-suministro').onclick = async () => {
         if (res.ok) {
             msj.style.color = '#32CD32';
             msj.innerText = '✓ ' + (data.mensaje || 'Enviado con exito');
+            // Refrescar la capa de convoyes para que el envio aparezca ya en el mapa
+            if (typeof refrescarLogistica === 'function') refrescarLogistica();
         } else {
             msj.style.color = '#cc3333';
             msj.innerText = '✗ ' + (data.error || 'Error al enviar');
