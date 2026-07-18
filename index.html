@@ -1,289 +1,297 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <link rel="icon" type="image/x-icon" href="./favicon.ico">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapa Militar Global | Ro-armys</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="style.css" />
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mapa-25 · Globo Táctico 3D</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="hud.css">
 </head>
 <body>
-    <!-- OVERLAY OSCURO -->
-    <div id="overlay-oscuro" class="oculto"></div>
 
-    <div id="map"></div>
+<div id="overlay-oscuro" class="oculto"></div>
 
-    <!-- HUD VISITANTE -->
-    <div id="panel-visitante" class="panel-ui oculto" style="width: auto; padding-right: 20px;">
-        <div class="panel-tag">MODO VISITANTE</div>
-        <div class="auth-row" style="justify-content: flex-start; gap: 20px;">
-            <div class="btn-group-auth" style="margin-top:0;">
-                <button id="btn-abrir-login" class="btn-auth-link">LOGIN</button>
-                <button id="btn-abrir-registro" class="btn-auth-solid">JOIN FREE</button>
-            </div>
-        </div>
+<div id="map"></div>
+
+<!-- MARCO HUD CINEMATOGRÁFICO -->
+<div class="hud-frame">
+  <div class="hud-corner tl"></div>
+  <div class="hud-corner tr"></div>
+  <div class="hud-corner bl"></div>
+  <div class="hud-corner br"></div>
+  <div class="hud-cross"></div>
+  <div class="hud-scan"></div>
+</div>
+
+<!-- LECTURA DE COORDENADAS EN VIVO -->
+<div class="hud-readout">
+  <div class="hr-item"><span class="hr-k">LAT</span><span class="hr-v" id="hud-lat">+0.0000</span></div>
+  <div class="hr-sep"></div>
+  <div class="hr-item"><span class="hr-k">LON</span><span class="hr-v" id="hud-lon">+0.0000</span></div>
+  <div class="hr-sep"></div>
+  <div class="hr-item"><span class="hr-k">ZOOM</span><span class="hr-v" id="hud-z">Z2.2</span></div>
+  <div class="hr-sep"></div>
+  <div class="hr-item" id="hud-rot" style="opacity:0;transition:opacity .6s;"><span class="hr-k" style="color:#22d3ee;opacity:1;">ORBITA AUTO</span></div>
+</div>
+
+<!-- HUD VISITANTE -->
+<div id="panel-visitante" class="panel-ui oculto" style="width:auto;padding-right:20px;">
+  <div class="panel-tag">MODO VISITANTE</div>
+  <div class="auth-row" style="justify-content:flex-start;gap:20px;">
+    <div class="btn-group-auth" style="margin-top:0;">
+      <button id="btn-abrir-registro" class="btn-auth-solid">JOIN</button>
+    </div>
+  </div>
+</div>
+
+<!-- LIVE INDICATOR -->
+<div id="live-widget" class="live-widget">
+  <span class="live-dot-red"></span>
+  <span id="num-visitantes" style="color:#d7dde5;font-family:var(--mono);font-size:11px;font-weight:bold;">—</span>
+  <span class="live-text">LIVE</span>
+</div>
+
+<!-- HUD SOLDADO -->
+<div id="panel-usuario" class="panel-ui oculto">
+  <div class="panel-tag" style="color:#22d3ee;border-color:rgba(34,211,238,0.3);">SOLDADO ACTIVO</div>
+  <p id="texto-usuario">—</p>
+  <button id="btn-abrir-reclamar" style="margin-bottom:5px;">Reclamar un Ejercito</button>
+  <button id="btn-cerrar-sesion" style="background:#ff5a3c;">Cerrar Sesion</button>
+</div>
+
+<!-- ADMIN -->
+<button id="btn-admin" class="btn-admin oculto" title="Configuración de administrador">⚙</button>
+<div id="panel-admin" class="panel-admin oculto">
+  <div class="pg-header">
+    <span class="pg-titulo">Config · Admin</span>
+    <button class="pg-cerrar" id="btn-cerrar-admin" title="Cerrar">✕ CERRAR</button>
+  </div>
+  <div style="padding:14px 16px;">
+    <div class="ter-label" style="margin-bottom:10px;">MEDIOS DE TRANSPORTE HABILITADOS</div>
+    <label class="admin-row"><input type="checkbox" class="admin-medio" value="terrestre"> Terrestre — rutas vehiculares</label>
+    <label class="admin-row"><input type="checkbox" class="admin-medio" value="ferroviario"> Ferroviario — vías / ruta simulada</label>
+    <label class="admin-row"><input type="checkbox" class="admin-medio" value="aereo"> Aéreo — arco / helicóptero</label>
+    <label class="admin-row"><input type="checkbox" class="admin-medio" value="naval"> Naval — marítimo (desactivar si el mapa no tiene agua)</label>
+    <p style="font-size:10px;color:#5b6472;margin-top:12px;line-height:1.5;font-family:var(--mono);">Los medios desactivados se ocultan al enviar suministros. La preferencia se guarda en este navegador.</p>
+  </div>
+</div>
+
+<!-- BARRA SÍMBOLOS TÁCTICOS -->
+<div id="barra-simbolos" class="barra-simbolos oculto">
+  <button id="btn-agregar-simbolo" class="btn-simbolo-plus" title="Agregar nuevo símbolo táctico">+</button>
+</div>
+
+<!-- PANEL GALERÍA DE SÍMBOLOS -->
+<div id="panel-galeria-simbolos" class="panel-galeria oculto">
+  <div class="pg-header">
+    <span class="pg-titulo">Símbolos Tácticos</span>
+    <button class="pg-cerrar" id="btn-cerrar-galeria" title="Cerrar">✕ CERRAR</button>
+  </div>
+
+  <div class="pg-main-tabs">
+    <button class="pg-main-tab pg-main-tab-activo" id="tab-galeria">Galería de símbolos</button>
+    <button class="pg-main-tab" id="tab-busqueda">Búsqueda de símbolos MSS</button>
+  </div>
+
+  <div id="vista-galeria">
+    <div class="pg-cat-row">
+      <button class="pg-cat-btn" data-cat="favoritos">
+        <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+        <span>Favoritos</span>
+      </button>
+      <button class="pg-cat-btn" data-cat="formaciones">
+        <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><rect x="3" y="6" width="18" height="13" rx="1"></rect><circle cx="12" cy="12" r="2.5" fill="currentColor"></circle></svg>
+        <span>Formaciones</span>
+      </button>
+      <button class="pg-cat-btn" data-cat="equipos">
+        <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"></path></svg>
+        <span>Equipos e Instalaciones</span>
+      </button>
+      <button class="pg-cat-btn" data-cat="graficos">
+        <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M9 20v-5a4 4 0 0 1 4-4h6"></path><path d="M15 7l4 4-4 4"></path></svg>
+        <span>Gráficos Tácticos</span>
+      </button>
+      <button class="pg-cat-btn" data-cat="especificos">
+        <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3" fill="currentColor"></circle></svg>
+        <span>Símbolos específicos de función</span>
+      </button>
+      <button class="pg-cat-btn" data-cat="metoc">
+        <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M4 22V2"></path><path d="M4 4l14 2-2 4 2 4-14 2"></path></svg>
+        <span>Metoc</span>
+      </button>
     </div>
 
-    <!-- LIVE INDICATOR (siempre visible) -->
-    <div id="live-widget" class="live-widget">
-        <span class="live-dot-red"></span>
-        <span id="num-visitantes" style="color:white; font-family:var(--mono); font-size:11px; font-weight:bold;">—</span>
-        <span class="live-text">LIVE</span>
+    <div class="pg-cat-contenido" id="pg-cat-contenido">
+      <div class="pg-cat-vacio">Selecciona una categoría</div>
     </div>
+  </div>
 
-    <!-- HUD SOLDADO -->
-    <div id="panel-usuario" class="panel-ui oculto">
-        <div class="panel-tag" style="color:#00bfff;border-color:#00bfff;">SOLDADO ACTIVO</div>
-        <p id="texto-usuario">—</p>
-        <button id="btn-abrir-reclamar" style="margin-bottom:5px;">Reclamar un Ejercito</button>
-        <button id="btn-cerrar-sesion" style="background:#8b1a1a;">Cerrar Sesion</button>
+  <div id="vista-busqueda" style="display:none;padding:15px;">
+    <input type="text" id="busqueda-input" class="bc-input" placeholder="Buscar símbolo (ej: infantería, tanque, artillería...)" style="width:100%;box-sizing:border-box;padding:8px;font-size:12px;border-radius:3px;margin-bottom:10px;">
+    <div id="busqueda-resultados" class="pg-acordeon-grid" style="padding:0;"></div>
+    <p style="color:#5b6472;font-size:10px;text-align:center;">Escribe al menos 3 caracteres para buscar</p>
+  </div>
+</div>
+
+<!-- PANEL TERRITORIO -->
+<div id="panel-territorio" class="panel-territorio oculto">
+  <button id="btn-cerrar-territorio" class="btn-cerrar-ter">✕</button>
+  <div class="ter-header">
+    <div>
+      <div class="ter-titulo" id="territorio-nombre">Region</div>
+      <div class="ter-subtitulo" id="territorio-ejercito">Ejercito</div>
     </div>
-
-
-
-    <!-- BARRA SIMBOLOS TACTICOS (top right, solo comandante) -->
-    <div id="barra-simbolos" class="barra-simbolos oculto">
-        <button id="btn-agregar-simbolo" class="btn-simbolo-plus" title="Agregar nuevo símbolo táctico">+</button>
+  </div>
+  <div class="ter-grid" id="territorio-comandante-box">
+    <div class="ter-celda">
+      <div class="ter-label">COMANDANTE</div>
+      <div class="ter-valor" id="territorio-lider">—</div>
     </div>
-
-    <!-- PANEL GALERIA DE SIMBOLOS -->
-    <div id="panel-galeria-simbolos" class="panel-galeria oculto">
-
-
-        <!-- Dos tabs principales: Galería de símbolos / Búsqueda de símbolos MSS -->
-        <div class="pg-main-tabs">
-            <button class="pg-main-tab pg-main-tab-activo" id="tab-galeria">Galería de símbolos</button>
-            <button class="pg-main-tab" id="tab-busqueda">Búsqueda de símbolos MSS</button>
-        </div>
-
-        <!-- VISTA: Galería -->
-        <div id="vista-galeria">
-            <!-- 6 botones de categoría en fila con icono -->
-            <div class="pg-cat-row">
-                <button class="pg-cat-btn" data-cat="favoritos">
-                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-                    <span>Favoritos</span>
-                </button>
-                <button class="pg-cat-btn" data-cat="formaciones">
-                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><rect x="3" y="6" width="18" height="13" rx="1"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/></svg>
-                    <span>Formaciones</span>
-                </button>
-                <button class="pg-cat-btn" data-cat="equipos">
-                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
-                    <span>Equipos e Instalaciones</span>
-                </button>
-                <button class="pg-cat-btn" data-cat="graficos">
-                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M9 20v-5a4 4 0 0 1 4-4h6"/><path d="M15 7l4 4-4 4"/></svg>
-                    <span>Gráficos Tácticos</span>
-                </button>
-                <button class="pg-cat-btn" data-cat="especificos">
-                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="currentColor"/></svg>
-                    <span>Símbolos específicos de función</span>
-                </button>
-                <button class="pg-cat-btn" data-cat="metoc">
-                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M4 22V2"/><path d="M4 4l14 2-2 4 2 4-14 2"/></svg>
-                    <span>Metoc</span>
-                </button>
-            </div>
-
-            <!-- Contenido que cambia según categoría -->
-            <div class="pg-cat-contenido" id="pg-cat-contenido">
-                <!-- Por defecto vacío, se llena al seleccionar categoría -->
-                <div class="pg-cat-vacio">Selecciona una categoría</div>
-            </div>
-        </div>
-
-        <!-- VISTA: Búsqueda -->
-        <div id="vista-busqueda" style="display:none; padding:15px;">
-            <input type="text" id="busqueda-input" class="bc-input" placeholder="Buscar símbolo (ej: infantería, tanque, artillería...)"
-                   style="width:100%; box-sizing:border-box; background:#111; color:#fff; border:1px solid #444; padding:8px; font-size:12px; border-radius:3px; margin-bottom:10px;">
-            <div id="busqueda-resultados" class="pg-subseccion-grid"></div>
-            <p style="color:#555; font-size:10px; text-align:center;">Escribe al menos 3 caracteres para buscar</p>
-        </div>
-
+  </div>
+  <div class="ter-seccion">
+    <div class="ter-label">DESCRIPCION</div>
+    <div class="ter-desc" id="territorio-desc">Sin informacion disponible.</div>
+  </div>
+  <div class="ter-seccion">
+    <div class="ter-label">RELACIONES DIPLOMATICAS</div>
+    <div id="territorio-relaciones" class="ter-relaciones">
+      <span class="rel-vacio">Sin relaciones registradas</span>
     </div>
-
-
-    <!-- PANEL TERRITORIO (izquierda abajo, HOI4 style) -->
-    <div id="panel-territorio" class="panel-territorio oculto">
-        <button id="btn-cerrar-territorio" class="btn-cerrar-ter">x</button>
-
-        <div class="ter-header">
-            <div>
-                <div class="ter-titulo" id="territorio-nombre">Region</div>
-                <div class="ter-subtitulo" id="territorio-ejercito">Ejercito</div>
-            </div>
-        </div>
-
-        <div class="ter-grid" id="territorio-comandante-box">
-            <div class="ter-celda">
-                <div class="ter-label">COMANDANTE</div>
-                <div class="ter-valor" id="territorio-lider">—</div>
-            </div>
-        </div>
-
-        <div class="ter-seccion">
-            <div class="ter-label">DESCRIPCION</div>
-            <div class="ter-desc" id="territorio-desc">Sin informacion disponible.</div>
-        </div>
-
-        <div class="ter-seccion">
-            <div class="ter-label">RELACIONES DIPLOMATICAS</div>
-            <div id="territorio-relaciones" class="ter-relaciones">
-                <span class="rel-vacio">Sin relaciones registradas</span>
-            </div>
-        </div>
-
-        <div id="ter-acciones-diplo" class="ter-seccion oculto">
-            <div class="ter-label" style="color:gold;">ACCION DIPLOMATICA</div>
-            <div style="display:flex; gap:6px; margin-top:8px;">
-                <select id="ter-sel-tipo" class="bc-select" style="flex:1;">
-                    <option value="Aliado">Proponer Alianza</option>
-                    <option value="Neutral" selected>Declarar Neutralidad</option>
-                    <option value="Enemigo">Declarar Guerra</option>
-                </select>
-                <button id="btn-ter-enviar-rel" class="bc-btn azul">ENVIAR</button>
-            </div>
-        </div>
-
-        <div id="ter-suministros" class="ter-seccion oculto">
-            <div class="ter-label" style="color:#32CD32;">ENVIAR SUMINISTROS</div>
-            <div style="display:flex; gap:6px; margin-top:8px; align-items:center;">
-                <span style="font-size:10px; color:#888; font-family:var(--mono); white-space:nowrap;">TIPO:</span>
-                <select id="ter-sel-suministro" class="bc-select" style="flex:1;">
-                    <option value="armas">Armas</option>
-                    <option value="municion">Municion</option>
-                    <option value="gasolina">Gasolina</option>
-                    <option value="medicamentos">Medicamentos</option>
-                    <option value="alimentos">Alimentos</option>
-                    <option value="repuestos">Repuestos</option>
-                    <option value="explosivos">Explosivos</option>
-                </select>
-            </div>
-            <div style="display:flex; gap:6px; margin-top:6px; align-items:center;">
-                <span style="font-size:10px; color:#888; font-family:var(--mono); white-space:nowrap;">VIA:</span>
-                <select id="ter-sel-transporte" class="bc-select" style="flex:1;">
-                    <option value="terrestre">Terrestre (10 min)</option>
-                    <option value="ferroviario">Ferroviario (15 min)</option>
-                    <option value="aereo">Aereo (5 min)</option>
-                    <option value="naval">Naval (25 min)</option>
-                </select>
-                <button id="btn-enviar-suministro" class="bc-btn verde">ENVIAR</button>
-            </div>
-
-        </div>
-
-        <div class="ter-footer">
-            <a id="territorio-btn-juego" href="#" target="_blank" class="btn-ir-juego">
-                IR AL JUEGO EN ROBLOX
-            </a>
-        </div>
+  </div>
+  <div id="ter-acciones-diplo" class="ter-seccion oculto">
+    <div class="ter-label" style="color:#ffcf4a;">ACCION DIPLOMATICA</div>
+    <div style="display:flex;gap:6px;margin-top:8px;">
+      <select id="ter-sel-tipo" class="bc-select" style="flex:1;">
+        <option value="Aliado">Proponer Alianza</option>
+        <option value="Neutral" selected>Declarar Neutralidad</option>
+        <option value="Enemigo">Declarar Guerra</option>
+      </select>
+      <button id="btn-ter-enviar-rel" class="bc-btn azul">ENVIAR</button>
     </div>
-
-    <!-- BARRA DE COMANDO INFERIOR -->
-    <div id="barra-comando" class="barra-comando oculto">
-        <div class="bc-info">
-            <div class="bc-textos">
-                <div class="bc-nombre" id="bc-nombre">—</div>
-                <div class="bc-lider" id="bc-lider">—</div>
-                <button id="btn-cerrar-sesion-cmd" class="bc-btn rojo" style="margin-top: 5px; width: 100%;">Cerrar Sesion</button>
-            </div>
-        </div>
-
-        <div class="bc-separador"></div>
-
-        <div class="bc-seccion bc-flex-row">
-            <input type="text" id="bc-desc" class="bc-input" placeholder="Lore / Descripcion del ejercito...">
-            <button id="btn-guardar-desc" class="bc-btn verde">GUARDAR</button>
-        </div>
-
-        <div class="bc-separador"></div>
-
-        <div class="bc-seccion bc-notificaciones">
-            <div class="bc-label">PETICIONES DE ALIANZA:</div>
-            <div id="bc-lista-peticiones" class="bc-lista">
-                <span class="bc-vacio">Sin peticiones</span>
-            </div>
-        </div>
-
-        <p id="msj-herramientas" class="bc-msj"></p>
+  </div>
+  <div id="ter-suministros" class="ter-seccion oculto">
+    <div class="ter-label" style="color:#3ddc84;">ENVIAR SUMINISTROS</div>
+    <div style="display:flex;gap:6px;margin-top:8px;align-items:center;">
+      <span style="font-size:10px;color:#7d8794;font-family:var(--mono);white-space:nowrap;">TIPO:</span>
+      <select id="ter-sel-suministro" class="bc-select" style="flex:1;">
+        <option value="armas">Armas</option>
+        <option value="municion">Municion</option>
+        <option value="gasolina">Gasolina</option>
+        <option value="medicamentos">Medicamentos</option>
+        <option value="alimentos">Alimentos</option>
+        <option value="repuestos">Repuestos</option>
+        <option value="explosivos">Explosivos</option>
+      </select>
     </div>
-
-
-    <!-- MODAL LOGIN ESTILO WARWATCH -->
-    <div id="modal-login" class="modal-war oculto">
-        <div class="mw-header">
-            <div class="mw-subtitle-box">
-                <p class="mw-subtitle">NEW OPERATIVE REGISTRATION</p>
-            </div>
-        </div>
-
-        <div class="mw-body">
-            <div class="mw-top-line"></div>
-            <div class="mw-content">
-                <div class="mw-title-box">
-                    <h1 class="mw-title">CREATE ACCOUNT / LOGIN</h1>
-                    <p class="mw-desc">Free tier — upgrade anytime</p>
-                </div>
-                
-                <div class="mw-form">
-                    <div class="mw-input-group">
-                        <label>EMAIL / IDENTIFIER</label>
-                        <input type="email" id="input-email" placeholder="operator@warwatch.io">
-                    </div>
-                    <div class="mw-input-group">
-                        <label>PASSPHRASE</label>
-                        <input type="password" id="input-pass" placeholder="••••••••••••">
-                    </div>
-                    
-                    <div style="display:flex; gap:10px; margin-top:20px;">
-                        <button id="btn-login" class="mw-btn mw-btn-outline">AUTHENTICATE →</button>
-                        <button id="btn-registro" class="mw-btn mw-btn-red">CREATE ACCOUNT</button>
-                    </div>
-                    
-                    <button id="btn-cerrar-login" class="mw-btn-cancel">CANCELAR X</button>
-                    <p id="msj-login" class="mw-msj"></p>
-                </div>
-            </div>
-        </div>
-        <p class="mw-footer">BY REGISTERING YOU AGREE TO OUR TERMS & PRIVACY POLICY</p>
+    <div style="display:flex;gap:6px;margin-top:6px;align-items:center;">
+      <span style="font-size:10px;color:#7d8794;font-family:var(--mono);white-space:nowrap;">VIA:</span>
+      <select id="ter-sel-transporte" class="bc-select" style="flex:1;">
+        <option value="terrestre">Terrestre (10 min)</option>
+        <option value="ferroviario">Ferroviario (15 min)</option>
+        <option value="aereo">Aereo (5 min)</option>
+        <option value="naval">Naval (25 min)</option>
+      </select>
+      <button id="btn-enviar-suministro" class="bc-btn verde">ENVIAR</button>
     </div>
+  </div>
+  <div class="ter-footer">
+    <a id="territorio-btn-juego" href="#" target="_blank" class="btn-ir-juego">IR AL JUEGO EN ROBLOX</a>
+    <button id="btn-compartir" class="btn-compartir">COMPARTIR VISTA</button>
+  </div>
+</div>
 
-    <!-- MODAL RECLAMAR -->
-    <div id="modal-reclamar" class="modal oculto">
-        <div class="modal-titulo">RECLAMAR EJERCITO</div>
-        <label class="modal-label">Nombre en Roblox</label>
-        <input type="text" id="input-roblox" placeholder="Ej: salamelag">
-        <label class="modal-label">Faccion</label>
-        <select id="input-ejercito" class="desplegable">
-            <option value="" disabled selected>-- Elige un ejercito --</option>
-            <option value="25_REMASTER">25 REMASTER (Cordoba)</option>
-            <option value="Argentine_Army">Argentine Army (Buenos Aires)</option>
-            <option value="RFA_LaPampa">RFA (La Pampa)</option>
-            <option value="Imperio_Chubut">Imperio Argentino (Chubut)</option>
-            <option value="Exercito_Brasileiro">Exercito Brasileiro (Brasilia)</option>
-            <option value="EB_Mirage">EB do Mirage (Rio de Janeiro)</option>
-            <option value="War_Front_Finland">War on the Front (Finlandia)</option>
-        </select>
-        <div class="modal-botones">
-            <button id="btn-enviar" style="background:#1a7a1a;color:white;">Enviar Peticion</button>
-            <button id="btn-cerrar-reclamar" style="background:#8b1a1a;color:white;">Cancelar</button>
-        </div>
-        <p id="mensaje-estado" class="modal-msj"></p>
+<!-- BARRA DE COMANDO INFERIOR -->
+<div id="barra-comando" class="barra-comando oculto">
+  <div class="bc-info">
+    <div class="bc-textos">
+      <div class="bc-nombre" id="bc-nombre">—</div>
+      <div class="bc-lider" id="bc-lider">—</div>
+      <button id="btn-cerrar-sesion-cmd" class="bc-btn rojo" style="margin-top:5px;width:100%;">Cerrar Sesion</button>
     </div>
+  </div>
+  <div class="bc-separador"></div>
+  <div class="bc-seccion bc-flex-row">
+    <input type="text" id="bc-desc" class="bc-input" placeholder="Lore / Descripcion del ejercito...">
+    <button id="btn-guardar-desc" class="bc-btn verde">GUARDAR</button>
+  </div>
+  <div class="bc-separador"></div>
+  <div class="bc-seccion bc-notificaciones">
+    <div class="bc-label">PETICIONES DE ALIANZA:</div>
+    <div id="bc-lista-peticiones" class="bc-lista">
+      <span class="bc-vacio">Sin peticiones</span>
+    </div>
+  </div>
+  <p id="msj-herramientas" class="bc-msj"></p>
+</div>
 
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="js/config.js"></script>
-    <script src="js/api.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/ui.js"></script>
-    <script src="js/map.js"></script>
-    <script src="js/logistica.js"></script>
-    <script src="js/main.js"></script>
+<!-- MODAL LOGIN -->
+<div id="modal-login" class="modal-war oculto">
+  <div class="mw-header">
+    <div class="mw-subtitle-box"><p class="mw-subtitle">NEW OPERATIVE REGISTRATION</p></div>
+  </div>
+  <div class="mw-body">
+    <div class="mw-top-line"></div>
+    <div class="mw-content">
+      <div class="mw-title-box">
+        <h1 class="mw-title">CREATE ACCOUNT / LOGIN</h1>
+        <p class="mw-desc">Free tier — upgrade anytime</p>
+      </div>
+      <div class="mw-form">
+        <div class="mw-input-group">
+          <label>EMAIL / IDENTIFIER</label>
+          <input type="email" id="input-email" placeholder="operator@warwatch.io">
+        </div>
+        <div class="mw-input-group">
+          <label>PASSPHRASE</label>
+          <input type="password" id="input-pass" placeholder="••••••••••••">
+        </div>
+        <div style="display:flex;gap:10px;margin-top:20px;">
+          <button id="btn-login" class="mw-btn mw-btn-outline">AUTHENTICATE →</button>
+          <button id="btn-registro" class="mw-btn mw-btn-red">CREATE ACCOUNT</button>
+        </div>
+        <button id="btn-cerrar-login" class="mw-btn-cancel">CANCELAR X</button>
+        <p id="msj-login" class="mw-msj"></p>
+      </div>
+    </div>
+  </div>
+  <p class="mw-footer">BY REGISTERING YOU AGREE TO OUR TERMS &amp; PRIVACY POLICY</p>
+</div>
+
+<!-- MODAL RECLAMAR -->
+<div id="modal-reclamar" class="modal oculto">
+  <div class="modal-titulo">RECLAMAR EJERCITO</div>
+  <label class="modal-label">Nombre en Roblox</label>
+  <input type="text" id="input-roblox" placeholder="Ej: salamelag">
+  <label class="modal-label">Faccion</label>
+  <select id="input-ejercito" class="desplegable">
+    <option value="" disabled selected>-- Elige un ejercito --</option>
+    <option value="25_REMASTER">25 REMASTER (Rio Negro)</option>
+    <option value="Argentine_Army">Argentine Army (Buenos Aires)</option>
+    <option value="RFA_LaPampa">RFA (La Pampa)</option>
+    <option value="Imperio_Chubut">Imperio Argentino (Chubut)</option>
+    <option value="Exercito_Brasileiro">Exercito Brasileiro (Brasilia)</option>
+    <option value="EB_Mirage">EB do Mirage (Rio de Janeiro)</option>
+    <option value="War_Front_Finland">War on the Front (Finlandia)</option>
+  </select>
+  <div class="modal-botones">
+    <button id="btn-enviar" style="background:#3ddc84;color:#05141a;">Enviar Peticion</button>
+    <button id="btn-cerrar-reclamar" style="background:#ff5a3c;color:white;">Cancelar</button>
+  </div>
+  <p id="mensaje-estado" class="modal-msj"></p>
+</div>
+
+<!-- ============ CARGA DE LIBRERÍAS Y ARRANQUE ============ -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"></script>
+<script src="globo25.js"></script>
+<script>
+  window.addEventListener('DOMContentLoaded', function () {
+    if (typeof window.bootGlobo25 === 'function') window.bootGlobo25();
+    else console.error('[Globo25] bootGlobo25 no está definido — revisa que globo25.js cargó.');
+  });
+</script>
 </body>
 </html>
