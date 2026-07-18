@@ -169,7 +169,7 @@
     'Colombia_Conflict':'https://www.roblox.com/games/107389230881781/Colombia',
     'RFA_LaPampa':'https://www.roblox.com/games/94432191767668/RFA-Argentine-Armed-Forces#!/about',
     'Imperio_Chubut':'https://www.roblox.com/games/135668711660767/Imperio-Argentino',
-    'Ejercito_Peru':'https://www.roblox.com/games/110479722460648/Ejercito-del-Per-Base-Lima#!/about'
+    'Ejercito_Peru':'https://www.roblox.com/games/72217709762960/Base-G-Briceno-Zevallos'
   };
 
   // ------------------------- API -------------------------
@@ -330,7 +330,7 @@
     { coords: [6.2442, -75.5812], label: 'Medellín (Zona de Lucha)', ejId: 'Colombia_Conflict', region: 'Medellín, Colombia', img: 'https://tr.rbxcdn.com/180DAY-7c849cd096c2fd5076264c49d9a96db6/256/256/Image/Webp/noFilter' },
     { coords: [-36.67, -64.38], label: 'Regimiento de Infantería Mecanizado 6', ejId: 'RFA_LaPampa', region: 'La Pampa, Argentina', img: 'https://tr.rbxcdn.com/180DAY-ad94cf2036acc8cb7972731f9c142647/256/256/Image/Webp/noFilter' },
     { coords: [-43.25, -65.30], label: 'Trelew', ejId: 'Imperio_Chubut', region: 'Chubut, Argentina', img: 'https://tr.rbxcdn.com/180DAY-d5ce0f3fda3285f338d4dfa2371cf2f5/150/150/Image/Webp/noFilter' },
-    { coords: [-12.0464, -77.0428], label: 'Base Lima', ejId: 'Ejercito_Peru', region: 'Lima, Peru', img: 'https://tr.rbxcdn.com/180DAY-7b2f9c9f8840cf56a2030cd948939cad/150/150/Image/Webp/noFilter' }
+    { coords: [-12.0464, -77.0428], label: 'Base Lima', ejId: 'Ejercito_Peru', region: 'Lima, Peru', img: 'https://tr.rbxcdn.com/180DAY-b6f245f61245c64e657f0f0f1979d416/150/150/Image/Webp/noFilter' }
   ];
 
   function agregarMarcadores() {
