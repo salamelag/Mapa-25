@@ -317,7 +317,7 @@
 
   // ------------------------- MARCADORES DE BASES -------------------------
   const DATOS_BASES = [
-    { coords: [-41.133472, -71.310278], label: 'Bariloche', ejId: '25_REMASTER', region: 'Río Negro, Argentina', img: 'https://tr.rbxcdn.com/180DAY-8c528bd4c92002faf069c7f4f966f9f9/256/256/Image/Webp/noFilter' },
+    { coords: [-41.133472, -71.310278], label: 'Bariloche', ejId: '25_REMASTER', region: 'Río Negro, Argentina', img: 'https://tr.rbxcdn.com/180DAY-497759da09e81380981e232ce398392b/256/256/Image/Webp/noFilter' },
     { coords: [-34.533805, -58.649166], label: 'Campo de Mayo', ejId: 'Argentine_Army', region: 'Buenos Aires, Argentina', img: 'https://tr.rbxcdn.com/180DAY-cdfd2b3c913f59789ac50bda58fa8e97/256/256/Image/Webp/noFilter' },
     { coords: [-15.778361, -47.905083], label: 'Brasilia', ejId: 'Exercito_Brasileiro', region: 'Brasilia, Brasil', img: 'https://tr.rbxcdn.com/180DAY-40a3b8aacb25617525f5903f172f4db8/256/256/Image/Webp/noFilter' },
     { coords: [-22.9068, -43.1729], label: 'Rio de Janeiro', ejId: 'EB_Mirage', region: 'Rio de Janeiro, Brasil', img: 'https://tr.rbxcdn.com/180DAY-05b3c4bc174a604f84a4cde981d7975c/256/256/Image/Webp/noFilter' },
